@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Literal
 
 from data.schemas import Bar
 from hypotheses.base import TradeIntent, IntentType
@@ -11,6 +11,7 @@ from portfolio.models import PortfolioState, PortfolioAllocation
 from portfolio.ensemble import Ensemble
 from portfolio.risk import RiskRule
 from clock.clock import Clock
+from config.execution_flags import EXECUTION_ENABLED
 from execution_live.order_models import ExecutionIntent, IntentAction
 from engine.decision_queue import QueuedDecision
 
@@ -96,6 +97,7 @@ class MetaPortfolioEngine:
         decay_check_interval: int = 0,
         symbol: str = "SYNTHETIC",
         execution_intent_sink: Optional[ExecutionIntentSink] = None,
+        execution_mode: Literal["PAPER", "LIVE"] = "PAPER",
     ):
         self.ensemble = ensemble
         self.initial_capital = initial_capital
@@ -104,6 +106,7 @@ class MetaPortfolioEngine:
         self.decay_check_interval = decay_check_interval
         self.symbol = symbol
         self._execution_intent_sink = execution_intent_sink
+        self.execution_mode = execution_mode
         
         # 1. Shadow Track Initialization
         # We give each shadow sim a hypothetical capital (e.g. 1M) just to track % returns and positions accurately.
@@ -308,6 +311,16 @@ class MetaPortfolioEngine:
             return
 
         for intent in intents:
+            if self.execution_mode == "LIVE" and not EXECUTION_ENABLED:
+                logger.info(
+                    "intent_suppressed | symbol=%s action=%s qty=%.2f reason=%s",
+                    intent.symbol,
+                    intent.action.value,
+                    intent.quantity,
+                    "execution_disabled",
+                )
+                continue
+
             self._execution_intent_sink(intent)
 
     def _build_execution_intent(
