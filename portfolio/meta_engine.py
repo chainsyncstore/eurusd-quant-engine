@@ -10,10 +10,12 @@ from state.position_state import PositionState, PositionSide
 from portfolio.models import PortfolioState, PortfolioAllocation
 from portfolio.ensemble import Ensemble
 from portfolio.risk import RiskRule
+from portfolio.risk_scaling import RiskTierResolver
 from clock.clock import Clock
 from config.execution_flags import EXECUTION_ENABLED
 from execution_live.order_models import ExecutionIntent, IntentAction
 from engine.decision_queue import QueuedDecision
+from market.regime import RegimeClassifier
 
 logger = logging.getLogger(__name__)
 
@@ -98,6 +100,7 @@ class MetaPortfolioEngine:
         symbol: str = "SYNTHETIC",
         execution_intent_sink: Optional[ExecutionIntentSink] = None,
         execution_mode: Literal["PAPER", "LIVE"] = "PAPER",
+        risk_tier_resolver: Optional[RiskTierResolver] = None,
     ):
         self.ensemble = ensemble
         self.initial_capital = initial_capital
@@ -107,6 +110,7 @@ class MetaPortfolioEngine:
         self.symbol = symbol
         self._execution_intent_sink = execution_intent_sink
         self.execution_mode = execution_mode
+        self.risk_tier_resolver = risk_tier_resolver or RiskTierResolver()
         
         # 1. Shadow Track Initialization
         # We give each shadow sim a hypothetical capital (e.g. 1M) just to track % returns and positions accurately.
@@ -128,7 +132,8 @@ class MetaPortfolioEngine:
         self.clock = Clock()
         # Shared Market State
         # Must be large enough for Regime Detection (SMA200 requires >200 bars)
-        self.market_state = MarketState(lookback_window=300) 
+        self.market_state = MarketState(lookback_window=300)
+        self.regime_classifier = RegimeClassifier()
 
     def run(self, bars: List[Bar]) -> List[PortfolioState]:
         history: List[PortfolioState] = []
@@ -176,13 +181,10 @@ class MetaPortfolioEngine:
             
             # 3. Calculate Target Net Exposure
             # Regime Gating: If regime mismatch, exclude from Net Exposure.
-            from market.regime import RegimeClassifier
-            
-            # Note: Ideally instantiated in __init__, but quick fix here or add to __init__
-            if not hasattr(self, 'regime_classifier'):
-                 self.regime_classifier = RegimeClassifier()
-                 
-            current_regime = self.regime_classifier.classify(self.market_state)
+            current_regime, regime_confidence = self.regime_classifier.classify_with_confidence(
+                self.market_state
+            )
+            risk_tier = self.risk_tier_resolver.resolve(regime_confidence)
             
             net_exposure_target = 0.0
             
@@ -207,9 +209,14 @@ class MetaPortfolioEngine:
                 
                 net_exposure_target += (weight * sign)
             
-            # Determine target meta exposure measured in units
+            # Determine target meta exposure measured in units using regime-aware risk fractions
             curr_equity = self.meta_simulator.get_total_capital(bar.open, self.meta_position_state)
-            target_value = abs(net_exposure_target) * curr_equity
+            exposure_ratio = abs(net_exposure_target)
+            risk_fraction = max(0.0, min(1.0, risk_tier.risk_fraction))
+            target_value = curr_equity * exposure_ratio * risk_fraction
+            max_notional = curr_equity * self.risk_tier_resolver.max_leverage
+            if target_value > max_notional:
+                target_value = max_notional
             target_units = float(int(target_value / bar.open)) if bar.open > 0 else 0.0
 
             target_side = None
@@ -227,6 +234,12 @@ class MetaPortfolioEngine:
             decisions = []
             emitted_intents: List[ExecutionIntent] = []
 
+            risk_metadata = {
+                "risk_label": risk_tier.label,
+                "risk_fraction": risk_fraction,
+                "regime_confidence": regime_confidence.value,
+            }
+
             # Case 1: Switch Side or Go Flat
             if current_side and (current_side != target_side or target_units == 0):
                 size_to_close = abs(current_units)
@@ -242,7 +255,10 @@ class MetaPortfolioEngine:
                             quantity=size_to_close,
                             bar=bar,
                             bar_idx=bar_idx,
-                            metadata={"reason": "side_change_or_flat"}
+                            metadata={
+                                "reason": "side_change_or_flat",
+                                **risk_metadata,
+                            }
                         )
                     )
                 current_units = 0
@@ -263,7 +279,10 @@ class MetaPortfolioEngine:
                             quantity=size_to_close,
                             bar=bar,
                             bar_idx=bar_idx,
-                            metadata={"reason": "resize"}
+                            metadata={
+                                "reason": "resize",
+                                **risk_metadata,
+                            }
                         )
                     )
                 current_units = 0
@@ -283,7 +302,10 @@ class MetaPortfolioEngine:
                         quantity=target_units,
                         bar=bar,
                         bar_idx=bar_idx,
-                        metadata={"reason": "target_entry"}
+                        metadata={
+                            "reason": "target_entry",
+                            **risk_metadata,
+                        }
                     )
                 )
 
@@ -331,16 +353,16 @@ class MetaPortfolioEngine:
         bar_idx: int,
         metadata: Optional[Dict[str, Any]] = None,
     ) -> ExecutionIntent:
+        base_metadata = {"bar_index": bar_idx}
+        if metadata:
+            base_metadata.update(metadata)
         return ExecutionIntent(
             symbol=self.symbol,
             action=action,
             quantity=float(quantity),
             timestamp=bar.timestamp,
             reference_price=bar.open,
-            metadata={
-                "bar_index": bar_idx,
-                **(metadata or {}),
-            }
+            metadata=base_metadata,
         )
 
     def _check_decay(self, equity_curves: Dict[str, List[float]]):

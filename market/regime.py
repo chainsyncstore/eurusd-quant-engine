@@ -6,9 +6,13 @@ Used for gating strategies (e.g., preventing Counter-Trend from trading in stron
 """
 
 from enum import Enum
-import pandas as pd
+from typing import Optional, Tuple
+
 import numpy as np
+import pandas as pd
+
 from state.market_state import MarketState
+
 
 class MarketRegime(str, Enum):
     BULL = "BULL"
@@ -16,6 +20,12 @@ class MarketRegime(str, Enum):
     CHOPPY = "CHOPPY"
     NEUTRAL = "NEUTRAL"
     UNKNOWN = "UNKNOWN"
+
+
+class RegimeConfidence(str, Enum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
 
 class RegimeClassifier:
     """
@@ -36,58 +46,86 @@ class RegimeClassifier:
         """
         Classify the current market regime.
         """
-        # Need at least 200 bars for SMA200
-        if market_state.bar_count() < 200:
-            return MarketRegime.UNKNOWN
-            
-        df = market_state.to_dataframe(n=300) # Get ample history
-        if df.empty:
-            return MarketRegime.UNKNOWN
-            
-        # Calculate Indicators
+        regime, _ = self.classify_with_confidence(market_state)
+        return regime
+
+    def classify_with_confidence(
+        self, market_state: MarketState
+    ) -> Tuple[MarketRegime, RegimeConfidence]:
+        """
+        Classify the current market regime and return a coarse confidence label.
+        """
         try:
-            # 1. SMAs
-            df['sma50'] = df['close'].rolling(window=50).mean()
-            df['sma200'] = df['close'].rolling(window=200).mean()
-            
-            # 2. ADX (Simplified TR/DX/ADX)
-            # Need High, Low, Close
-            # TR = Max(H-L, Abs(H-Cp), Abs(L-Cp))
-            # ... Implementing full ADX is verbose. 
-            # I'll use a simplified Trend Strength Estimator:
-            # Ratio of (Abs(Close - Open)) to (High - Low)? No.
-            # Efficiency Ratio? 
-            # ADX is standard. I'll implement a helper.
-            
-            # Use 'ta' library if available? 
-            # "The user's OS version is windows." - Check dependencies.
-            # I will implement manually to avoid dependency issues.
-            
-            adx = self._calculate_adx(df)
-            current_adx = adx.iloc[-1]
-            
-            current_price = df['close'].iloc[-1]
-            sma50 = df['sma50'].iloc[-1]
-            sma200 = df['sma200'].iloc[-1]
-            
-            # Classification Logic
-            
-            # CHOPPY: Low Trend Strength
-            if current_adx < self.low_vol_threshold:
-                return MarketRegime.CHOPPY
-                
-            # TRENDING: High Trend Strength
-            if current_adx > self.high_vol_threshold:
-                if current_price > sma200 and sma50 > sma200:
-                    return MarketRegime.BULL
-                if current_price < sma200 and sma50 < sma200:
-                    return MarketRegime.BEAR
-                    
-            return MarketRegime.NEUTRAL
-            
+            features = self._prepare_features(market_state)
         except Exception:
-            # Fallback
+            return MarketRegime.UNKNOWN, RegimeConfidence.LOW
+
+        if features is None:
+            return MarketRegime.UNKNOWN, RegimeConfidence.LOW
+
+        regime = self._determine_regime(features)
+        confidence = self._determine_confidence(features, regime)
+        return regime, confidence
+
+    def _prepare_features(self, market_state: MarketState) -> Optional[dict]:
+        if market_state.bar_count() < 200:
+            return None
+
+        df = market_state.to_dataframe(n=300)
+        if df.empty:
+            return None
+
+        df["sma50"] = df["close"].rolling(window=50).mean()
+        df["sma200"] = df["close"].rolling(window=200).mean()
+        adx = self._calculate_adx(df)
+        if adx.empty:
+            return None
+
+        return {
+            "adx": float(adx.iloc[-1]),
+            "price": float(df["close"].iloc[-1]),
+            "sma50": float(df["sma50"].iloc[-1]),
+            "sma200": float(df["sma200"].iloc[-1]),
+        }
+
+    def _determine_regime(self, features: dict) -> MarketRegime:
+        current_adx = features["adx"]
+        current_price = features["price"]
+        sma50 = features["sma50"]
+        sma200 = features["sma200"]
+
+        if np.isnan(current_adx):
             return MarketRegime.UNKNOWN
+
+        if current_adx < self.low_vol_threshold:
+            return MarketRegime.CHOPPY
+
+        if current_adx > self.high_vol_threshold:
+            if current_price > sma200 and sma50 > sma200:
+                return MarketRegime.BULL
+            if current_price < sma200 and sma50 < sma200:
+                return MarketRegime.BEAR
+
+        return MarketRegime.NEUTRAL
+
+    def _determine_confidence(
+        self, features: dict, regime: MarketRegime
+    ) -> RegimeConfidence:
+        adx = features["adx"]
+
+        if np.isnan(adx):
+            return RegimeConfidence.LOW
+
+        if regime == MarketRegime.CHOPPY:
+            return RegimeConfidence.LOW
+
+        if adx >= self.high_vol_threshold:
+            return RegimeConfidence.HIGH
+
+        if adx >= self.low_vol_threshold:
+            return RegimeConfidence.MEDIUM
+
+        return RegimeConfidence.LOW
 
     def _calculate_adx(self, df: pd.DataFrame, period: int = 14) -> pd.Series:
         """Calculate ADX manually."""
