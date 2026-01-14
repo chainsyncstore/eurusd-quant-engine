@@ -121,6 +121,7 @@ class MetaPortfolioEngine:
         self.risk_tier_resolver = risk_tier_resolver or RiskTierResolver()
         self.telemetry = telemetry
         self.explain_decisions = explain_decisions
+        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         
         # 1. Shadow Track Initialization
         # We give each shadow sim a hypothetical capital (e.g. 1M) just to track % returns and positions accurately.
@@ -155,6 +156,15 @@ class MetaPortfolioEngine:
         for bar_idx, bar in enumerate(bars):
             self.clock.set_time(bar.timestamp)
             self.market_state.update(bar)
+            if self.explain_decisions:
+                self.logger.info(
+                    "bar_evaluated | ts=%s | hypotheses=%s",
+                    bar.timestamp,
+                    [
+                        getattr(h, "name", getattr(h, "hypothesis_id", h.__class__.__name__))
+                        for h in self.ensemble.hypotheses
+                    ],
+                )
             
             # --- Decay Check ---
             if self.decay_check_interval > 0 and bar_idx > 0 and bar_idx % self.decay_check_interval == 0:

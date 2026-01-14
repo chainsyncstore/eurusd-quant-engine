@@ -6,6 +6,7 @@ All trading strategies must implement this interface.
 
 from abc import ABC, abstractmethod
 from enum import Enum
+import logging
 from typing import Dict, Any, Optional, List
 from market.regime import MarketRegime
 
@@ -48,6 +49,24 @@ class Hypothesis(ABC):
     3. Cannot access future data (enforced by `MarketState`)
     4. Cannot execute trades directly (must go through queue)
     """
+
+    _signal_logger: logging.Logger | None = None
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        original_on_bar = getattr(cls, "on_bar", None)
+        if not callable(original_on_bar):
+            return
+        if getattr(original_on_bar, "_diagnostic_wrapped", False):
+            return
+
+        def wrapped(self, market_state: MarketState, position_state: PositionState, clock: Clock):
+            intent = original_on_bar(self, market_state, position_state, clock)
+            self._log_signal_intent(intent, market_state)
+            return intent
+
+        wrapped._diagnostic_wrapped = True  # type: ignore[attr-defined]
+        cls.on_bar = wrapped  # type: ignore[assignment]
     
     @property
     @abstractmethod
@@ -91,3 +110,43 @@ class Hypothesis(ABC):
     
     def __repr__(self):
         return f"<Hypothesis: {self.hypothesis_id}>"
+
+    def _log_signal_intent(self, intent: Optional[TradeIntent], market_state: MarketState) -> None:
+        if not getattr(self, "explain_decisions", False):
+            return
+        if intent is None or intent.is_hold():
+            return
+        try:
+            bar = market_state.current_bar()
+        except Exception:
+            return
+
+        direction = "FLAT"
+        if intent.type == IntentType.BUY:
+            direction = "LONG"
+        elif intent.type == IntentType.SELL:
+            direction = "SHORT"
+        elif intent.type == IntentType.CLOSE:
+            direction = "CLOSE"
+
+        confidence = getattr(intent, "confidence", None)
+        if confidence is None:
+            confidence = intent.size
+
+        logger = getattr(self, "_diagnostic_logger", None)
+        if logger is None:
+            logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+            setattr(self, "_diagnostic_logger", logger)
+
+        name = getattr(self, "name", getattr(self, "hypothesis_id", self.__class__.__name__))
+        timestamp = getattr(bar, "timestamp", None)
+        ts_str = timestamp.isoformat() if hasattr(timestamp, "isoformat") else str(timestamp)
+
+        logger.info(
+            "hypothesis_signal | name=%s | ts=%s | direction=%s | confidence=%.4f | size=%.4f",
+            name,
+            ts_str,
+            direction,
+            confidence,
+            intent.size,
+        )

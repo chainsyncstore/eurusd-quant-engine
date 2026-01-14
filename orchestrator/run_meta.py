@@ -156,7 +156,14 @@ def main():
                 logger.error(f"Failed to load params for {hid}")
         
         h_cls = get_hypothesis(hid)
-        hypotheses.append(h_cls(**params))
+        hypothesis = h_cls(**params)
+        setattr(hypothesis, "explain_decisions", args.explain_decisions)
+        logger.info(
+            "hypothesis_init | name=%s | explain_decisions=%s",
+            getattr(hypothesis, "name", getattr(hypothesis, "hypothesis_id", h_cls.__name__)),
+            getattr(hypothesis, "explain_decisions", None),
+        )
+        hypotheses.append(hypothesis)
         
     # 2. Configure Weighting
     weighting_strategy = EqualWeighting()
