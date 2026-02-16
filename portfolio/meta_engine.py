@@ -324,6 +324,15 @@ class MetaPortfolioEngine:
                             sign = -1.0
             
                 net_exposure_target += (weight * sign)
+
+            # COMPETITION DEBUG: Log net exposure calculation
+            if COMPETITION_MODE:
+                logger.info(
+                    "[COMP_DEBUG] net_exposure=%.4f regime=%s confidence=%s",
+                    net_exposure_target,
+                    current_regime.value if hasattr(current_regime, 'value') else current_regime,
+                    regime_confidence.value,
+                )
         
             # Determine target meta exposure measured in units using regime-aware risk fractions + leverage
             curr_equity = self.meta_simulator.get_total_capital(bar.open, self.meta_position_state)
@@ -437,10 +446,26 @@ class MetaPortfolioEngine:
                 # if current_side == target_side and current_side is not None and current_units != target_units:
                 #     ... disabled to avoid churning
 
+                # COMPETITION DEBUG: Log signal-to-trade decision flow
+                if COMPETITION_MODE and target_units > 0:
+                    logger.info(
+                        "[COMP_DEBUG] target_side=%s target_units=%.4f current_units=%.4f rotated=%s",
+                        target_side.value if target_side else None,
+                        target_units,
+                        current_units,
+                        rotated_this_bar,
+                    )
+
                 # Case 3: Open Target (if not already there)
                 # CRITICAL: Do NOT enter on a rotated symbol - the bar's price is for the OLD symbol!
                 if target_side and target_units > 0 and current_units == 0 and not rotated_this_bar:
                     intent_type = IntentType.BUY if target_side == PositionSide.LONG else IntentType.SELL
+                    logger.info(
+                        "[COMP_DEBUG] Attempting entry: %s %.4f units @ %.5f",
+                        intent_type.value,
+                        target_units,
+                        bar.open,
+                    )
                     enqueue_decision(
                         intent=TradeIntent(type=intent_type, size=target_units),  # Size is UNITS for MetaSim
                         action=IntentAction.BUY if intent_type == IntentType.BUY else IntentAction.SELL,
@@ -453,8 +478,15 @@ class MetaPortfolioEngine:
 
                 # Execute Meta Decisions
                 if decisions:
+                    logger.info("[COMP_DEBUG] Executing %d decisions", len(decisions))
                     self.meta_simulator.execute_decisions(decisions, bar, self.meta_position_state)
                     self._publish_execution_intents(emitted_intents)
+                elif COMPETITION_MODE and target_units > 0 and current_units == 0:
+                    logger.info(
+                        "[COMP_DEBUG] NO DECISIONS! target_side=%s rotated=%s",
+                        target_side.value if target_side else None,
+                        rotated_this_bar,
+                    )
 
             # Update peak equity
             snapshot = self._create_snapshot(bar, peak_equity)

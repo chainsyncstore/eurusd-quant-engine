@@ -1,7 +1,8 @@
 """
 Ultra-aggressive competition hypothesis for maximum profit potential.
 
-Combines volatility breakout + momentum + RSI extremes with lowered thresholds.
+Combines volatility breakout + momentum + RSI extremes.
+UPDATED: Triggers on ANY valid signal (Momentum Trend or RSI Reversal) to ensure full uptime.
 Uses full position sizing on every signal. No regime gating.
 
 WARNING: This is a HIGH RISK strategy for competition use only.
@@ -27,8 +28,8 @@ class CompetitionHailMary(Hypothesis):
     2. Momentum confirmation (EMA cross + ROC)
     3. RSI extremes (oversold/overbought reversals)
 
-    All thresholds are lowered for maximum signal generation.
-    Position size is ALWAYS 1.0 (full allocation).
+    UPDATED: Now uses "Always In" Momentum logic + RSI Reversals to ensure
+    signals are generated immediately on system start.
     """
 
     def __init__(
@@ -92,18 +93,27 @@ class CompetitionHailMary(Hypothesis):
         return ema
 
     def _calculate_rsi(self, closes: np.ndarray) -> float:
-        """Calculate RSI from close prices."""
+        """Calculate RSI from close prices (Wilder's Smoothing)."""
         deltas = np.diff(closes)
         gains = np.where(deltas > 0, deltas, 0)
         losses = np.where(deltas < 0, -deltas, 0)
 
-        avg_gain = gains[-self.rsi_period:].mean()
-        avg_loss = losses[-self.rsi_period:].mean()
+        if len(gains) < self.rsi_period:
+            return 50.0
+
+        # Wilder's Smoothing
+        avg_gain = gains[:self.rsi_period].mean()
+        avg_loss = losses[:self.rsi_period].mean()
+
+        for i in range(self.rsi_period, len(gains)):
+            avg_gain = (avg_gain * (self.rsi_period - 1) + gains[i]) / self.rsi_period
+            avg_loss = (avg_loss * (self.rsi_period - 1) + losses[i]) / self.rsi_period
 
         if avg_loss == 0:
             return 100.0
+        
         rs = avg_gain / avg_loss
-        return 100 - (100 / (1 + rs))
+        return 100.0 - (100.0 / (1.0 + rs))
 
     def on_bar(
         self,
@@ -111,6 +121,7 @@ class CompetitionHailMary(Hypothesis):
         position_state: PositionState,
         clock: Clock,
     ) -> Optional[TradeIntent]:
+        # Required bars: Max of lookback/slow + safety buffer
         required_bars = max(self.lookback, self.slow_period) + 10
         if market_state.bar_count() < required_bars:
             return TradeIntent(type=IntentType.HOLD)
@@ -123,78 +134,48 @@ class CompetitionHailMary(Hypothesis):
         highs = np.array([b.high for b in bars])
         lows = np.array([b.low for b in bars])
         opens = np.array([b.open for b in bars])
-
-        # Current bar
-        last = bars[-1]
-        prev = bars[-2]
-        body = abs(last.close - last.open)
-        candle_range = last.high - last.low
-
-        if candle_range == 0:
-            return TradeIntent(type=IntentType.HOLD)
-
-        body_ratio = body / candle_range
-
-        # === SIGNAL 1: Volatility Expansion ===
-        trs = np.maximum(highs[1:], closes[:-1]) - np.minimum(lows[1:], closes[:-1])
-        atr = trs[-self.lookback:].mean()
-
-        expanding = candle_range > atr * self.atr_mult
-        impulsive = body_ratio > self.min_body_ratio
-
-        lookback_highs = highs[-self.lookback - 1: -1]
-        lookback_lows = lows[-self.lookback - 1: -1]
-
-        vol_bullish = expanding and impulsive and last.close > lookback_highs.max()
-        vol_bearish = expanding and impulsive and last.close < lookback_lows.min()
-
-        # === SIGNAL 2: Momentum (EMA Cross + ROC) ===
+        
+        # --- 1. Momentum (EMA Cross) ---
         fast_ema = self._ema(closes, self.fast_period)
         slow_ema = self._ema(closes, self.slow_period)
+        
+        # Cross logic for logging
+        cross_up = fast_ema[-2] <= slow_ema[-2] and fast_ema[-1] > slow_ema[-1]
+        cross_down = fast_ema[-2] >= slow_ema[-2] and fast_ema[-1] < slow_ema[-1]
 
-        curr_fast = fast_ema[-1]
-        curr_slow = slow_ema[-1]
-        prev_fast = fast_ema[-2]
-        prev_slow = slow_ema[-2]
+        # --- 2. Volatility (ATR) ---
+        tr1 = highs - lows
+        tr2 = np.abs(highs - np.roll(closes, 1))
+        tr3 = np.abs(lows - np.roll(closes, 1))
+        tr = np.maximum(tr1, np.maximum(tr2, tr3))
+        atr = tr[-self.lookback:].mean()
+        
+        current_range = highs[-1] - lows[-1]
+        is_expansion = current_range > (atr * self.atr_mult)
 
-        bullish_cross = prev_fast <= prev_slow and curr_fast > curr_slow
-        bearish_cross = prev_fast >= prev_slow and curr_fast < curr_slow
-
-        roc = (closes[-1] - closes[-1 - self.roc_period]) / closes[-1 - self.roc_period]
-
-        mom_bullish = (bullish_cross or curr_fast > curr_slow) and roc > self.roc_threshold
-        mom_bearish = (bearish_cross or curr_fast < curr_slow) and roc < -self.roc_threshold
-
-        # === SIGNAL 3: RSI Extremes ===
+        # --- 3. RSI ---
         rsi = self._calculate_rsi(closes)
+        
+        # --- Signal Logic (Aggressive / Hail Mary) ---
+        # 1. Base Signal: Momentum Trend (Always In)
+        if fast_ema[-1] > slow_ema[-1]:
+            signal = IntentType.BUY
+        else:
+            signal = IntentType.SELL
+            
+        # 2. RSI Reversal Overrides (Catch tops/bottoms early)
+        # If oversold, BUY regardless of momentum
+        if rsi < self.rsi_oversold and closes[-1] > opens[-1]:
+             signal = IntentType.BUY
+             
+        # If overbought, SELL regardless of momentum
+        elif rsi > self.rsi_overbought and closes[-1] < opens[-1]:
+             signal = IntentType.SELL
+            
+        # Debug Log for ALL decisions to trace signal generation
+        print(f"[HYP_DEBUG] {bars[-1].symbol} SIGNAL {signal.value} | "
+              f"RSI={rsi:.1f} Exp={is_expansion} CrossUp={cross_up} "
+              f"CrossDn={cross_down} ATR={atr:.4f} Price={closes[-1]:.3f} "
+              f"FastEMA={fast_ema[-1]:.2f} SlowEMA={slow_ema[-1]:.2f}")
 
-        rsi_bullish = rsi < self.rsi_oversold
-        rsi_bearish = rsi > self.rsi_overbought
-
-        # === COMBINED SIGNAL LOGIC ===
-        # Count bullish and bearish confirmations
-        bullish_count = sum([vol_bullish, mom_bullish, rsi_bullish])
-        bearish_count = sum([vol_bearish, mom_bearish, rsi_bearish])
-
-        # Strong signal: 2+ confirmations OR volatility breakout alone
-        if bullish_count >= 2 or vol_bullish:
-            return TradeIntent(type=IntentType.BUY, size=1.0)
-
-        if bearish_count >= 2 or vol_bearish:
-            return TradeIntent(type=IntentType.SELL, size=1.0)
-
-        # Moderate signal: momentum + direction confirmation
-        if mom_bullish and last.close > last.open:
-            return TradeIntent(type=IntentType.BUY, size=1.0)
-
-        if mom_bearish and last.close < last.open:
-            return TradeIntent(type=IntentType.SELL, size=1.0)
-
-        # RSI extreme with reversal candle
-        if rsi_bullish and last.close > last.open and last.close > prev.high:
-            return TradeIntent(type=IntentType.BUY, size=1.0)
-
-        if rsi_bearish and last.close < last.open and last.close < prev.low:
-            return TradeIntent(type=IntentType.SELL, size=1.0)
-
-        return TradeIntent(type=IntentType.HOLD)
+        return TradeIntent(type=signal, size=1.0)

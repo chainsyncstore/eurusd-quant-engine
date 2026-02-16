@@ -112,6 +112,16 @@ def validate_data_file(symbol: str) -> bool:
     return True
 
 
+def clear_state_file():
+    """Clear the state file to force reprocessing of all bars."""
+    state_file = Path("results/live_fx.csv.state")
+    if state_file.exists():
+        state_file.unlink()
+        print("✓ State file cleared - will process all historical bars")
+    else:
+        print("✓ No state file exists")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Competition Live Runner")
     parser.add_argument("--symbol", default="GBPJPY", help="Primary trading symbol")
@@ -165,6 +175,7 @@ def main():
     
     # Step 4: Start the engines
     print("[4/4] Starting trading engine...")
+    clear_state_file()
     print()
     
     # Build run_meta command

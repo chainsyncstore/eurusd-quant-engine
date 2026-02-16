@@ -31,8 +31,17 @@ from execution_live.intent_sink import FileIntentSink
 from execution_live.intent_schema import ExecutionIntent as MT5Intent, Side, Mode
 from execution_live.events import COMPETITION_PROFILE_LOADED
 
-# Competition mode symbol rotation pool - use crypto symbols
+# Competition mode symbol pools
+from config.competition_fx_symbols import FX_SYMBOLS
+# Default to crypto, but will be overridden based on --symbol arg
 COMPETITION_SYMBOL_POOL = CRYPTO_SYMBOLS
+
+def get_competition_symbol_pool(symbol: str) -> list:
+    """Select appropriate symbol pool based on trading symbol."""
+    fx_symbols = ["GBPJPY", "USDJPY", "GBPUSD", "EURUSD", "EURJPY", "AUDUSD"]
+    if symbol in fx_symbols or symbol.endswith("JPY") or symbol.endswith("USD") and not symbol.startswith("BTC") and not symbol.startswith("ETH"):
+        return FX_SYMBOLS
+    return CRYPTO_SYMBOLS
 from execution_live.risk_checks import CashAvailabilityCheck, NotionalLimitCheck, ExecutionPolicyCheck
 from execution_live.service import PaperExecutionService
 
@@ -432,8 +441,9 @@ def main():
         # The symbol selection happens later via explore_best_symbol
         if COMPETITION_MODE:
             # Check if any symbol in the pool has new bars
+            symbol_pool = get_competition_symbol_pool(symbol_to_load)
             has_any_bars = False
-            for sym in COMPETITION_SYMBOL_POOL:
+            for sym in symbol_pool:
                 sym_bars = MarketDataLoader.load_from_dataframe(new_rows, symbol=sym)
                 if sym_bars:
                     has_any_bars = True
@@ -504,6 +514,11 @@ def main():
         if args.paper_max_notional > 0:
             adapter_risk_checks.append(NotionalLimitCheck(args.paper_max_notional))
         
+        # COMPETITION OVERRIDE: Disable adapter-level risk checks
+        if COMPETITION_MODE:
+            logger.info("[COMPETITION] Disabling adapter risk checks")
+            adapter_risk_checks = [CashAvailabilityCheck(leverage=30.0)]  # Only keep cash check
+
         paper_adapter = PaperExecutionAdapter(
             cost_model=cost_model,
             initial_equity=args.capital,
@@ -518,10 +533,11 @@ def main():
             force_close_symbol(paper_adapter, "EURUSD")
             # Explore ALL symbols and pick the one with best signal
             csv_df_init = pd.read_csv(args.data_path)
+            comp_symbol_pool = get_competition_symbol_pool(args.symbol)
             best_symbol, signal_score = explore_best_symbol(
                 hypotheses=hypotheses,
                 csv_df=csv_df_init,
-                symbol_pool=COMPETITION_SYMBOL_POOL,
+                symbol_pool=comp_symbol_pool,
                 adapter=paper_adapter,
             )
             args.symbol = best_symbol
@@ -601,8 +617,13 @@ def main():
         ExecutionPolicyRule(execution_policy),
     ]
     
-    # Pass crypto rotation symbols in competition mode
-    rotation_symbols = CRYPTO_SYMBOLS if COMPETITION_MODE else []
+    # COMPETITION OVERRIDE: Disable all blocking risk rules
+    if COMPETITION_MODE:
+        logger.info("[COMPETITION] Disabling ALL risk rules for Hail Mary mode")
+        risk_rules = []
+    
+    # Pass rotation symbols based on trading symbol in competition mode
+    rotation_symbols = get_competition_symbol_pool(args.symbol) if COMPETITION_MODE else []
     
     engine = MetaPortfolioEngine(
         ensemble=ensemble,
@@ -689,10 +710,11 @@ def main():
                     # Update engine symbol if needed for rotation
                     if COMPETITION_MODE and paper_adapter:
                         csv_df_fresh = pd.read_csv(args.data_path)
+                        watch_symbol_pool = get_competition_symbol_pool(engine.symbol)
                         best_symbol, signal_score = explore_best_symbol(
                             hypotheses=hypotheses,
                             csv_df=csv_df_fresh,
-                            symbol_pool=COMPETITION_SYMBOL_POOL,
+                            symbol_pool=watch_symbol_pool,
                             adapter=paper_adapter,
                         )
                         rotating = best_symbol != engine.symbol
