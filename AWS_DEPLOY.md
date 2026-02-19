@@ -94,4 +94,9 @@ scp -i "quant-key.pem" -r "C:\Users\HP\Downloads\hypothesis-research-engine" ubu
     docker-compose logs -f
     ```
 
+5.  **Verify:**
+    - Open Telegram -> Start Bot.
+    - Check `/status` and `/stats`.
+    - Setup Capital.com Credentials using `/setup`.
+
 If you see **"Bot is polling..."**, you are LIVE! 🚀

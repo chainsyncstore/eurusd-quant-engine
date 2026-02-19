@@ -16,7 +16,11 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
+    level=logging.INFO
+)
 logger = logging.getLogger(__name__)
+
+FOOTER = "\n\nℹ️ Run /help to see command list"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -43,6 +47,7 @@ else:
 DB_PATH = os.path.abspath("quant_bot.db")
 ENGINE = create_engine(f"sqlite:///{DB_PATH}")
 SessionLocal = sessionmaker(bind=ENGINE)
+Base.metadata.create_all(ENGINE)
 
 # Crypto
 # Ensure key exists or fail fast
@@ -85,8 +90,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             
             await update.message.reply_text(
                 f"👋 Welcome {user.first_name}!\n\n"
-                "Your account is **PENDING APPROVAL**.\n"
-                "Please contact the administrator."
+                "⏳ **Account Pending**\n"
+                "Your request has been sent to the administrator.\n\n"
+                "👉 **Next Step:** Wait for approval notification.\n"
+                "_(You will be notified here automatically)_" + FOOTER
             )
             
             # Notify Admin
@@ -96,214 +103,160 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_message(
                         chat_id=admin_id,
                         text=f"🔔 **New User:** {user.first_name} (@{user.username}) [ID: {user.id}]\n"
-                             f"Run `/approve {user.id}` to grant access."
+                             f"👉 Run `/approve {user.id}` to grant access."
                     )
                 except Exception as e:
                     logger.error(f"Failed to notify admin: {e}")
         elif db_user.status == 'pending':
-            await update.message.reply_text("⏳ Your account is still pending approval.")
+            await update.message.reply_text("⏳ Request still pending. Please wait for admin approval." + FOOTER)
         elif db_user.status == 'banned':
-            await update.message.reply_text("🚫 Access denied.")
+            await update.message.reply_text("🚫 Access denied. Contact admin." + FOOTER)
         else:
-            await update.message.reply_text(f"✅ Welcome back, {user.first_name}! System is online.")
+            await update.message.reply_text(
+                f"✅ **Welcome back, {user.first_name}!**\n\n"
+                "System is ready.\n"
+                "👉 **Next Step:** Check status or start trading.\n"
+                "Run: `/status` or `/start_trading`" + FOOTER
+            )
     except Exception as e:
         logger.error(f"Start error: {e}")
-        await update.message.reply_text("⚠️ System error.")
+        await update.message.reply_text("⚠️ System error. Try again later.")
     finally:
         session.close()
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    msg = (
-        "📚 **Commands:**\n"
-        "/start - Register/Check Status\n"
-        "/setup <email> <key> <pass> - Set Credentials\n"
-        "/mode [demo|live] - Switch Mode\n"
-        "/start_trading - Launch Engine\n"
-        "/stop - Stop Engine\n"
-        "/status - Check Engine Status\n"
-    )
-    user_id = update.effective_user.id
-    admin_id_str = os.getenv("ADMIN_ID", "")
-    if str(user_id) == admin_id_str:
-        msg += "\n👑 **Admin:**\n/approve <id> - Approve User\n/revoke <id> - Ban User\n"
-    
-    await update.message.reply_text(msg)
 
-async def approve(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.info(f"HELP COMMAND CALLED by {update.effective_user.id}")
+    try:
+        msg = (
+            "COMMAND LIST\n\n"
+            "Basics\n"
+            "/start - Check account status\n"
+            "/help - Show this menu\n\n"
+            "Setup\n"
+            "/setup <email> <key> <pass> - Connect Capital.com\n\n"
+            "Trading\n"
+            "/start_demo - Start PAPER trading\n"
+            "/start_live - Start REAL trading\n"
+            "/stop - Stop execution\n"
+            "/status - Check if running\n"
+            "/stats - View live performance"
+        )
+        
+        user_id = update.effective_user.id
+        admin_id_str = os.getenv("ADMIN_ID", "")
+        if str(user_id) == admin_id_str:
+            msg += "\n\nAdmin\n/approve <id> - Approve user\n/revoke <id> - Freeze user"
+        
+        await update.message.reply_text(msg)
+    except Exception as e:
+        logger.error(f"CRITICAL HELP ERROR: {e}", exc_info=True)
+        await update.message.reply_text("⚠️ Error displaying help menu.")
+
+async def _start_engine(update: Update, context: ContextTypes.DEFAULT_TYPE, live: bool):
+    if not MANAGER: return
     user_id = update.effective_user.id
-    if str(user_id) != os.getenv("ADMIN_ID", ""):
-        return 
+    
+    session = SessionLocal()
+    user = session.query(User).filter_by(telegram_id=user_id).first()
+    
+    if not user or user.status != 'active':
+        await update.message.reply_text("⛔ Account not approved." + FOOTER)
+        session.close()
+        return
+        
+    ctx = user.context
+    if not (ctx.capital_email and ctx.capital_api_key and ctx.capital_password):
+        await update.message.reply_text("❌ Credentials missing. Run /setup first." + FOOTER)
+        session.close()
+        return
+        
+    # Decrypt
+    try:
+        creds = {
+            'email': ctx.capital_email,
+            'api_key': CRYPTO.decrypt(ctx.capital_api_key),
+            'password': CRYPTO.decrypt(ctx.capital_password),
+            'demo': not live
+        }
+    except Exception:
+        await update.message.reply_text("❌ Decryption failed. Re-run /setup." + FOOTER)
+        session.close()
+        return
+        
+    # Update preference
+    if ctx.live_mode != live:
+        ctx.live_mode = live
+        session.commit()
+        
+    session.close()
+
+    mode_str = "LIVE 🔴" if live else "DEMO 🟢"
+    
+    if MANAGER.start_session(user_id, creds):
+        await update.message.reply_text(
+            f"🚀 **{mode_str} Trading STARTED**\n\n"
+            "✅ Analysis running...\n"
+            "👉 **Next Step:** Monitor performance.\n"
+            "Run: `/stats`" + FOOTER
+        )
+    else:
+        await update.message.reply_text("⚠️ Engine already running or failed to start." + FOOTER)
+
+async def start_demo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await _start_engine(update, context, live=False)
+
+async def start_live(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await _start_engine(update, context, live=True)
+
+async def stop_trading(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not MANAGER: return
+    user_id = update.effective_user.id
+    
+    if MANAGER.stop_session(user_id):
+        await update.message.reply_text(
+            "Bzzt. **Engine STOPPED** 🛑\n\n"
+            "To resume:\n"
+            "`/start_demo` or `/start_live`" + FOOTER
+        )
+    else:
+        await update.message.reply_text("⚠️ Engine not running." + FOOTER)
+
+
+async def revoke(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    admin_id = os.getenv("ADMIN_ID")
+    
+    if str(user_id) != str(admin_id):
+        return
 
     try:
         target_id = int(context.args[0])
+        session = SessionLocal()
+        user = session.query(User).filter_by(telegram_id=target_id).first()
+        if user:
+            user.status = 'banned'
+            session.commit()
+            
+            # Stop engine if running
+            if MANAGER and MANAGER.is_running(target_id):
+                MANAGER.stop_session(target_id)
+                await update.message.reply_text(f"🛑 active session for {target_id} stopped.")
+                
+            await update.message.reply_text(f"🚫 User {target_id} has been **FROZEN**." + FOOTER)
+
+            try:
+                await context.bot.send_message(target_id, "⛔ Your access has been revoked by the administrator.")
+            except:
+                pass 
+        else:
+            await update.message.reply_text("❌ User not found." + FOOTER)
+        session.close()
     except (IndexError, ValueError):
-        await update.message.reply_text("Usage: /approve <telegram_id>")
-        return
+        await update.message.reply_text("Usage: /revoke <user_id>" + FOOTER)
 
-    session = SessionLocal()
-    try:
-        target_user = session.query(User).filter_by(telegram_id=target_id).first()
-        if target_user:
-            target_user.status = 'approved'
-            session.commit()
-            await update.message.reply_text(f"✅ User {target_id} approved!")
-            try:
-                await context.bot.send_message(target_id, "🎉 **Access Granted!**\nRun `/setup <email> <key> <pass>` to configure.")
-            except: pass
-        else:
-            await update.message.reply_text("❌ User not found.")
-    finally:
-        session.close()
-
-async def setup(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-    args = context.args
-    
-    if len(args) != 3:
-        await update.message.reply_text("Usage: /setup <email> <api_key> <api_password>\n\n⚠️ **Delete your message after sending!**")
-        return
-
-    email, key, pw = args[0], args[1], args[2]
-    
-    session = SessionLocal()
-    try:
-        user = session.query(User).filter_by(telegram_id=user_id).first()
-        if not user or user.status != 'approved':
-            await update.message.reply_text("❌ Permission denied.")
-            return
-            
-        # Encrypt
-        enc_key = CRYPTO.encrypt(key)
-        enc_pass = CRYPTO.encrypt(pw)
-        
-        ctx = user.context
-        if not ctx:
-            ctx = UserContext(telegram_id=user_id)
-            user.context = ctx
-            
-        ctx.cap_email = email
-        ctx.cap_api_key = enc_key
-        ctx.cap_api_pass = enc_pass
-        
-        session.commit()
-        await update.message.reply_text("✅ Credentials saved securely! \nRun `/start_trading` to begin.")
-        
-        # Try to delete user message
-        try:
-            await update.message.delete()
-        except:
-            await update.message.reply_text("⚠️ I could not delete your message. Please delete it yourself for security.")
-            
-    except Exception as e:
-        logger.error(f"Setup failed: {e}")
-        await update.message.reply_text("❌ Setup failed.")
-    finally:
-        session.close()
-
-async def set_mode(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-    if not context.args or context.args[0].lower() not in ['demo', 'live']:
-        await update.message.reply_text("Usage: /mode [demo|live]")
-        return
-        
-    mode = context.args[0].lower()
-    session = SessionLocal()
-    try:
-        user = session.query(User).filter_by(telegram_id=user_id).first()
-        if user and user.context:
-            user.context.mode = mode
-            session.commit()
-            await update.message.reply_text(f"🔄 Mode set to **{mode.upper()}**.\n(Restart trading to apply)")
-        else:
-             await update.message.reply_text("❌ User not found or setup not done.")
-    finally:
-        session.close()
-
-async def start_trading(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-    
-    if not MANAGER:
-        await update.message.reply_text("❌ Bot not initialized (Model not found).")
-        return
-
-    if MANAGER.is_running(user_id):
-        await update.message.reply_text("⚠️ Trading is already running!")
-        return
-
-    session = SessionLocal()
-    try:
-        user = session.query(User).filter_by(telegram_id=user_id).first()
-        if not user or user.status != 'approved':
-            await update.message.reply_text("❌ Permission denied.")
-            return
-            
-        ctx = user.context
-        if not ctx or not ctx.cap_api_key:
-            await update.message.reply_text("❌ No credentials. Run /setup first.")
-            return
-            
-        # Decrypt
-        plain_key = CRYPTO.decrypt(ctx.cap_api_key)
-        plain_pass = CRYPTO.decrypt(ctx.cap_api_pass)
-        
-        # Signal Callback
-        # Must be robust
-        async def on_signal(sig):
-            try:
-                emoji = {"BUY": "🟢", "SELL": "🔴", "HOLD": "⚪"}.get(sig["signal"], "❓")
-                msg = (
-                    f"{emoji} **SIGNAL:** {sig['signal']} @ {sig['close_price']}\n"
-                    f"📊 Prob: {sig['probability']} (Thresh: {sig['threshold']})\n"
-                    f"🧠 Regime: {sig['regime']} ({'✅' if sig['regime_tradeable'] else '❌'})\n"
-                    f"📝 Reason: {sig['reason']}"
-                )
-                if sig['position']:
-                    msg += f"\n💰 Size: {sig['position']['lot_size']} lots"
-                    
-                await context.bot.send_message(user_id, msg)
-            except Exception as ex:
-                logger.error(f"Failed to send signal to {user_id}: {ex}")
-
-        # Start
-        await update.message.reply_text(f"🚀 Starting Engine ({ctx.mode.upper()})...")
-        await MANAGER.start_session(
-            user_id,
-            {
-                'email': ctx.cap_email,
-                'key': plain_key,
-                'password': plain_pass,
-                'mode': ctx.mode
-            },
-            on_signal
-        )
-        await update.message.reply_text("✅ Engine Running. You will receive alerts here.")
-        
-    except Exception as e:
-        logger.error(f"Start trading failed: {e}")
-        await update.message.reply_text(f"❌ Failed to start: {e}")
-    finally:
-        session.close()
-
-async def stop_trading(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-    if not MANAGER: return
-
-    if await MANAGER.stop_session(user_id):
-        await update.message.reply_text("🛑 Trading Engine Stopped.")
-    else:
-        await update.message.reply_text("⚠️ No active session found.")
-
-async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-    if not MANAGER: 
-        await update.message.reply_text("❌ Manager Error.")
-        return
-        
-    running = MANAGER.is_running(user_id)
-    state = "Running 🟢" if running else "Stopped 🔴"
-    
-    await update.message.reply_text(f"🤖 **Bot Status:**\nEngine: {state}")
-
+async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
+    logger.error("Exception while handling an update:", exc_info=context.error)
 
 def main():
     token = os.getenv("TELEGRAM_TOKEN")
@@ -315,12 +268,26 @@ def main():
     
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('help', help_command))
+    application.add_handler(CommandHandler('menu', help_command))
+    application.add_handler(CommandHandler('commands', help_command))
+    
     application.add_handler(CommandHandler('approve', approve))
+    application.add_handler(CommandHandler('revoke', revoke))
     application.add_handler(CommandHandler('setup', setup))
-    application.add_handler(CommandHandler('mode', set_mode))
-    application.add_handler(CommandHandler('start_trading', start_trading))
+    application.add_handler(CommandHandler('start_demo', start_demo))
+    application.add_handler(CommandHandler('start_live', start_live))
     application.add_handler(CommandHandler('stop', stop_trading))
     application.add_handler(CommandHandler('status', status))
+    application.add_handler(CommandHandler('stats', stats))
+    
+    # Debug: Log all updates
+    async def debug_log(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        logger.info(f"DEBUG: Received update: {update}")
+    
+    from telegram.ext import MessageHandler, filters
+    application.add_handler(MessageHandler(filters.ALL, debug_log), group=1)
+    
+    application.add_error_handler(error_handler)
     
     print("Bot is polling...")
     application.run_polling()

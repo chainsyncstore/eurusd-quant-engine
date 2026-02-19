@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  quant_bot:
+    build: .
+    image: quant_bot:latest
+    container_name: quant_bot
+    restart: unless-stopped
+    volumes:
+      - ./models:/app/models
+      - ./quant_bot.db:/app/quant_bot.db
+      - ./signal_log.json:/app/signal_log.json
+    env_file:
+      - .env

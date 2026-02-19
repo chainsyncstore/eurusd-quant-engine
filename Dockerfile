@@ -16,12 +16,12 @@ RUN apt-get update && apt-get install -y \
 COPY . .
 
 # Install dependencies
-RUN pip install --no-cache-dir \
-    numpy pandas scikit-learn lightgbm \
-    requests python-dotenv \
-    sqlalchemy cryptography aiosqlite python-telegram-bot
+# Install dependencies in stages to avoid OOM
+RUN pip install --no-cache-dir numpy pandas
+RUN pip install --no-cache-dir scikit-learn lightgbm
+RUN pip install --no-cache-dir requests python-dotenv sqlalchemy cryptography aiosqlite python-telegram-bot
 
 # Volume for DB and Models
-VOLUME ["/app/models", "/app/quant_bot.db"]
+# VOLUME ["/app/models", "/app/quant_bot.db"]
 
 CMD ["python", "-m", "quant.telebot.main"]

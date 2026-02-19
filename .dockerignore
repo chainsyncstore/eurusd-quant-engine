@@ -1,0 +1,17 @@
+
+.git
+.gitignore
+.env
+datasets
+experiments
+models
+quant_bot.db
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+deploy.tar.gz
+debug_*.py
+mn_*.py
+tests

@@ -336,10 +336,79 @@ class SignalGenerator:
         )
         self.guardrails.record_trade(trade)
 
+        return sig
+
+    def execute_trade(self, signal: dict) -> None:
+        """
+        Execute trade based on signal.
+        - SYNC execution (blocking).
+        - Check existing positions.
+        - Close opposite positions.
+        - Open new positions if signal != HOLD.
+        """
+        if not self._authenticated:
+            self._ensure_authenticated()
+
+        epic = self.client._cfg.epic
+        # 1. Get current positions
+        try:
+            positions = self.client.get_positions()
+        except Exception as e:
+            logger.error(f"Failed to fetch positions: {e}")
+            return
+
+        # Find position for this epic
+        current_pos = next((p for p in positions if p["market"]["epic"] == epic), None)
+        current_dir = current_pos["direction"] if current_pos else None
+        deal_id = current_pos["dealId"] if current_pos else None
+
+        sig_type = signal["signal"] # BUY, SELL, HOLD
+        
+        # Logic:
+        # If signal is HOLD -> Do nothing (Position remains)
+        # If signal matches current -> Do nothing (Hold) 
+        # If signal opposes current -> Close current, Open new
+        # If no current -> Open new
+
+        if sig_type == "HOLD":
+            return
+
+        # If we have a position in opposite direction, close it
+        if current_pos and current_dir != sig_type:
+            logger.info(f"Closing opposite {current_dir} position {deal_id}")
+            try:
+                self.client.close_position(deal_id)
+                current_pos = None # Closed
+            except Exception as e:
+                logger.error(f"Failed to close position: {e}")
+                return
+
+        # If we have no position (or just closed it), open new one
+        if not current_pos:
+            size = signal.get("position", {}).get("lot_size", 0)
+            if size <= 0:
+                logger.warning("Signal BUY/SELL but size=0. Skipping.")
+                return
+
+            logger.info(f"Opening {sig_type} {size} {epic}")
+            try:
+                self.client.place_order(
+                    epic=epic,
+                    direction=sig_type,
+                    size=size
+                    # stop_loss=... # TODO: Add SL logic from config if needed
+                )
+            except Exception as e:
+                logger.error(f"Failed to place order: {e}")
+
     def run_once(self) -> Optional[dict]:
-        """Fetch data and generate a single signal."""
+        """Fetch data, generate signal, and EXECUTE."""
         logger.info("Fetching recent bars...")
-        df = self.fetch_recent_bars()
+        try:
+            df = self.fetch_recent_bars()
+        except Exception as e:
+            logger.error(f"Data fetch failed: {e}")
+            return None
         
         latest_ts = df.index[-1]
         if self.last_processed_ts == latest_ts:
@@ -380,6 +449,12 @@ class SignalGenerator:
             risk["consecutive_losses"],
             risk["can_trade"],
         )
+
+        # AUTO EXECUTION
+        if risk["can_trade"]:
+            self.execute_trade(sig)
+        else:
+            logger.warning("Auto-execution skipped due to risk guardrails.")
 
         return sig
 

@@ -216,5 +216,73 @@ class CapitalClient:
                 }
             )
 
-        df = pd.DataFrame(records).set_index("timestamp")
-        return df
+    # ------------------------------------------------------------------
+    # Execution & Account Management
+    # ------------------------------------------------------------------
+    def get_accounts(self) -> dict:
+        """Fetch account details (balance, equity, P&L)."""
+        url = f"{self._cfg.base_url}/api/v1/accounts"
+        resp = requests.get(url, headers=self._headers(), timeout=10)
+        resp.raise_for_status()
+        # Returns: {"accounts": [...]}
+        data = resp.json()
+        if "accounts" in data and len(data["accounts"]) > 0:
+            return data["accounts"][0]  # Return primary account
+        return {}
+
+    def get_positions(self) -> list[dict]:
+        """Fetch open positions."""
+        url = f"{self._cfg.base_url}/api/v1/positions"
+        resp = requests.get(url, headers=self._headers(), timeout=10)
+        resp.raise_for_status()
+        # Returns: {"positions": [...]}
+        return resp.json().get("positions", [])
+
+    def place_order(
+        self,
+        epic: str,
+        direction: str,
+        size: float,
+        stop_loss: Optional[float] = None,
+        take_profit: Optional[float] = None,
+    ) -> dict:
+        """
+        Place a market order.
+        
+        Args:
+            epic: Instrument epic (e.g., 'BTCUSD').
+            direction: 'BUY' or 'SELL'.
+            size: Lot size.
+            stop_loss: Price level for SL.
+            take_profit: Price level for TP.
+        """
+        url = f"{self._cfg.base_url}/api/v1/positions"
+        payload = {
+            "epic": epic,
+            "direction": direction,
+            "size": size,
+            "guaranteedStop": False,
+        }
+        
+        if stop_loss:
+            payload["stopLevel"] = stop_loss
+        if take_profit:
+            payload["profitLevel"] = take_profit
+            
+        logger.info(f"Placing Order: {direction} {size} {epic}")
+        resp = requests.post(url, json=payload, headers=self._headers(), timeout=10)
+        
+        if resp.status_code != 200:
+            logger.error(f"Order failed: {resp.text}")
+            
+        resp.raise_for_status()
+        return resp.json()
+
+    def close_position(self, deal_id: str) -> dict:
+        """Close a specific position by deal ID."""
+        # Note: Capital.com /positions endpoint DELETE usually closes the position.
+        url = f"{self._cfg.base_url}/api/v1/positions/{deal_id}"
+        logger.info(f"Closing Position: {deal_id}")
+        resp = requests.delete(url, headers=self._headers(), timeout=10)
+        resp.raise_for_status()
+        return resp.json()
