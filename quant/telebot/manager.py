@@ -30,7 +30,7 @@ class BotManager:
 
         try:
             if rcfg.mode == "crypto":
-                # Crypto mode: Binance client (no auth needed for paper trading)
+                # Crypto mode: Binance client
                 binance_cfg = None
                 if creds.get('binance_api_key') and creds.get('binance_api_secret'):
                     base = "https://testnet.binancefuture.com" if not live else "https://fapi.binance.com"
@@ -40,15 +40,46 @@ class BotManager:
                         base_url=base,
                     )
 
+                # Live mode requires credentials
+                if live and not binance_cfg:
+                    raise RuntimeError(
+                        "Binance API credentials required for live trading. "
+                        "Run /setup BINANCE_API_KEY BINANCE_API_SECRET first."
+                    )
+
                 gen = SignalGenerator(
                     model_dir=self.model_dir,
                     capital=10000.0,
                     horizon=4,
                     binance_config=binance_cfg,
+                    live=live,
                 )
-                # No auth needed for read-only Binance data
-                gen._authenticated = True
-                logger.info(f"Binance client ready for user {user_id} (paper trading)")
+
+                if live:
+                    # Verify credentials and configure account BEFORE starting
+                    loop = asyncio.get_running_loop()
+                    try:
+                        await loop.run_in_executor(None, gen.binance_client.authenticate)
+                        gen._authenticated = True
+
+                        # Set conservative defaults: 1x leverage, isolated margin
+                        symbol = gen.binance_client._cfg.symbol
+                        await loop.run_in_executor(
+                            None, gen.binance_client.set_leverage, symbol, gen.binance_client._cfg.leverage
+                        )
+                        await loop.run_in_executor(
+                            None, gen.binance_client.set_margin_type, symbol, gen.binance_client._cfg.margin_type
+                        )
+                        logger.info(f"Binance LIVE ready for user {user_id}")
+                    except Exception as auth_err:
+                        raise RuntimeError(
+                            f"Binance authentication failed: {auth_err}. "
+                            f"Check your API key and secret with /setup."
+                        ) from auth_err
+                else:
+                    # Paper mode: no auth needed for read-only Binance data
+                    gen._authenticated = True
+                    logger.info(f"Binance PAPER ready for user {user_id}")
 
             else:
                 # FX mode: Capital.com

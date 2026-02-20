@@ -183,11 +183,23 @@ async def _start_engine(update: Update, context: ContextTypes.DEFAULT_TYPE, live
     # Build credentials dict based on mode
     try:
         if rcfg.mode == "crypto":
-            # Crypto: no credentials needed for paper trading (read-only API)
+            # Crypto: credentials required for live, optional for paper
+            binance_key = CRYPTO.decrypt(ctx.binance_api_key) if ctx.binance_api_key else ''
+            binance_secret = CRYPTO.decrypt(ctx.binance_api_secret) if ctx.binance_api_secret else ''
+
+            if live and (not binance_key or not binance_secret):
+                await update.message.reply_text(
+                    "❌ Binance API credentials required for live trading.\n\n"
+                    "Run: `/setup BINANCE_API_KEY BINANCE_API_SECRET`\n\n"
+                    "For paper trading without credentials, use `/start_demo`" + FOOTER
+                )
+                session.close()
+                return
+
             creds = {
                 'live': live,
-                'binance_api_key': CRYPTO.decrypt(ctx.binance_api_key) if ctx.binance_api_key else '',
-                'binance_api_secret': CRYPTO.decrypt(ctx.binance_api_secret) if ctx.binance_api_secret else '',
+                'binance_api_key': binance_key,
+                'binance_api_secret': binance_secret,
             }
         else:
             # FX: Capital.com credentials required

@@ -52,6 +52,9 @@ class BinanceAPIConfig:
     symbol: str = "BTCUSDT"
     interval: str = "1h"
     max_bars_per_request: int = 1500
+    leverage: int = 1                  # 1x leverage (no margin amplification)
+    margin_type: str = "ISOLATED"      # ISOLATED safer than CROSS
+    recv_window: int = 5000            # Request validity window (ms)
 
 
 # ---------------------------------------------------------------------------

@@ -1,16 +1,19 @@
 """
-Binance Futures REST API client for historical data.
+Binance Futures REST API client.
 
-Fetches OHLCV (with taker buy/sell volumes), funding rates, and open interest.
-No authentication required for read-only historical data.
+Read-only: Fetches OHLCV (with taker buy/sell volumes), funding rates, and OI.
+Authenticated: Order placement, position management, account info.
 """
 
 from __future__ import annotations
 
+import hashlib
+import hmac
 import logging
 import time
 from datetime import datetime, timezone
 from typing import Optional
+from urllib.parse import urlencode
 
 import pandas as pd
 import requests
@@ -21,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 class BinanceClient:
-    """Client for Binance Futures REST API (read-only historical data)."""
+    """Client for Binance Futures REST API (read-only + authenticated trading)."""
 
     # Binance rate limit: 2400 weight/min. Klines = 2 weight each.
     _MIN_REQUEST_INTERVAL = 0.1  # 100ms between requests
@@ -289,3 +292,202 @@ class BinanceClient:
             result["open_interest_value"] = result["open_interest_value"].ffill()
 
         return result
+
+    # ==================================================================
+    # Authenticated methods (order placement, positions, account)
+    # ==================================================================
+
+    def _sign_params(self, params: dict) -> dict:
+        """Add timestamp and HMAC-SHA256 signature to request params."""
+        params["timestamp"] = int(time.time() * 1000)
+        params["recvWindow"] = self._cfg.recv_window
+        query_string = urlencode(params)
+        signature = hmac.new(
+            self._cfg.api_secret.encode("utf-8"),
+            query_string.encode("utf-8"),
+            hashlib.sha256,
+        ).hexdigest()
+        params["signature"] = signature
+        return params
+
+    def _auth_headers(self) -> dict:
+        """Return headers with API key for authenticated requests."""
+        return {"X-MBX-APIKEY": self._cfg.api_key}
+
+    def _signed_get(self, endpoint: str, params: dict | None = None) -> dict | list:
+        """Authenticated GET request."""
+        self._throttle()
+        params = self._sign_params(params or {})
+        url = f"{self._cfg.base_url}{endpoint}"
+        resp = requests.get(url, params=params, headers=self._auth_headers(), timeout=30)
+        self._handle_binance_error(resp)
+        return resp.json()
+
+    def _signed_post(self, endpoint: str, params: dict | None = None) -> dict | list:
+        """Authenticated POST request."""
+        self._throttle()
+        params = self._sign_params(params or {})
+        url = f"{self._cfg.base_url}{endpoint}"
+        resp = requests.post(url, params=params, headers=self._auth_headers(), timeout=30)
+        self._handle_binance_error(resp)
+        return resp.json()
+
+    def _signed_delete(self, endpoint: str, params: dict | None = None) -> dict | list:
+        """Authenticated DELETE request."""
+        self._throttle()
+        params = self._sign_params(params or {})
+        url = f"{self._cfg.base_url}{endpoint}"
+        resp = requests.delete(url, params=params, headers=self._auth_headers(), timeout=30)
+        self._handle_binance_error(resp)
+        return resp.json()
+
+    @staticmethod
+    def _handle_binance_error(resp: requests.Response) -> None:
+        """Check response for Binance API errors and raise with context."""
+        if resp.status_code == 200:
+            return
+        try:
+            body = resp.json()
+            code = body.get("code", "?")
+            msg = body.get("msg", resp.text)
+        except Exception:
+            code, msg = resp.status_code, resp.text
+
+        error_msg = f"Binance API error {code}: {msg}"
+        logger.error(error_msg)
+        resp.raise_for_status()
+
+    # --- Account ---
+
+    def authenticate(self) -> dict:
+        """
+        Verify API key validity by fetching account info.
+
+        Raises on invalid credentials or network error.
+        Returns account info dict.
+        """
+        if not self._cfg.api_key or not self._cfg.api_secret:
+            raise RuntimeError(
+                "Binance API key and secret are required for authenticated operations. "
+                "Set them via /setup or BINANCE_API_KEY/BINANCE_API_SECRET env vars."
+            )
+        account = self.get_account_info()
+        logger.info(
+            "Binance auth OK: USDT balance=%.2f, positions=%d",
+            float(account.get("totalWalletBalance", 0)),
+            sum(1 for p in account.get("positions", []) if float(p.get("positionAmt", 0)) != 0),
+        )
+        return account
+
+    def get_account_info(self) -> dict:
+        """Fetch account balance and position info. GET /fapi/v2/account."""
+        return self._signed_get("/fapi/v2/account")
+
+    def get_positions(self, symbol: Optional[str] = None) -> list[dict]:
+        """
+        Get open positions (non-zero quantity).
+
+        Returns list of dicts with keys: symbol, positionAmt, entryPrice,
+        unrealizedProfit, positionSide, leverage, etc.
+        """
+        account = self.get_account_info()
+        positions = [
+            p for p in account.get("positions", [])
+            if float(p.get("positionAmt", 0)) != 0
+        ]
+        if symbol:
+            positions = [p for p in positions if p["symbol"] == symbol]
+        return positions
+
+    # --- Orders ---
+
+    def place_order(
+        self,
+        symbol: str,
+        side: str,
+        quantity: float,
+        order_type: str = "MARKET",
+    ) -> dict:
+        """
+        Place a futures order. POST /fapi/v1/order.
+
+        Args:
+            symbol: e.g. "BTCUSDT"
+            side: "BUY" or "SELL"
+            quantity: Order size in base asset (BTC). Rounded to 3 decimals.
+            order_type: "MARKET" or "LIMIT"
+
+        Returns:
+            Order response dict with orderId, status, etc.
+        """
+        quantity = round(quantity, 3)
+        if quantity <= 0:
+            raise ValueError(f"Invalid order quantity: {quantity}")
+
+        params = {
+            "symbol": symbol,
+            "side": side,
+            "type": order_type,
+            "quantity": quantity,
+        }
+
+        logger.info("Placing %s %s order: %s %.3f", order_type, side, symbol, quantity)
+        result = self._signed_post("/fapi/v1/order", params)
+        logger.info(
+            "Order placed: orderId=%s, status=%s, avgPrice=%s",
+            result.get("orderId"), result.get("status"), result.get("avgPrice"),
+        )
+        return result
+
+    def close_position(self, symbol: str) -> Optional[dict]:
+        """
+        Close any open position for the symbol by placing an opposing market order.
+
+        Returns order response or None if no position to close.
+        """
+        positions = self.get_positions(symbol)
+        if not positions:
+            logger.info("No open position for %s to close", symbol)
+            return None
+
+        pos = positions[0]
+        pos_amt = float(pos["positionAmt"])
+
+        # Opposing side: if long (posAmt > 0) → SELL, if short (posAmt < 0) → BUY
+        if pos_amt > 0:
+            side = "SELL"
+            qty = pos_amt
+        elif pos_amt < 0:
+            side = "BUY"
+            qty = abs(pos_amt)
+        else:
+            return None
+
+        logger.info("Closing %s position: %s %.3f", symbol, side, qty)
+        return self.place_order(symbol, side, qty)
+
+    # --- Account setup ---
+
+    def set_leverage(self, symbol: str, leverage: int) -> dict:
+        """Set position leverage. POST /fapi/v1/leverage."""
+        params = {"symbol": symbol, "leverage": leverage}
+        logger.info("Setting leverage: %s %dx", symbol, leverage)
+        return self._signed_post("/fapi/v1/leverage", params)
+
+    def set_margin_type(self, symbol: str, margin_type: str = "ISOLATED") -> dict:
+        """
+        Set margin type (ISOLATED or CROSSED). POST /fapi/v1/marginType.
+
+        Note: Raises if margin type is already set to the requested value.
+        This is a Binance API quirk — we catch and ignore that specific error.
+        """
+        params = {"symbol": symbol, "marginType": margin_type}
+        logger.info("Setting margin type: %s %s", symbol, margin_type)
+        try:
+            return self._signed_post("/fapi/v1/marginType", params)
+        except requests.HTTPError as e:
+            # Binance returns -4046 "No need to change margin type" if already set
+            if "-4046" in str(e) or "No need to change" in str(e):
+                logger.info("Margin type already %s for %s", margin_type, symbol)
+                return {"msg": "already set"}
+            raise

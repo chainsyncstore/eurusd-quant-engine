@@ -60,12 +60,14 @@ class SignalGenerator:
 
     def __init__(self, model_dir: Path, capital: float = 10000.0, horizon: int = 10,
                  api_config: Optional[CapitalAPIConfig] = None,
-                 binance_config: Optional[BinanceAPIConfig] = None):
+                 binance_config: Optional[BinanceAPIConfig] = None,
+                 live: bool = False):
         self.model_dir = model_dir
         self.capital = capital
         self.horizon = horizon
         self.api_config = api_config
         self.binance_config = binance_config
+        self.live = live
 
         # Load config
         with open(model_dir / "config.json") as f:
@@ -168,8 +170,13 @@ class SignalGenerator:
 
     def _ensure_authenticated(self) -> None:
         if self.mode == "crypto":
-            # Binance read-only endpoints don't need auth
-            self._authenticated = True
+            if self.live and not self._authenticated:
+                # Live crypto mode: verify Binance API credentials
+                self.binance_client.authenticate()
+                self._authenticated = True
+            else:
+                # Paper mode: read-only endpoints don't need auth
+                self._authenticated = True
             return
         if not self._authenticated:
             self.client.authenticate()
@@ -384,13 +391,55 @@ class SignalGenerator:
             return
 
         if self.mode == "crypto":
-            # Paper trading: log the signal but don't execute
             size = signal.get("position", {}).get("lot_size", 0)
-            logger.info(
-                "PAPER TRADE: %s %.4f BTC @ $%.2f (risk=%.1f%%)",
-                sig_type, size, signal["close_price"],
-                signal.get("position", {}).get("risk_fraction", 0) * 100,
-            )
+
+            if not self.live:
+                # Paper trading: log the signal but don't execute
+                logger.info(
+                    "PAPER TRADE: %s %.4f BTC @ $%.2f (risk=%.1f%%)",
+                    sig_type, size, signal["close_price"],
+                    signal.get("position", {}).get("risk_fraction", 0) * 100,
+                )
+                return
+
+            # LIVE execution via Binance Futures
+            if not self._authenticated:
+                self._ensure_authenticated()
+
+            symbol = self.binance_client._cfg.symbol
+            try:
+                positions = self.binance_client.get_positions(symbol)
+            except Exception as e:
+                logger.error(f"Failed to fetch Binance positions: {e}")
+                return
+
+            current_pos = positions[0] if positions else None
+            if current_pos:
+                pos_amt = float(current_pos["positionAmt"])
+                # Close if opposite direction: long (>0) vs SELL, short (<0) vs BUY
+                is_long = pos_amt > 0
+                if (is_long and sig_type == "SELL") or (not is_long and sig_type == "BUY"):
+                    logger.info("Closing opposite %s position before %s", "LONG" if is_long else "SHORT", sig_type)
+                    try:
+                        self.binance_client.close_position(symbol)
+                    except Exception as e:
+                        logger.error(f"Failed to close Binance position: {e}")
+                        return
+                    current_pos = None
+                else:
+                    # Already positioned in same direction
+                    logger.info("Already %s %s. Skipping duplicate order.", "LONG" if is_long else "SHORT", symbol)
+                    return
+
+            if size <= 0:
+                logger.warning("Signal %s but lot_size=0. Skipping.", sig_type)
+                return
+
+            logger.info("LIVE TRADE: %s %.4f %s @ $%.2f", sig_type, size, symbol, signal["close_price"])
+            try:
+                self.binance_client.place_order(symbol=symbol, side=sig_type, quantity=size)
+            except Exception as e:
+                logger.error(f"Failed to place Binance order: {e}")
             return
 
         # FX mode: execute via Capital.com
