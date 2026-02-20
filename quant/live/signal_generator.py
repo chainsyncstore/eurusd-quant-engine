@@ -129,6 +129,7 @@ class SignalGenerator:
         # Signal log
         self.signal_log: list = []
         self.last_processed_ts = None
+        self._last_signal_time: float = 0.0  # epoch time of last signal generation
 
         # Win rate tracking
         self.evaluated_count = 0
@@ -162,12 +163,13 @@ class SignalGenerator:
             self.client.authenticate()
             self._authenticated = True
 
-    def fetch_recent_bars(self, n_bars: int = 600) -> pd.DataFrame:
+    def fetch_recent_bars(self, n_bars: int = 800) -> pd.DataFrame:
         """Fetch recent bars for feature computation."""
         self._ensure_authenticated()
         date_to = datetime.now(timezone.utc)
-        # Fetch fixed 5 days history (plenty for warmup/features, avoids API pagination lag)
-        date_from = date_to - timedelta(days=5)
+        # Fetch ~14 hours of 1-min bars (~840 bars, fits in 1 API page).
+        # We need WARMUP_BARS(200) + REGIME_LOOKBACK(500) = 700 bars.
+        date_from = date_to - timedelta(hours=14)
 
         df = self.client.fetch_historical(date_from, date_to)
         if df.empty:
@@ -493,11 +495,13 @@ class SignalGenerator:
         self._evaluate_past_signals(df)
 
         latest_ts = df.index[-1]
-        if self.last_processed_ts == latest_ts:
-            logger.info("Data stale (ts=%s). Skipping signal generation.", latest_ts)
+        elapsed = time.time() - self._last_signal_time
+        if self.last_processed_ts == latest_ts and elapsed < 300:
+            logger.info("Data stale (ts=%s, %ds ago). Skipping.", latest_ts, int(elapsed))
             return None
 
         self.last_processed_ts = latest_ts
+        self._last_signal_time = time.time()
         logger.info("Received %d bars, latest: %s", len(df), latest_ts)
 
         try:
