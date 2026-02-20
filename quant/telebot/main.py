@@ -209,6 +209,21 @@ async def _start_engine(update: Update, context: ContextTypes.DEFAULT_TYPE, live
     async def notify_signal(result):
         try:
             signal_type = result.get('signal', 'HOLD')
+
+            # Handle engine crash notification
+            if signal_type == 'ENGINE_CRASH':
+                reason = result.get('reason', 'Unknown error')
+                msg = (
+                    f"⚠️ **ENGINE CRASHED**\n\n"
+                    f"Reason: {reason}\n\n"
+                    f"The engine has stopped. Use /start_demo or /start_live to restart."
+                )
+                await context.bot.send_message(chat_id=user_id, text=msg)
+                # Clean up dead session
+                if MANAGER and user_id in MANAGER.sessions:
+                    del MANAGER.sessions[user_id]
+                return
+
             if signal_type == 'HOLD':
                 return  # Don't spam user with HOLD signals
             emoji = {"BUY": "🟢", "SELL": "🔴"}.get(signal_type, "❓")

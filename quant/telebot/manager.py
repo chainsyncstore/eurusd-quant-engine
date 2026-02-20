@@ -94,7 +94,14 @@ class BotManager:
         return False
 
     def is_running(self, user_id: int) -> bool:
-        return user_id in self.sessions
+        if user_id not in self.sessions:
+            return False
+        engine = self.sessions[user_id]
+        if not engine.running:
+            # Engine died but session wasn't cleaned up
+            del self.sessions[user_id]
+            return False
+        return True
     
     def get_active_count(self) -> int:
         return len(self.sessions)

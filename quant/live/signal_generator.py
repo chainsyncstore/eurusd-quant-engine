@@ -486,6 +486,7 @@ class SignalGenerator:
             df = self.fetch_recent_bars()
         except Exception as e:
             logger.error(f"Data fetch failed: {e}")
+            self._authenticated = False  # Force re-auth on next cycle
             return None
 
         # Evaluate past signals before generating new one
@@ -499,7 +500,11 @@ class SignalGenerator:
         self.last_processed_ts = latest_ts
         logger.info("Received %d bars, latest: %s", len(df), latest_ts)
 
-        sig = self.generate_signal(df)
+        try:
+            sig = self.generate_signal(df)
+        except Exception as e:
+            logger.error("Signal generation failed: %s", e, exc_info=True)
+            return None
 
         # Pretty print
         emoji = {"BUY": "🟢", "SELL": "🔴", "HOLD": "⚪"}.get(sig["signal"], "❓")
@@ -532,10 +537,13 @@ class SignalGenerator:
         )
 
         # AUTO EXECUTION
-        if risk["can_trade"]:
-            self.execute_trade(sig)
-        else:
-            logger.warning("Auto-execution skipped due to risk guardrails.")
+        try:
+            if risk["can_trade"]:
+                self.execute_trade(sig)
+            else:
+                logger.warning("Auto-execution skipped due to risk guardrails.")
+        except Exception as e:
+            logger.error("Trade execution failed: %s", e, exc_info=True)
 
         return sig
 

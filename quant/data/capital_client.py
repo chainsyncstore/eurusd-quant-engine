@@ -26,6 +26,7 @@ class CapitalClient:
         self._cfg = config if config else get_api_config()
         self._session_token: Optional[str] = None
         self._cst: Optional[str] = None
+        self._auth_time: float = 0.0
         self._last_request_time: float = 0.0
 
     # ------------------------------------------------------------------
@@ -45,6 +46,7 @@ class CapitalClient:
 
         self._cst = resp.headers.get("CST")
         self._session_token = resp.headers.get("X-SECURITY-TOKEN")
+        self._auth_time = time.time()
         logger.info("Authenticated with Capital.com API")
 
     # ------------------------------------------------------------------
@@ -69,6 +71,34 @@ class CapitalClient:
             "X-SECURITY-TOKEN": self._session_token,
             "Content-Type": "application/json",
         }
+
+    # ------------------------------------------------------------------
+    # Token refresh
+    # ------------------------------------------------------------------
+    _TOKEN_MAX_AGE = 45 * 60  # Re-auth proactively at 45 minutes
+
+    def _is_token_stale(self) -> bool:
+        if not self._cst or not self._session_token:
+            return True
+        return (time.time() - self._auth_time) > self._TOKEN_MAX_AGE
+
+    def _request(self, method: str, url: str, **kwargs) -> requests.Response:
+        """Make an API request with automatic token refresh on 401."""
+        if self._is_token_stale():
+            logger.info("Token stale (>45min). Re-authenticating...")
+            self.authenticate()
+
+        kwargs.setdefault("headers", self._headers())
+        kwargs.setdefault("timeout", 30)
+        resp = getattr(requests, method)(url, **kwargs)
+
+        if resp.status_code == 401:
+            logger.warning("Got 401. Re-authenticating and retrying...")
+            self.authenticate()
+            kwargs["headers"] = self._headers()
+            resp = getattr(requests, method)(url, **kwargs)
+
+        return resp
 
     # ------------------------------------------------------------------
     # Historical prices
@@ -134,7 +164,7 @@ class CapitalClient:
                 }
 
                 try:
-                    resp = requests.get(url, params=params, headers=self._headers(), timeout=30)
+                    resp = self._request("get", url, params=params)
                     resp.raise_for_status()
                     data = resp.json()
                 except Exception as e:
@@ -227,7 +257,7 @@ class CapitalClient:
     def get_accounts(self) -> dict:
         """Fetch account details (balance, equity, P&L)."""
         url = f"{self._cfg.base_url}/api/v1/accounts"
-        resp = requests.get(url, headers=self._headers(), timeout=10)
+        resp = self._request("get", url, timeout=10)
         resp.raise_for_status()
         # Returns: {"accounts": [...]}
         data = resp.json()
@@ -238,7 +268,7 @@ class CapitalClient:
     def get_positions(self) -> list[dict]:
         """Fetch open positions."""
         url = f"{self._cfg.base_url}/api/v1/positions"
-        resp = requests.get(url, headers=self._headers(), timeout=10)
+        resp = self._request("get", url, timeout=10)
         resp.raise_for_status()
         # Returns: {"positions": [...]}
         return resp.json().get("positions", [])
@@ -275,7 +305,7 @@ class CapitalClient:
             payload["profitLevel"] = take_profit
             
         logger.info(f"Placing Order: {direction} {size} {epic}")
-        resp = requests.post(url, json=payload, headers=self._headers(), timeout=10)
+        resp = self._request("post", url, json=payload, timeout=10)
         
         if resp.status_code != 200:
             logger.error(f"Order failed: {resp.text}")
@@ -288,6 +318,6 @@ class CapitalClient:
         # Note: Capital.com /positions endpoint DELETE usually closes the position.
         url = f"{self._cfg.base_url}/api/v1/positions/{deal_id}"
         logger.info(f"Closing Position: {deal_id}")
-        resp = requests.delete(url, headers=self._headers(), timeout=10)
+        resp = self._request("delete", url, timeout=10)
         resp.raise_for_status()
         return resp.json()
