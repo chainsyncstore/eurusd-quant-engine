@@ -250,7 +250,10 @@ class BinanceClient:
                         "open_interest_value": float(item["sumOpenInterestValue"]),
                     })
 
-                cursor = int(data[-1]["timestamp"]) + 1
+                new_cursor = int(data[-1]["timestamp"]) + 1
+                if new_cursor <= cursor:
+                    break  # No progress — avoid infinite loop
+                cursor = new_cursor
 
             chunk_start = chunk_end + 1
             logger.info("Fetched %d open interest entries so far", len(all_records))

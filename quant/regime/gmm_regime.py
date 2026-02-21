@@ -119,6 +119,14 @@ def predict(model: RegimeModel, df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarra
         (regime_labels, regime_probabilities) — labels are int array,
         probabilities is (n_samples, n_regimes) array.
     """
+    missing = [f for f in model.input_features if f not in df.columns]
+    if missing:
+        logger.warning("Missing regime features: %s — filling with scaler mean (neutral)", missing)
+        df = df.copy()
+        for f in missing:
+            idx = model.input_features.index(f)
+            df[f] = model.scaler.mean_[idx]
+
     X = df[model.input_features].values
     X_scaled = model.scaler.transform(X)
 

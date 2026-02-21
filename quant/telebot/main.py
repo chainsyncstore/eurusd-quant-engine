@@ -123,8 +123,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(
                 f"✅ **Welcome back, {user.first_name}!**\n\n"
                 "System is ready.\n"
-                "👉 **Next Step:** Check status or start trading.\n"
-                "Run: `/status`, `/start_demo`, or `/start_live`" + FOOTER
+                "👉 `/start_demo` — paper trading (no API keys needed)\n"
+                "👉 `/start_live` — real trading (requires `/setup` first)\n"
+                "👉 `/status` — check engine state" + FOOTER
             )
     except Exception as e:
         logger.error(f"Start error: {e}")
@@ -165,7 +166,9 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ Error displaying help menu.")
 
 async def _start_engine(update: Update, context: ContextTypes.DEFAULT_TYPE, live: bool):
-    if not MANAGER: return
+    if not MANAGER:
+        await update.message.reply_text("❌ No production model found. Contact admin." + FOOTER)
+        return
     user_id = update.effective_user.id
 
     session = SessionLocal()
@@ -284,7 +287,9 @@ async def start_live(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await _start_engine(update, context, live=True)
 
 async def stop_trading(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not MANAGER: return
+    if not MANAGER:
+        await update.message.reply_text("❌ No production model found. Contact admin." + FOOTER)
+        return
     user_id = update.effective_user.id
     
     if await MANAGER.stop_session(user_id):
@@ -345,7 +350,25 @@ async def approve(update: Update, context: ContextTypes.DEFAULT_TYPE):
             session.commit()
             await update.message.reply_text(f"✅ User {target_id} has been **APPROVED**." + FOOTER)
             try:
-                await context.bot.send_message(target_id, "🎉 **Account Approved!**\n\nYou can now set up your trading credentials.\nRun: `/setup your@email.com YOUR_API_KEY YOUR_PASSWORD`\n(no brackets - just paste values directly)")
+                from quant.config import get_research_config
+                rcfg = get_research_config()
+                if rcfg.mode == "crypto":
+                    approve_msg = (
+                        "🎉 **Account Approved!**\n\n"
+                        "You're all set for paper trading!\n"
+                        "Run `/start_demo` to begin (no API keys needed).\n\n"
+                        "For live trading later:\n"
+                        "`/setup BINANCE_API_KEY BINANCE_API_SECRET`\n"
+                        "then `/start_live`"
+                    )
+                else:
+                    approve_msg = (
+                        "🎉 **Account Approved!**\n\n"
+                        "Set up your trading credentials:\n"
+                        "`/setup your@email.com YOUR_API_KEY YOUR_PASSWORD`\n"
+                        "(no brackets - just paste values directly)"
+                    )
+                await context.bot.send_message(target_id, approve_msg)
             except:
                 pass
         else:
@@ -425,7 +448,9 @@ async def setup(update: Update, context: ContextTypes.DEFAULT_TYPE):
         session.close()
 
 async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not MANAGER: return
+    if not MANAGER:
+        await update.message.reply_text("❌ No production model found. Contact admin." + FOOTER)
+        return
     user_id = update.effective_user.id
 
     if not MANAGER.is_running(user_id):

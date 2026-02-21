@@ -259,10 +259,12 @@ class SignalGenerator:
         df_features = build_features(df_filtered)
         feature_cols = get_feature_columns(df_features)
 
-        # Verify feature alignment
+        # Verify feature alignment — fill missing columns with 0
         missing = set(self.feature_cols) - set(feature_cols)
         if missing:
-            logger.warning("Missing features: %s — using available subset", missing)
+            logger.warning("Missing features: %s — filling with 0", missing)
+            for col in missing:
+                df_features[col] = 0.0
 
         # Get the latest bar
         latest = df_features.iloc[[-1]]
