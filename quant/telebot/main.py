@@ -149,10 +149,12 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "/start_demo - Start PAPER trading (BTCUSDT 1H)\n"
             "/start_live - Start REAL trading\n"
             "/stop - Stop execution\n"
+            "/reset_demo - Reset paper balance to $10,000\n"
             "/status - Check if running\n"
             "/stats - View live performance\n\n"
             "System trades BTCUSDT perpetual futures at 1H timeframe.\n"
-            "Paper trading uses real market data but logs trades only."
+            "Paper trading starts at $10,000 with 2% stop loss.\n"
+            "Trades auto-close at 4H horizon or stop loss."
         )
         
         user_id = update.effective_user.id
@@ -179,18 +181,19 @@ async def _start_engine(update: Update, context: ContextTypes.DEFAULT_TYPE, live
         session.close()
         return
 
-    ctx = user.context
     from quant.config import get_research_config
     rcfg = get_research_config()
 
     # Build credentials dict based on mode
     try:
+        ctx = user.context
         if rcfg.mode == "crypto":
             # Crypto: credentials required for live, optional for paper
-            binance_key = CRYPTO.decrypt(ctx.binance_api_key) if ctx.binance_api_key else ''
-            binance_secret = CRYPTO.decrypt(ctx.binance_api_secret) if ctx.binance_api_secret else ''
+            binance_key = CRYPTO.decrypt(ctx.binance_api_key) if ctx and ctx.binance_api_key else ''
+            binance_secret = CRYPTO.decrypt(ctx.binance_api_secret) if ctx and ctx.binance_api_secret else ''
 
             if live and (not binance_key or not binance_secret):
+                logger.warning("User %s tried /start_live without Binance API credentials", user_id)
                 await update.message.reply_text(
                     "❌ Binance API credentials required for live trading.\n\n"
                     "Run: `/setup BINANCE_API_KEY BINANCE_API_SECRET`\n\n"
@@ -206,7 +209,7 @@ async def _start_engine(update: Update, context: ContextTypes.DEFAULT_TYPE, live
             }
         else:
             # FX: Capital.com credentials required
-            if not (ctx.capital_email and ctx.capital_api_key and ctx.capital_password):
+            if not ctx or not (ctx.capital_email and ctx.capital_api_key and ctx.capital_password):
                 await update.message.reply_text("❌ Credentials missing. Run /setup first." + FOOTER)
                 session.close()
                 return
@@ -217,14 +220,10 @@ async def _start_engine(update: Update, context: ContextTypes.DEFAULT_TYPE, live
                 'live': live
             }
     except Exception as e:
-        logger.error(f"Decryption failed for user {user_id}: {e}")
-        await update.message.reply_text("❌ Decryption failed. Re-run /setup." + FOOTER)
+        logger.error(f"Credential loading failed for user {user_id}: {e}")
+        await update.message.reply_text("❌ Failed to load credentials. Try `/setup` again." + FOOTER)
         session.close()
         return
-
-    if ctx.live_mode != live:
-        ctx.live_mode = live
-        session.commit()
 
     session.close()
 
@@ -268,6 +267,20 @@ async def _start_engine(update: Update, context: ContextTypes.DEFAULT_TYPE, live
     try:
         started = await MANAGER.start_session(user_id, creds, on_signal=notify_signal)
         if started:
+            # Persist requested mode only after a successful engine start.
+            mode_session = SessionLocal()
+            try:
+                db_user = mode_session.query(User).filter_by(telegram_id=user_id).first()
+                db_ctx = db_user.context if db_user else None
+                if db_ctx and db_ctx.live_mode != live:
+                    db_ctx.live_mode = live
+                    mode_session.commit()
+            except Exception as mode_err:
+                mode_session.rollback()
+                logger.warning(f"Failed to persist live_mode for user {user_id}: {mode_err}")
+            finally:
+                mode_session.close()
+
             await update.message.reply_text(
                 f"🚀 **{mode_str} Trading STARTED**\n\n"
                 "✅ Analysis running...\n"
@@ -286,12 +299,37 @@ async def start_demo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def start_live(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await _start_engine(update, context, live=True)
 
+async def reset_demo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not MANAGER:
+        await update.message.reply_text("❌ No production model found. Contact admin." + FOOTER)
+        return
+    user_id = update.effective_user.id
+
+    if not MANAGER.is_running(user_id):
+        await update.message.reply_text("⚠️ Engine not running. Start with `/start_demo` first." + FOOTER)
+        return
+
+    engine = MANAGER.sessions[user_id]
+    gen = engine.gen
+
+    if gen.live:
+        await update.message.reply_text("❌ Cannot reset a live account. Use `/stop` first." + FOOTER)
+        return
+
+    gen.reset_paper_balance()
+    await update.message.reply_text(
+        f"🔄 **Demo Reset!**\n\n"
+        f"💰 Balance: ${gen.paper_balance:,.2f}\n"
+        f"All signals and stats cleared.\n"
+        f"Engine continues running with fresh state." + FOOTER
+    )
+
 async def stop_trading(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not MANAGER:
         await update.message.reply_text("❌ No production model found. Contact admin." + FOOTER)
         return
     user_id = update.effective_user.id
-    
+
     if await MANAGER.stop_session(user_id):
         await update.message.reply_text(
             "Bzzt. **Engine STOPPED** 🛑\n\n"
@@ -475,9 +513,12 @@ async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
             outcome = s.get('outcome', '')
             tag = ""
             if outcome == "win":
-                tag = " W"
+                pnl_usd = s.get('pnl_usd', 0)
+                tag = f" W ${pnl_usd:+.0f}" if pnl_usd else " W"
             elif outcome == "loss":
-                tag = " L"
+                pnl_usd = s.get('pnl_usd', 0)
+                exit_r = " SL" if s.get('exit_reason') == 'stop_loss' else ""
+                tag = f" L{exit_r} ${pnl_usd:+.0f}" if pnl_usd else f" L{exit_r}"
             price_fmt = f"{s['close_price']:.2f}" if is_crypto else f"{s['close_price']:.5f}"
             trade_lines.append(
                 f"- {s['signal']} @ {price_fmt} (P={s['probability']:.3f}){tag}"
@@ -486,33 +527,37 @@ async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         trade_str = "(No signals yet)"
 
-    # Account data (only for FX mode with Capital.com)
-    balance_str = "Paper" if is_crypto else "N/A"
-    pnl_str = wr.get('total_pnl', 'N/A')
-    pos_count = "Paper" if is_crypto else "N/A"
-
-    if not is_crypto and gen.client:
-        try:
-            loop = asyncio.get_running_loop()
-            await loop.run_in_executor(None, gen._ensure_authenticated)
-            acct = await loop.run_in_executor(None, gen.client.get_accounts)
-            positions = await loop.run_in_executor(None, gen.client.get_positions)
-
-            balance = acct.get('balance', {}).get('balance', 0) if isinstance(acct.get('balance'), dict) else acct.get('balance', 0)
-            total_pnl = sum([p.get('position', {}).get('profit', 0) for p in positions])
-            balance_str = f"${balance:,.2f}"
-            pnl_str = f"${total_pnl:,.2f}"
-            pos_count = str(len(positions))
-        except Exception as e:
-            logger.warning(f"Could not fetch account data: {e}")
+    # Balance & PnL
+    if is_crypto:
+        balance_str = f"${wr.get('paper_balance', 10000):,.2f}"
+        pnl_str = wr.get('total_pnl', '$0.00')
+        stop_losses = wr.get('stop_losses', 0)
+    else:
+        balance_str = "N/A"
+        pnl_str = wr.get('total_pnl', 'N/A')
+        stop_losses = 0
+        if gen.client:
+            try:
+                loop = asyncio.get_running_loop()
+                await loop.run_in_executor(None, gen._ensure_authenticated)
+                acct = await loop.run_in_executor(None, gen.client.get_accounts)
+                positions = await loop.run_in_executor(None, gen.client.get_positions)
+                balance = acct.get('balance', {}).get('balance', 0) if isinstance(acct.get('balance'), dict) else acct.get('balance', 0)
+                total_pnl = sum([p.get('position', {}).get('profit', 0) for p in positions])
+                balance_str = f"${balance:,.2f}"
+                pnl_str = f"${total_pnl:,.2f}"
+            except Exception as e:
+                logger.warning(f"Could not fetch account data: {e}")
 
     if wr["evaluated"] > 0:
         wr_section = (
             f"\n**Win Rate**\n"
             f"Win Rate: {wr['win_rate']}% ({wr['wins']}W / {wr['losses']}L)\n"
-            f"PnL: {wr.get('total_pnl', 'N/A')}\n"
+            f"PnL: {pnl_str}\n"
             f"Evaluated: {wr['evaluated']} | Pending: {wr['pending']}\n"
         )
+        if stop_losses > 0:
+            wr_section += f"Stop losses: {stop_losses}\n"
     else:
         pending = wr['pending']
         if pending > 0:
@@ -525,7 +570,6 @@ async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"📊 **{mode_label} Statistics** ({instrument})\n\n"
         f"💰 **Balance:** {balance_str}\n"
         f"📈 **PnL:** {pnl_str}\n"
-        f"🟢 **Positions:** {pos_count}\n"
         f"{wr_section}\n"
         f"**Signals:** {wr['total_signals']} total "
         f"({wr['buys']} BUY / {wr['sells']} SELL / {wr['holds']} HOLD)\n\n"
@@ -570,6 +614,7 @@ def main():
     application.add_handler(CommandHandler('start_live', start_live))
     application.add_handler(CommandHandler('star_live', start_live))
     application.add_handler(CommandHandler('stop', stop_trading))
+    application.add_handler(CommandHandler('reset_demo', reset_demo))
     application.add_handler(CommandHandler('status', status))
     application.add_handler(CommandHandler('stats', stats))
     
