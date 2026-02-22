@@ -141,6 +141,14 @@ class SignalGenerator:
         self.last_processed_ts = None
         self._last_signal_time: float = 0.0  # epoch time of last signal generation
 
+        # Paper balance tracking
+        self.initial_capital = capital
+        self.paper_balance = capital
+
+        # Position management
+        self._open_position: Optional[Dict] = None  # tracks live/paper open position
+        self.stop_loss_pct = 0.02   # 2% hard stop loss
+
         # Win rate tracking
         self.evaluated_count = 0
         self.win_count = 0
@@ -381,6 +389,88 @@ class SignalGenerator:
         )
         self.guardrails.record_trade(trade)
 
+    def _open_new_position(self, signal: dict) -> None:
+        """Track a newly opened position for auto-close and stop loss."""
+        self._open_position = {
+            "signal": signal["signal"],
+            "entry_price": signal["close_price"],
+            "entry_time": datetime.now(timezone.utc),
+            "size": signal.get("position", {}).get("lot_size", 0),
+            "risk_fraction": signal.get("position", {}).get("risk_fraction", 0.02),
+        }
+        logger.info(
+            "Position opened: %s @ $%.2f | SL=%.1f%% | Auto-close in %dH",
+            signal["signal"], signal["close_price"],
+            self.stop_loss_pct * 100, self.horizon,
+        )
+
+    def _close_open_position(self, reason: str, current_price: float) -> None:
+        """Close the tracked position (live: API call, paper: log only)."""
+        if not self._open_position:
+            return
+
+        pos = self._open_position
+        entry = pos["entry_price"]
+        direction = pos["signal"]
+
+        if direction == "BUY":
+            pnl_pct = (current_price - entry) / entry * 100
+        else:
+            pnl_pct = (entry - current_price) / entry * 100
+
+        logger.info(
+            "Position closed [%s]: %s @ $%.2f -> $%.2f (%.3f%%)",
+            reason, direction, entry, current_price, pnl_pct,
+        )
+
+        # Live mode: close on Binance
+        if self.live and self.mode == "crypto":
+            symbol = self.binance_client._cfg.symbol
+            try:
+                self.binance_client.close_position(symbol)
+            except Exception as e:
+                logger.error(f"Failed to close Binance position: {e}")
+
+        self._open_position = None
+
+    def check_position_management(self, current_price: float) -> Optional[str]:
+        """
+        Check if open position should be closed due to horizon expiry or stop loss.
+
+        Returns close reason string if closed, None otherwise.
+        """
+        if not self._open_position:
+            return None
+
+        pos = self._open_position
+        entry = pos["entry_price"]
+        direction = pos["signal"]
+        age = datetime.now(timezone.utc) - pos["entry_time"]
+
+        if self.mode == "crypto":
+            horizon_delta = timedelta(hours=self.horizon)
+        else:
+            horizon_delta = timedelta(minutes=self.horizon)
+
+        # Check stop loss
+        if direction == "BUY":
+            stop_level = entry * (1 - self.stop_loss_pct)
+            if current_price <= stop_level:
+                self._close_open_position("STOP_LOSS", stop_level)
+                return "stop_loss"
+        else:  # SELL
+            stop_level = entry * (1 + self.stop_loss_pct)
+            if current_price >= stop_level:
+                self._close_open_position("STOP_LOSS", stop_level)
+                return "stop_loss"
+
+        # Check horizon expiry
+        if age >= horizon_delta:
+            self._close_open_position("HORIZON_EXPIRY", current_price)
+            return "horizon_expiry"
+
+        return None
+
     def execute_trade(self, signal: dict) -> None:
         """
         Execute trade based on signal.
@@ -396,12 +486,16 @@ class SignalGenerator:
             size = signal.get("position", {}).get("lot_size", 0)
 
             if not self.live:
-                # Paper trading: log the signal but don't execute
+                # Paper trading: close opposing position if one exists
+                if self._open_position and self._open_position["signal"] != sig_type:
+                    self._close_open_position("OPPOSING_SIGNAL", signal["close_price"])
+
                 logger.info(
                     "PAPER TRADE: %s %.4f BTC @ $%.2f (risk=%.1f%%)",
                     sig_type, size, signal["close_price"],
                     signal.get("position", {}).get("risk_fraction", 0) * 100,
                 )
+                self._open_new_position(signal)
                 return
 
             # LIVE execution via Binance Futures
@@ -424,6 +518,7 @@ class SignalGenerator:
                     logger.info("Closing opposite %s position before %s", "LONG" if is_long else "SHORT", sig_type)
                     try:
                         self.binance_client.close_position(symbol)
+                        self._open_position = None  # Clear tracked position
                     except Exception as e:
                         logger.error(f"Failed to close Binance position: {e}")
                         return
@@ -440,6 +535,7 @@ class SignalGenerator:
             logger.info("LIVE TRADE: %s %.4f %s @ $%.2f", sig_type, size, symbol, signal["close_price"])
             try:
                 self.binance_client.place_order(symbol=symbol, side=sig_type, quantity=size)
+                self._open_new_position(signal)
             except Exception as e:
                 logger.error(f"Failed to place Binance order: {e}")
             return
@@ -463,6 +559,7 @@ class SignalGenerator:
             logger.info(f"Closing opposite {current_dir} position {deal_id}")
             try:
                 self.client.close_position(deal_id)
+                self._open_position = None  # Clear tracked position
                 current_pos = None
             except Exception as e:
                 logger.error(f"Failed to close position: {e}")
@@ -481,7 +578,13 @@ class SignalGenerator:
                 logger.error(f"Failed to place order: {e}")
 
     def _evaluate_past_signals(self, df: pd.DataFrame) -> None:
-        """Check past BUY/SELL signals against actual price movement."""
+        """
+        Check past BUY/SELL signals against actual price movement.
+
+        Simulates stop loss by checking intra-bar highs/lows during the
+        horizon window. A stop is hit if price moves against the trade
+        by more than stop_loss_pct before the horizon expires.
+        """
         if df.empty:
             return
 
@@ -507,11 +610,38 @@ class SignalGenerator:
 
             entry_price = sig["close_price"]
             target_ts = sig_ts + horizon_delta
-            future_bars = df.loc[df.index >= target_ts]
-            if future_bars.empty:
-                exit_price = latest_price
+
+            # Get bars between signal and horizon expiry
+            window = df.loc[(df.index > sig_ts) & (df.index <= target_ts)]
+
+            # Check if stop loss was hit during the window
+            stop_hit = False
+            stop_price = 0.0
+            if not window.empty and self.stop_loss_pct > 0:
+                if sig["signal"] == "BUY":
+                    stop_level = entry_price * (1 - self.stop_loss_pct)
+                    worst = window["low"].min()
+                    if worst <= stop_level:
+                        stop_hit = True
+                        stop_price = stop_level
+                else:  # SELL
+                    stop_level = entry_price * (1 + self.stop_loss_pct)
+                    worst = window["high"].max()
+                    if worst >= stop_level:
+                        stop_hit = True
+                        stop_price = stop_level
+
+            if stop_hit:
+                exit_price = stop_price
+                sig["exit_reason"] = "stop_loss"
             else:
-                exit_price = float(future_bars["close"].iloc[0])
+                # Normal horizon expiry
+                future_bars = df.loc[df.index >= target_ts]
+                if future_bars.empty:
+                    exit_price = latest_price
+                else:
+                    exit_price = float(future_bars["close"].iloc[0])
+                sig["exit_reason"] = "horizon_expiry"
 
             if sig["signal"] == "BUY":
                 won = exit_price > entry_price
@@ -526,8 +656,14 @@ class SignalGenerator:
                 if sig["signal"] == "SELL":
                     pnl_pct = -pnl_pct
                 sig["pnl_pct"] = round(pnl_pct, 3)
-                sig["pnl_usd"] = round(pnl_pct / 100 * self.capital, 2)
-                pnl_label = f"{pnl_pct:+.3f}%"
+
+                # Update paper balance using the risk fraction from the trade
+                risk_frac = sig.get("position", {}).get("risk_fraction", 0.02)
+                trade_pnl_usd = self.paper_balance * risk_frac * (pnl_pct / 100) / self.stop_loss_pct
+                sig["pnl_usd"] = round(trade_pnl_usd, 2)
+                self.paper_balance += trade_pnl_usd
+
+                pnl_label = f"{pnl_pct:+.3f}% (${trade_pnl_usd:+.2f})"
             else:
                 sig["pnl_pips"] = round((exit_price - entry_price) * 10000, 1)
                 if sig["signal"] == "SELL":
@@ -540,10 +676,24 @@ class SignalGenerator:
             else:
                 self.loss_count += 1
 
+            exit_reason = "STOP" if stop_hit else "4H"
             logger.info(
-                "Signal evaluated: %s @ %.2f -> %.2f = %s (%s)",
-                sig["signal"], entry_price, exit_price, sig["outcome"], pnl_label,
+                "Signal evaluated: %s @ %.2f -> %.2f [%s] = %s (%s) | Balance: $%.2f",
+                sig["signal"], entry_price, exit_price, exit_reason,
+                sig["outcome"], pnl_label, self.paper_balance,
             )
+
+    def reset_paper_balance(self) -> None:
+        """Reset paper balance, signal log, and all stats to initial state."""
+        self.paper_balance = self.initial_capital
+        self.signal_log.clear()
+        self.evaluated_count = 0
+        self.win_count = 0
+        self.loss_count = 0
+        self.last_processed_ts = None
+        self._last_signal_time = 0.0
+        self.guardrails.initialize(self.initial_capital)
+        logger.info("Paper balance reset to $%.2f", self.initial_capital)
 
     def get_win_rate_stats(self) -> dict:
         """Return current win rate statistics."""
@@ -556,11 +706,14 @@ class SignalGenerator:
         win_rate = (self.win_count / self.evaluated_count * 100) if self.evaluated_count > 0 else 0.0
 
         if self.mode == "crypto":
-            total_pnl = sum(s.get("pnl_pct", 0) for s in self.signal_log if s.get("outcome") in ("win", "loss"))
-            pnl_label = f"{total_pnl:+.3f}%"
+            total_pnl_usd = sum(s.get("pnl_usd", 0) for s in self.signal_log if s.get("outcome") in ("win", "loss"))
+            total_pnl_pct = (self.paper_balance - self.initial_capital) / self.initial_capital * 100
+            pnl_label = f"${total_pnl_usd:+,.2f} ({total_pnl_pct:+.2f}%)"
         else:
             total_pnl = sum(s.get("pnl_pips", 0) for s in self.signal_log if s.get("outcome") in ("win", "loss"))
             pnl_label = f"{total_pnl:+.1f} pips"
+
+        stop_losses = sum(1 for s in self.signal_log if s.get("exit_reason") == "stop_loss")
 
         return {
             "total_signals": total_signals,
@@ -573,6 +726,8 @@ class SignalGenerator:
             "win_rate": round(win_rate, 1),
             "total_pnl": pnl_label,
             "pending": actionable - self.evaluated_count,
+            "paper_balance": round(self.paper_balance, 2),
+            "stop_losses": stop_losses,
         }
 
     def run_once(self) -> Optional[dict]:
@@ -584,6 +739,13 @@ class SignalGenerator:
             logger.error(f"Data fetch failed: {e}")
             self._authenticated = False  # Force re-auth on next cycle
             return None
+
+        current_price = float(df["close"].iloc[-1])
+
+        # Check position management (stop loss / horizon expiry) before new signal
+        close_reason = self.check_position_management(current_price)
+        if close_reason:
+            logger.info("Position auto-closed: %s @ $%.2f", close_reason, current_price)
 
         # Evaluate past signals before generating new one
         self._evaluate_past_signals(df)
