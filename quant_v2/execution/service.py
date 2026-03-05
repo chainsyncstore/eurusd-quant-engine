@@ -653,27 +653,39 @@ class RoutedExecutionService:
             state,
             risk_policy=precheck_policy,
         )
+        internal_risk_only = False
         if state.kill_switch.pause_trading:
-            blocked_actionable = sum(1 for signal in signal_list if signal.actionable)
-            state.diagnostics = replace(
-                state.diagnostics,
-                paused_cycles=state.diagnostics.paused_cycles + 1,
-                blocked_actionable_signals=(
-                    state.diagnostics.blocked_actionable_signals + blocked_actionable
-                ),
+            internal_risk_only = (
+                len(state.kill_switch.reasons) == 1
+                and "hard_risk_breach" in state.kill_switch.reasons
+                and not getattr(state, "external_hard_risk_breach", False)
             )
-            logger.warning(
-                "Kill-switch paused v2 execution for user %s; reasons=%s",
-                user_id,
-                ",".join(state.kill_switch.reasons),
-            )
-            if state.mode == "live":
-                self._record_rollout_observation(
-                    failed=True,
-                    reasons=state.kill_switch.reasons,
+            if not internal_risk_only:
+                blocked_actionable = sum(1 for signal in signal_list if signal.actionable)
+                state.diagnostics = replace(
+                    state.diagnostics,
+                    paused_cycles=state.diagnostics.paused_cycles + 1,
+                    blocked_actionable_signals=(
+                        state.diagnostics.blocked_actionable_signals + blocked_actionable
+                    ),
                 )
-                self._sync_rollout_diagnostics(state, gate_reasons=state.kill_switch.reasons)
-            return ()
+                logger.warning(
+                    "Kill-switch paused v2 execution for user %s; reasons=%s",
+                    user_id,
+                    ",".join(state.kill_switch.reasons),
+                )
+                if state.mode == "live":
+                    self._record_rollout_observation(
+                        failed=True,
+                        reasons=state.kill_switch.reasons,
+                    )
+                    self._sync_rollout_diagnostics(state, gate_reasons=state.kill_switch.reasons)
+                return ()
+            else:
+                logger.info(
+                    "Internal hard_risk_breach active for user %s: bypassing pause to allow risk-reducing trades.",
+                    user_id,
+                )
 
         if not signal_list:
             return ()
@@ -709,8 +721,16 @@ class RoutedExecutionService:
             policy = self._apply_canary_risk_cap(risk_policy) if state.request.live else risk_policy
 
         # Apply soft-breach 90% cap reduction when active
-        if state.soft_breach_active:
+        if getattr(state, "soft_breach_active", False):
             policy = self._apply_soft_breach_caps(policy)
+        elif internal_risk_only:
+            # 50% cap reduction during a hard breach to aggressively wind down
+            policy = replace(
+                policy,
+                max_symbol_exposure_frac=float(policy.max_symbol_exposure_frac) * 0.5,
+                max_gross_exposure_frac=float(policy.max_gross_exposure_frac) * 0.5,
+                max_net_exposure_frac=float(policy.max_net_exposure_frac) * 0.5,
+            )
 
         state.diagnostics = replace(
             state.diagnostics,
