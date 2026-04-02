@@ -49,3 +49,13 @@ deploy.tar.gz
 # Debug/test scripts with credentials
 debug_credentials.py
 test_capital_auth.py
+
+# Local analysis / scratch artifacts
+analyze_logs_local.py
+analyze_sqlite_local.py
+db_analysis_report.md
+db_analysis_report.txt
+query_db.py
+redis_analyzer_local.py
+service_remote.py
+trade_analyzer_local.py
