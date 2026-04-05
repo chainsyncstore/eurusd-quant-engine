@@ -314,11 +314,14 @@ class ExecutionEngineServer:
     async def _rebuild_state_from_wal(self, entries: list[WALEntry]) -> int:
         """Replay WAL entries to rebuild the in-memory session map.
 
-        Only 'session_started' and 'session_stopped' events are needed to
-        determine which sessions should be live.  Actual positions are
-        retrieved from the exchange on the next routing cycle.
+        Pass 1: replay session_started / session_stopped to determine active sessions.
+        Also track the latest state_checkpoint per user for equity/position restore.
+        Pass 2: apply the latest checkpoint to each rebuilt session so that paper
+        balance and positions survive container restarts.
         """
         rebuilt = 0
+        latest_checkpoints: dict[int, dict] = {}
+
         for entry in entries:
             if entry.event_type == "session_started":
                 user_id = entry.user_id
@@ -349,6 +352,32 @@ class ExecutionEngineServer:
                 if stopped:
                     self._watchdog.deregister_session(user_id)
                     rebuilt = max(0, rebuilt - 1)
+                latest_checkpoints.pop(user_id, None)
+
+            elif entry.event_type == "state_checkpoint":
+                latest_checkpoints[entry.user_id] = entry.payload
+
+        # Pass 2: restore paper state from latest checkpoint per active session
+        for user_id, cp in latest_checkpoints.items():
+            if not self._service.is_running(user_id):
+                continue
+            try:
+                await self._service.restore_paper_state(
+                    user_id,
+                    equity_baseline_usd=float(cp.get("equity_baseline_usd", 10_000.0)),
+                    open_positions={k: float(v) for k, v in cp.get("open_positions", {}).items()},
+                    paper_entry_prices={k: float(v) for k, v in cp.get("paper_entry_prices", {}).items()},
+                )
+                equity = float(cp.get("equity_baseline_usd", 10_000.0))
+                self._watchdog.update_mtm_equity(user_id, equity)
+                logger.info(
+                    "WAL rebuild: restored paper state user=%d equity=$%.2f positions=%d",
+                    user_id,
+                    equity,
+                    len(cp.get("open_positions", {})),
+                )
+            except Exception as exc:
+                logger.warning("WAL rebuild: failed restoring state for user %d: %s", user_id, exc)
 
         return rebuilt
 
@@ -601,6 +630,19 @@ class ExecutionEngineServer:
         if snap:
             self._watchdog.update_mtm_equity(user_id, snap.equity_usd)
             self._watchdog.record_tick(user_id)
+
+        # Persist state checkpoint so balance/positions survive restarts
+        paper_state = self._service.get_paper_state(user_id)
+        if paper_state is not None:
+            try:
+                await self._wal.log_state_checkpoint(
+                    user_id,
+                    equity_baseline_usd=paper_state["equity_baseline_usd"],
+                    open_positions=paper_state["open_positions"],
+                    paper_entry_prices=paper_state["paper_entry_prices"],
+                )
+            except Exception as exc:
+                logger.warning("WAL state checkpoint failed for user %d: %s", user_id, exc)
 
         return {
             "user_id": user_id,

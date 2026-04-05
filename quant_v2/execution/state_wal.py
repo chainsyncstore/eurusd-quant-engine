@@ -70,6 +70,7 @@ EVT_LIFECYCLE_CHANGED = "lifecycle_changed"
 EVT_KILL_SWITCH_TRIGGERED = "kill_switch_triggered"
 EVT_KILL_SWITCH_CLEARED = "kill_switch_cleared"
 EVT_ORDER_EXECUTED = "order_executed"
+EVT_STATE_CHECKPOINT = "state_checkpoint"
 
 WAL_STREAM_KEY = "wal:execution"
 
@@ -241,6 +242,24 @@ class RedisWAL:
             },
         ))
 
+    async def log_state_checkpoint(
+        self,
+        user_id: int,
+        *,
+        equity_baseline_usd: float,
+        open_positions: dict[str, float],
+        paper_entry_prices: dict[str, float],
+    ) -> str:
+        return await self.append(WALEntry(
+            event_type=EVT_STATE_CHECKPOINT,
+            user_id=user_id,
+            payload={
+                "equity_baseline_usd": equity_baseline_usd,
+                "open_positions": {k: v for k, v in open_positions.items() if abs(v) > 1e-12},
+                "paper_entry_prices": dict(paper_entry_prices),
+            },
+        ))
+
     async def log_kill_switch(self, user_id: int, *, triggered: bool, reasons: tuple[str, ...] = ()) -> str:
         evt = EVT_KILL_SWITCH_TRIGGERED if triggered else EVT_KILL_SWITCH_CLEARED
         return await self.append(WALEntry(
@@ -292,6 +311,9 @@ class InMemoryWAL:
 
     async def log_order_executed(self, user_id: int, *, symbol: str, side: str, quantity: float, avg_price: float, status: str) -> str:
         return await self.append(WALEntry(event_type=EVT_ORDER_EXECUTED, user_id=user_id, payload={"symbol": symbol, "side": side, "quantity": quantity, "avg_price": avg_price, "status": status}))
+
+    async def log_state_checkpoint(self, user_id: int, *, equity_baseline_usd: float, open_positions: dict[str, float], paper_entry_prices: dict[str, float]) -> str:
+        return await self.append(WALEntry(event_type=EVT_STATE_CHECKPOINT, user_id=user_id, payload={"equity_baseline_usd": equity_baseline_usd, "open_positions": {k: v for k, v in open_positions.items() if abs(v) > 1e-12}, "paper_entry_prices": dict(paper_entry_prices)}))
 
     async def log_kill_switch(self, user_id: int, *, triggered: bool, reasons: tuple[str, ...] = ()) -> str:
         evt = EVT_KILL_SWITCH_TRIGGERED if triggered else EVT_KILL_SWITCH_CLEARED

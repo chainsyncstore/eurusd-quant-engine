@@ -474,6 +474,56 @@ class RoutedExecutionService:
         )
         return True
 
+    def get_paper_state(self, user_id: int) -> dict | None:
+        """Return paper session state for WAL persistence.
+
+        Returns dict with equity_baseline_usd, open_positions, and
+        paper_entry_prices — or None if session doesn't exist.
+        """
+        state = self._sessions.get(user_id)
+        if state is None:
+            return None
+        positions = self._safe_get_positions(state.adapter)
+        return {
+            "equity_baseline_usd": float(state.equity_baseline_usd),
+            "open_positions": {k: float(v) for k, v in positions.items() if abs(float(v)) > 1e-12},
+            "paper_entry_prices": dict(state.paper_entry_price),
+        }
+
+    async def restore_paper_state(
+        self,
+        user_id: int,
+        *,
+        equity_baseline_usd: float,
+        open_positions: dict[str, float],
+        paper_entry_prices: dict[str, float],
+    ) -> None:
+        """Restore paper session equity, positions, and entry prices from WAL checkpoint."""
+        state = self._sessions.get(user_id)
+        if state is None:
+            return
+        if state.mode == "live":
+            return
+
+        state.equity_baseline_usd = max(1.0, float(equity_baseline_usd))
+
+        if open_positions:
+            await self.sync_positions(
+                user_id,
+                target_positions=open_positions,
+                prices={},
+            )
+            state.paper_entry_price.update(
+                {k: float(v) for k, v in paper_entry_prices.items()}
+            )
+
+        logger.info(
+            "Restored paper state for user %d: equity=$%.2f, %d positions",
+            user_id,
+            state.equity_baseline_usd,
+            len(open_positions),
+        )
+
     def is_running(self, user_id: int) -> bool:
         return user_id in self._sessions
 
