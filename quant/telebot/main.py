@@ -189,6 +189,7 @@ def _ensure_user_context_schema() -> None:
         ("last_demo_equity_usd", "FLOAT"),
         ("last_live_equity_usd", "FLOAT"),
         ("lifetime_stats_updated_at", "DATETIME"),
+        ("paper_state_json", "TEXT"),
     )
 
     with ENGINE.connect() as conn:
@@ -600,6 +601,53 @@ def _format_lifetime_timestamp(value: object) -> str:
     return "n/a"
 
 
+def _persist_paper_state(user_id: int, *, bridge: V2ExecutionBridge | None) -> None:
+    """Persist paper session state (equity, positions, entry prices) to SQLite."""
+    if bridge is None or not bridge.is_running(user_id):
+        return
+    service = getattr(bridge, "service", None)
+    paper_getter = getattr(service, "get_paper_state", None)
+    if not callable(paper_getter):
+        return
+    paper_state = paper_getter(user_id)
+    if paper_state is None:
+        return
+    session = SessionLocal()
+    try:
+        db_user = session.query(User).filter_by(telegram_id=user_id).first()
+        if db_user is None:
+            return
+        ctx = db_user.context
+        if ctx is None:
+            ctx = UserContext(telegram_id=user_id)
+            db_user.context = ctx
+        ctx.paper_state_json = json.dumps(paper_state, default=str)
+        session.commit()
+    except Exception as exc:
+        session.rollback()
+        logger.debug("Failed persisting paper state for user %s: %s", user_id, exc)
+    finally:
+        session.close()
+
+
+def _load_paper_state(user_id: int) -> dict | None:
+    """Load persisted paper state from SQLite. Returns dict or None."""
+    session = SessionLocal()
+    try:
+        db_user = session.query(User).filter_by(telegram_id=user_id).first()
+        if db_user is None or db_user.context is None:
+            return None
+        raw = getattr(db_user.context, "paper_state_json", None)
+        if not raw:
+            return None
+        return json.loads(raw)
+    except Exception as exc:
+        logger.warning("Failed loading paper state for user %s: %s", user_id, exc)
+        return None
+    finally:
+        session.close()
+
+
 def _persist_lifetime_snapshot_metrics(
     user_id: int,
     *,
@@ -699,6 +747,38 @@ def _load_lifetime_stats_summary(user_id: int) -> dict[str, Any] | None:
     except Exception as exc:
         logger.warning("Failed loading lifetime stats for user %s: %s", user_id, exc)
         return None
+    finally:
+        session.close()
+
+
+def _reset_last_equity_anchor(user_id: int, *, equity: float, live: bool) -> None:
+    """Reset the last-equity anchor so next delta computation starts from this value.
+
+    Called on session restore when paper state could NOT be recovered, to prevent
+    a phantom PnL delta (fresh $10K vs stale last_equity).
+    """
+    session = SessionLocal()
+    try:
+        db_user = session.query(User).filter_by(telegram_id=user_id).first()
+        if db_user is None:
+            return
+        ctx = db_user.context
+        if ctx is None:
+            return
+        if live:
+            ctx.last_live_equity_usd = equity
+            ctx.current_live_equity_usd = equity
+        else:
+            ctx.last_demo_equity_usd = equity
+            ctx.current_demo_equity_usd = equity
+        session.commit()
+        logger.info(
+            "Reset %s equity anchor to $%.2f for user %s (paper state not restored)",
+            "live" if live else "demo", equity, user_id,
+        )
+    except Exception as exc:
+        session.rollback()
+        logger.warning("Failed resetting equity anchor for user %s: %s", user_id, exc)
     finally:
         session.close()
 
@@ -1066,6 +1146,12 @@ def _build_signal_notifier(bot, user_id: int):
                             user_id,
                             shadow_route_err,
                         )
+
+                # Persist paper state after every routing cycle
+                try:
+                    _persist_paper_state(user_id, bridge=bridge)
+                except Exception as persist_err:
+                    logger.debug("Paper state persist failed for user %s: %s", user_id, persist_err)
 
             if signal_type == "DRIFT_ALERT":
                 msg = (
@@ -1557,6 +1643,32 @@ async def _restore_active_sessions(application):
             if started_primary:
                 if bridge is not None and bridge.is_running(user_id):
                     _apply_saved_lifecycle_preferences(user_id, bridge)
+
+                # Restore paper state (equity, positions) from SQLite
+                paper_restored = False
+                if not live and bridge is not None and bridge.is_running(user_id):
+                    saved_paper = _load_paper_state(user_id)
+                    if saved_paper:
+                        service = getattr(bridge, "service", None)
+                        restore_fn = getattr(service, "restore_paper_state", None)
+                        if callable(restore_fn):
+                            try:
+                                await restore_fn(
+                                    user_id,
+                                    equity_baseline_usd=float(saved_paper.get("equity_baseline_usd", 10_000.0)),
+                                    open_positions={k: float(v) for k, v in saved_paper.get("open_positions", {}).items()},
+                                    paper_entry_prices={k: float(v) for k, v in saved_paper.get("paper_entry_prices", {}).items()},
+                                )
+                                paper_restored = True
+                                logger.info(
+                                    "Restored paper state for user %s: equity=$%.2f, %d positions",
+                                    user_id,
+                                    float(saved_paper.get("equity_baseline_usd", 10_000.0)),
+                                    len(saved_paper.get("open_positions", {})),
+                                )
+                            except Exception as paper_err:
+                                logger.warning("Failed restoring paper state for user %s: %s", user_id, paper_err)
+
                 strategy_profile, active_model_version, active_model_source = _resolve_runtime_metadata(
                     bridge=bridge
                 )
@@ -1568,6 +1680,17 @@ async def _restore_active_sessions(application):
                     active_model_version=active_model_version,
                     active_model_source=active_model_source,
                 )
+                # Fix phantom lifetime-stats delta on fresh session restart.
+                # If paper state was NOT restored, reset last_demo_equity to fresh
+                # starting equity so the first delta computation is $0 (not a phantom).
+                if not paper_restored and not live:
+                    _reset_last_equity_anchor(user_id, equity=10_000.0, live=False)
+
+                restore_detail = ""
+                if paper_restored:
+                    eq = float(saved_paper.get("equity_baseline_usd", 10_000.0))
+                    pos_count = len(saved_paper.get("open_positions", {}))
+                    restore_detail = f"\n📦 Paper state recovered: equity `${eq:,.2f}`, `{pos_count}` position(s)."
                 logger.info("Restored session for user %s in %s mode.", user_id, "LIVE" if live else "DEMO")
                 try:
                     await application.bot.send_message(
@@ -1575,6 +1698,7 @@ async def _restore_active_sessions(application):
                         text=(
                             "♻️ **Session Restored**\n\n"
                             "System restarted, and your trading session resumed automatically."
+                            + restore_detail
                             + FOOTER
                         ),
                     )

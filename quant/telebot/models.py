@@ -42,5 +42,6 @@ class UserContext(Base):
     last_demo_equity_usd = Column(Float)
     last_live_equity_usd = Column(Float)
     lifetime_stats_updated_at = Column(DateTime)
+    paper_state_json = Column(Text)
 
     user = relationship("User", back_populates="context")

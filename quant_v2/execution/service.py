@@ -755,6 +755,30 @@ class RoutedExecutionService:
                     "Internal hard_risk_breach active for user %s: bypassing pause to allow risk-reducing trades.",
                     user_id,
                 )
+                # Filter signals to ONLY those that reduce existing exposure.
+                # A BUY is risk-reducing only when the symbol is currently short.
+                # A SELL is risk-reducing only when the symbol is currently long.
+                breach_positions = self._safe_get_positions(state.adapter)
+                filtered: list = []
+                for sig in signal_list:
+                    if not sig.actionable:
+                        filtered.append(sig)
+                        continue
+                    sym = str(sig.symbol).strip().upper()
+                    current_qty = float(breach_positions.get(sym, 0.0))
+                    direction = str(getattr(sig, "direction", getattr(sig, "signal", "HOLD"))).upper()
+                    if direction == "BUY" and current_qty < -1e-12:
+                        filtered.append(sig)  # reduces short
+                    elif direction == "SELL" and current_qty > 1e-12:
+                        filtered.append(sig)  # reduces long
+                    elif direction not in ("BUY", "SELL"):
+                        filtered.append(sig)  # HOLD / non-directional
+                    else:
+                        logger.info(
+                            "Hard breach filter: blocked %s %s (pos=%.6f) — would increase exposure.",
+                            direction, sym, current_qty,
+                        )
+                signal_list = filtered
 
         if not signal_list:
             return ()
