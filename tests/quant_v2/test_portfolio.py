@@ -329,7 +329,7 @@ def test_allocate_signals_model_agreement_disagree_dampens() -> None:
 
 
 def test_allocate_signals_model_agreement_none_is_neutral() -> None:
-    """model_agreement=None should give 0.85× (neutral)."""
+    """model_agreement=None should give 1.0× (no penalty — no ensemble data available)."""
     with_data = StrategySignal(
         symbol="BTCUSDT", timeframe="1h", horizon_bars=4,
         signal="BUY", confidence=0.80, uncertainty=0.0,
@@ -338,7 +338,7 @@ def test_allocate_signals_model_agreement_none_is_neutral() -> None:
     no_data = StrategySignal(
         symbol="ETHUSDT", timeframe="1h", horizon_bars=4,
         signal="BUY", confidence=0.80, uncertainty=0.0,
-        model_agreement=None,  # neutral → 0.85×
+        model_agreement=None,  # no ensemble → 1.0× (no penalty)
     )
 
     decision = allocate_signals(
@@ -355,7 +355,8 @@ def test_allocate_signals_model_agreement_none_is_neutral() -> None:
 
     btc = abs(decision.target_exposures["BTCUSDT"])
     eth = abs(decision.target_exposures["ETHUSDT"])
-    assert eth == pytest.approx(btc * 0.85, rel=0.01)
+    # Both get 1.0× — no penalty for missing ensemble data
+    assert eth == pytest.approx(btc, rel=0.01)
 
 
 def test_allocate_signals_model_agreement_disabled_ignores_field() -> None:

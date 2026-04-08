@@ -105,6 +105,10 @@ class TestFeaturePipeline:
 
     def test_pipeline_drops_warmup_rows(self, synthetic_ohlcv):
         result = build_features(synthetic_ohlcv)
-        # Should have fewer rows than input due to warmup
-        assert len(result) < len(synthetic_ohlcv)
+        # Pipeline now preserves all rows (fills feature NaN with 0 instead of dropping)
+        assert len(result) <= len(synthetic_ohlcv)
         assert len(result) > len(synthetic_ohlcv) * 0.9  # But not too many lost
+        # Verify no NaN remains in feature columns
+        from quant.features.pipeline import get_feature_columns
+        feat_cols = get_feature_columns(result)
+        assert result[feat_cols].isna().sum().sum() == 0

@@ -95,7 +95,7 @@ def _model_agreement_multiplier(agreement: float | None) -> float:
     None             → 0.85× (neutral, no data)
     """
     if agreement is None:
-        return _AGREEMENT_NEUTRAL_MULT
+        return 1.0  # no ensemble data → no penalty (neutral pass-through)
     if agreement >= _AGREEMENT_STRONG_THRESHOLD:
         return _AGREEMENT_STRONG_MULT
     if agreement >= 0.5:

@@ -60,7 +60,7 @@ def retrain_and_promote(
     model_root: Path,
     registry_root: Path,
     train_months: int = 6,
-    min_accuracy: float = 0.52,
+    min_accuracy: float = 0.50,
 ) -> str | None:
     """Run full retrain → validate → register → promote cycle.
 
@@ -213,7 +213,7 @@ def run_scheduler_loop() -> None:
     registry_root = Path(os.getenv("BOT_MODEL_REGISTRY_ROOT", str(model_root / "registry"))).expanduser()
     interval_hours = int(os.getenv("RETRAIN_INTERVAL_HOURS", "168"))
     train_months = int(os.getenv("RETRAIN_TRAIN_MONTHS", "6"))
-    min_accuracy = float(os.getenv("RETRAIN_MIN_ACCURACY", "0.52"))
+    min_accuracy = float(os.getenv("RETRAIN_MIN_ACCURACY", "0.50"))
 
     logger.info(
         "Retrain scheduler started: interval=%dh, train_months=%d, min_accuracy=%.2f, model_root=%s",

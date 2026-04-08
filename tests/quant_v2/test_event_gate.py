@@ -119,11 +119,12 @@ class TestEvaluateEventGate:
         assert result.event_severity == "high"
 
     def test_market_scoped_event_applies_to_any_symbol(self) -> None:
-        """MARKET-scoped events (e.g. Fear & Greed) should affect all symbols."""
+        """MARKET-scoped events (e.g. Fear & Greed) should affect all symbols with capped dampening."""
         now = datetime.now(timezone.utc)
         events = [_event(symbol="MARKET", sentiment="bearish", severity="high", hours_ago=0.5, now=now)]
         result = evaluate_event_gate("BTCUSDT", "BUY", events, now=now)
-        assert result.multiplier == pytest.approx(0.10)
+        # MARKET-scoped events cap at 0.50× (caution) to avoid globally vetoing all pairs
+        assert result.multiplier == pytest.approx(0.50)
         assert result.has_event is True
 
     def test_market_scoped_event_applies_to_eth(self) -> None:

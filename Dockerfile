@@ -12,10 +12,12 @@ COPY pyproject.toml ./
 COPY quant/ ./quant/
 COPY quant_v2/ ./quant_v2/
 
+# Core dependencies + PyTorch/Chronos for ensemble inference
 RUN pip install --no-cache-dir --prefix=/install \
     numpy pandas scikit-learn lightgbm \
     requests python-dotenv sqlalchemy cryptography aiosqlite \
     python-telegram-bot "redis[async]" \
+    joblib \
     chronos-forecasting \
     torch --extra-index-url https://download.pytorch.org/whl/cpu \
     typing_extensions
@@ -37,9 +39,10 @@ COPY --from=builder /install /usr/local
 # Copy only application code (no build tools, no .pem, no debug scripts)
 COPY quant/ ./quant/
 COPY quant_v2/ ./quant_v2/
+COPY bootstrap_registry.py ./
 COPY pyproject.toml ./
 
-# Create non-root user with writable home for HuggingFace model cache
+# Create non-root user with writable home for model cache
 RUN groupadd -r quantbot && useradd -r -g quantbot -s /sbin/nologin -m quantbot \
     && chown -R quantbot:quantbot /app
 

@@ -79,8 +79,11 @@ def evaluate_event_gate(
     )
 
     if contradicts:
+        # MARKET-scoped events (e.g. Fear & Greed) apply weaker dampening
+        # to avoid globally vetoing all trades during macro extremes.
+        is_global = top_event.symbol == "MARKET"
         if top_event.severity == "high":
-            mult = _EVENT_VETO_MULT
+            mult = _EVENT_CAUTION_MULT if is_global else _EVENT_VETO_MULT
         elif top_event.severity == "medium":
             mult = _EVENT_CAUTION_MULT
         else:

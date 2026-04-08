@@ -463,16 +463,21 @@ class V2SignalManager:
                     self.horizon_ensemble = None
 
                 # Phase 3: Build full ensemble (LightGBM + Chronos)
-                from quant_v2.models.ensemble import FullEnsemble
-                try:
-                    self.full_ensemble = FullEnsemble(
-                        lgbm_ensemble=self.horizon_ensemble,
-                        enable_chronos=True,
-                    )
-                    logger.info("FullEnsemble initialized (chronos=True, lgbm=%s)",
-                                self.horizon_ensemble is not None)
-                except Exception as fe_err:
-                    logger.warning("Failed to initialize FullEnsemble: %s", fe_err)
+                # Chronos requires PyTorch (~2-3GB RAM). Disable on small instances.
+                _enable_chronos = os.getenv("BOT_ENABLE_CHRONOS", "0").strip().lower() in {"1", "true", "yes"}
+                if _enable_chronos:
+                    from quant_v2.models.ensemble import FullEnsemble
+                    try:
+                        self.full_ensemble = FullEnsemble(
+                            lgbm_ensemble=self.horizon_ensemble,
+                            enable_chronos=True,
+                        )
+                        logger.info("FullEnsemble initialized (chronos=True, lgbm=%s)",
+                                    self.horizon_ensemble is not None)
+                    except Exception as fe_err:
+                        logger.warning("Failed to initialize FullEnsemble: %s", fe_err)
+                        self.full_ensemble = None
+                else:
                     self.full_ensemble = None
         except Exception as e:
             logger.warning("Failed to refresh active model from registry: %s", e)
@@ -976,6 +981,7 @@ class V2SignalManager:
         return payload
 
     def _resolve_active_model_path(self, artifact_dir: Path) -> Path | None:
+        # Prefer the configured horizon
         candidates = (
             artifact_dir / f"model_{self.horizon_bars}m.pkl",
             artifact_dir / f"model_{self.horizon_bars}m.joblib",
@@ -984,6 +990,13 @@ class V2SignalManager:
         for candidate in candidates:
             if candidate.exists():
                 return candidate
+        # Fallback: use any available horizon model from a partial ensemble
+        for horizon in (2, 4, 8):
+            for suffix in ("pkl", "joblib"):
+                fallback = artifact_dir / f"model_{horizon}m.{suffix}"
+                if fallback.exists():
+                    logger.info("Configured horizon=%dm not found; falling back to %s", self.horizon_bars, fallback.name)
+                    return fallback
         return None
 
     @staticmethod
