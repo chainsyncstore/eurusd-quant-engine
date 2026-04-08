@@ -181,6 +181,10 @@ class _SessionState:
     soft_breach_active: bool = False
     equity_history: list[float] = field(default_factory=list)
     _equity_history_max: int = 120
+    # --- Phase-4 limit order tracking ---
+    open_limit_orders: dict[str, dict] = field(default_factory=dict)
+    "Track resting limit orders: {order_id: {symbol, side, qty, filled, placed_at, is_partial}}"
+    last_partial_fill_check: datetime | None = None
 
 
 class InMemoryExecutionService:
@@ -1824,6 +1828,79 @@ class RoutedExecutionService:
                 for bucket, limit in policy.correlation_bucket_caps.items()
             },
         )
+
+    async def check_and_handle_partial_fills(self, user_id: int) -> list[dict]:
+        """Check for partially filled limit orders and cancel remaining quantity.
+
+        Phase 4: After 1 cycle (1 hour), check if any limit orders are partially filled.
+        If partially filled: cancel the remaining quantity and log the event.
+
+        Returns list of handled partial fill events for diagnostics.
+        """
+        state = self._sessions.get(user_id)
+        if state is None:
+            return []
+
+        # Only applicable for live mode with an adapter that supports get_open_orders
+        if state.mode != "live":
+            return []
+
+        now = datetime.now(timezone.utc)
+
+        # Check if at least 1 hour has passed since last check
+        if state.last_partial_fill_check is not None:
+            elapsed_hours = (now - state.last_partial_fill_check).total_seconds() / 3600
+            if elapsed_hours < 1.0:
+                return []
+
+        state.last_partial_fill_check = now
+
+        handled_events: list[dict] = []
+        get_open_orders = getattr(state.adapter, "get_open_orders", None)
+        cancel_order = getattr(state.adapter, "cancel_order", None)
+        get_order_status = getattr(state.adapter, "get_order_status", None)
+
+        if not callable(get_open_orders) or not callable(cancel_order):
+            return []
+
+        try:
+            open_orders = get_open_orders()
+        except Exception as e:
+            logger.warning("Failed to fetch open orders for partial fill check: %s", e)
+            return []
+
+        for order in open_orders:
+            order_id = str(order.get("orderId", ""))
+            symbol = str(order.get("symbol", ""))
+            status = str(order.get("status", "")).upper()
+
+            # Check if order is partially filled
+            if status == "PARTIALLY_FILLED":
+                executed_qty = float(order.get("executedQty", 0.0))
+                orig_qty = float(order.get("origQty", order.get("quantity", 0.0)))
+                remaining_qty = orig_qty - executed_qty
+
+                if remaining_qty > 0:
+                    try:
+                        cancel_result = cancel_order(symbol, order_id)
+                        event = {
+                            "order_id": order_id,
+                            "symbol": symbol,
+                            "side": str(order.get("side", "")),
+                            "executed_qty": executed_qty,
+                            "remaining_qty": remaining_qty,
+                            "cancelled_at": now.isoformat(),
+                            "cancel_result": str(cancel_result.get("status", "unknown")),
+                        }
+                        handled_events.append(event)
+                        logger.info(
+                            "Partial fill handled for %s order %s: executed=%.4f, remaining=%.4f cancelled",
+                            symbol, order_id, executed_qty, remaining_qty
+                        )
+                    except Exception as e:
+                        logger.error("Failed to cancel partially filled order %s: %s", order_id, e)
+
+        return handled_events
 
     @staticmethod
     def _default_paper_adapter_factory() -> object:

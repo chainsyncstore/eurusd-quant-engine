@@ -70,63 +70,65 @@ class BinanceExecutionAdapter:
 
             fallback_used = False
             raw = None
+            final_limit_price = limit_price
+
+            # Phase 4: For live execution with limit orders, use best bid/ask
             if limit_price is not None:
                 try:
+                    # Fetch best bid/ask and place limit at appropriate side
+                    bid, ask = self.client.get_best_bid_ask(plan.symbol)
+                    if plan.side.upper() == "BUY":
+                        # Join the bid (place limit at best bid)
+                        final_limit_price = bid
+                    else:
+                        # Join the ask (place limit at best ask)
+                        final_limit_price = ask
+                except Exception as e:
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.warning(
+                        "Failed to get best bid/ask for %s, using provided limit_price: %s",
+                        plan.symbol, e
+                    )
+                    final_limit_price = limit_price
+
+                try:
                     raw = self.client.place_limit_order(
-                        plan.symbol, 
-                        plan.side, 
-                        normalized_qty, 
-                        price=limit_price, 
-                        post_only=post_only
+                        plan.symbol,
+                        plan.side,
+                        normalized_qty,
+                        price=final_limit_price,
+                        reduce_only=False
                     )
                 except Exception as e:
                     import logging
                     logger = logging.getLogger(__name__)
-                    # If it's a -2010 "Order would immediately match and take" error, fallback to a slippage-bounded limit
-                    if post_only and ("-2010" in str(e) or "immediately match" in str(e).lower()):
-                        max_slippage_bps = 15.0  # Allow 15 bps (0.15%) slippage chase
-                        slippage_factor = 1.0 + (max_slippage_bps / 10000.0) if plan.side.upper() == "BUY" else 1.0 - (max_slippage_bps / 10000.0)
-                        
-                        fallback_limit = mark_price * slippage_factor
-                        
-                        # Apply strict tick-size quantization via Decimal
-                        fallback_limit = self._quantize_price(plan.symbol, fallback_limit)
-                                
-                        logger.warning(
-                            "POST_ONLY order matched immediately for %s. Falling back to BOUNDED LIMIT (price=%.4f, max_slippage=15bps).", 
-                            plan.symbol, 
-                            fallback_limit
-                        )
+                    # If limit order fails, fallback to market order
+                    logger.warning(
+                        "Limit order failed for %s, falling back to market order: %s",
+                        plan.symbol, e
+                    )
+                    try:
+                        raw = self.client.place_order(plan.symbol, plan.side, normalized_qty, "MARKET")
                         fallback_used = True
-                        try:
-                            # Not post_only anymore, but bounded by fallback_limit to prevent unbounded market slippage
-                            raw = self.client.place_limit_order(
-                                plan.symbol, 
-                                plan.side, 
-                                normalized_qty, 
-                                price=fallback_limit, 
-                                post_only=False
-                            )
-                        except Exception as e2:
-                            logger.error("Bounded fallback limit error for %s: %s", plan.symbol, e2)
-                            raise e2
-                    else:
-                        raise e
+                    except Exception as e2:
+                        logger.error("Market order fallback also failed for %s: %s", plan.symbol, e2)
+                        raise e2
             else:
                 raw = self.client.place_order(plan.symbol, plan.side, normalized_qty)
-                
+
             accepted = True
             filled_qty = float(raw.get("executedQty", normalized_qty))
             order_id = str(raw.get("orderId", ""))
             status = str(raw.get("status", "filled")).lower()
-            
+
             avg_price = float(raw.get("avgPrice", mark_price or 0.0))
-            if status in {"new", "partially_filled"} and limit_price is not None and not fallback_used:
-                # If order is still resting, use the limit price as the recorded avg_price 
+            if status in {"new", "partially_filled"} and final_limit_price is not None and not fallback_used:
+                # If order is still resting, use the limit price as the recorded avg_price
                 # to track the expected execution level.
-                avg_price = limit_price
-                
-            reason = "fallback_to_bounded_limit" if fallback_used else ""
+                avg_price = final_limit_price
+
+            reason = "fallback_to_market" if fallback_used else ""
             requested_qty = float(normalized_qty)
 
         result = ExecutionResult(
@@ -248,7 +250,7 @@ class BinanceExecutionAdapter:
 
             try:
                 raw = self.client.place_limit_order(
-                    symbol, side, qty, price=aggressive_price, post_only=False
+                    symbol, side, qty, price=aggressive_price, reduce_only=True
                 )
             except Exception as exc:
                 _logger.error(
@@ -363,6 +365,10 @@ class BinanceExecutionAdapter:
 
     def get_open_orders(self, symbol: str | None = None) -> list[dict]:
         return self.client.get_open_orders(symbol=symbol)
+
+    def cancel_order(self, symbol: str, order_id: str | int) -> dict:
+        """Cancel a specific order by ID."""
+        return self.client.cancel_order(symbol, order_id)
 
     def cancel_all_orders(self, symbol: str) -> None:
         open_orders = self.get_open_orders(symbol)

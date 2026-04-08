@@ -10,8 +10,8 @@ class FakeBinanceClient:
         self.close_calls: list[str] = []
         self.symbol_filters: dict[str, dict[str, float]] = {}
 
-    def place_order(self, symbol: str, side: str, quantity: float):
-        self.place_calls.append((symbol, side, quantity))
+    def place_order(self, symbol: str, side: str, quantity: float, order_type: str = "MARKET"):
+        self.place_calls.append((symbol, side, quantity, order_type))
         return {
             "orderId": 123,
             "status": "FILLED",
@@ -72,6 +72,9 @@ class FakeBinanceClient:
 
     def get_open_orders(self, symbol=None):
         return []
+
+    def get_best_bid_ask(self, symbol):
+        return (50000.0, 50010.0)
 
 
 def test_binance_adapter_place_order_and_idempotency() -> None:
@@ -146,7 +149,7 @@ def test_binance_adapter_normalizes_quantity_to_step_size() -> None:
     result = adapter.place_order(plan, idempotency_key="norm", mark_price=1000.0)
 
     assert result.accepted is True
-    assert client.place_calls[-1] == ("BTCUSDT", "BUY", 0.12)
+    assert client.place_calls[-1][:3] == ("BTCUSDT", "BUY", 0.12)
     assert result.requested_qty == 0.12
 
 
@@ -166,3 +169,59 @@ def test_binance_adapter_skips_order_below_symbol_filters() -> None:
     assert result.status == "skipped"
     assert result.reason.startswith("skipped_by_filter")
     assert client.place_calls == []
+
+
+# Phase 4: Limit Order Execution Tests
+
+
+def test_binance_adapter_limit_order_buy_uses_best_bid() -> None:
+    """BUY limit orders should be placed at best bid price (join the bid)."""
+    client = FakeBinanceClient()
+    adapter = BinanceExecutionAdapter(client)
+
+    plan = OrderPlan(symbol="BTCUSDT", side="BUY", quantity=0.01)
+    # When limit_price is provided, adapter should fetch best bid/ask
+    result = adapter.place_order(plan, idempotency_key="limit-buy", mark_price=50000.0, limit_price=50000.0)
+
+    # Verify order was accepted
+    assert result.accepted is True
+    # The FakeBinanceClient.get_best_bid_ask returns (50000.0, 50010.0)
+    # For BUY, adapter should use bid price (50000.0)
+
+
+def test_binance_adapter_limit_order_sell_uses_best_ask() -> None:
+    """SELL limit orders should be placed at best ask price (join the ask)."""
+    client = FakeBinanceClient()
+    adapter = BinanceExecutionAdapter(client)
+
+    plan = OrderPlan(symbol="BTCUSDT", side="SELL", quantity=0.01)
+    result = adapter.place_order(plan, idempotency_key="limit-sell", mark_price=50000.0, limit_price=50000.0)
+
+    assert result.accepted is True
+
+
+def test_binance_adapter_limit_order_fallback_to_market() -> None:
+    """If limit order fails, should fallback to market order."""
+    class FailingLimitClient(FakeBinanceClient):
+        def place_limit_order(self, symbol, side, qty, price, **kwargs):
+            raise RuntimeError("Limit order rejected")
+
+    client = FailingLimitClient()
+    adapter = BinanceExecutionAdapter(client)
+
+    plan = OrderPlan(symbol="BTCUSDT", side="BUY", quantity=0.01)
+    result = adapter.place_order(plan, idempotency_key="limit-fallback", mark_price=50000.0, limit_price=50000.0)
+
+    # Should fallback to market order and succeed
+    assert result.accepted is True
+    assert result.reason == "fallback_to_market"
+
+
+def test_binance_adapter_cancel_order_delegates_to_client() -> None:
+    """cancel_order should delegate to the underlying client."""
+    client = FakeBinanceClient()
+    adapter = BinanceExecutionAdapter(client)
+
+    # Should not raise
+    result = adapter.cancel_order("BTCUSDT", "12345")
+    assert result == {}

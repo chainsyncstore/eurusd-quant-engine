@@ -656,6 +656,26 @@ class BinanceClient:
         )
         return result
 
+    def _format_quantity(self, symbol: str, quantity: float) -> float:
+        """Format quantity to comply with symbol's lot size filter."""
+        filters = self.get_symbol_filters(symbol)
+        step_size = filters.get("step_size", 0.0)
+        if step_size > 0:
+            import math
+            precision = int(round(-math.log10(step_size)))
+            return math.floor(quantity * (10 ** precision)) / (10 ** precision)
+        return float(quantity)
+
+    def _format_price(self, symbol: str, price: float) -> float:
+        """Format price to comply with symbol's tick size filter."""
+        filters = self.get_symbol_filters(symbol)
+        tick_size = filters.get("tick_size", 0.0)
+        if tick_size > 0:
+            import math
+            precision = int(round(-math.log10(tick_size)))
+            return round(price, precision)
+        return float(price)
+
     def place_limit_order(
         self,
         symbol: str,
@@ -663,37 +683,65 @@ class BinanceClient:
         quantity: float,
         price: float,
         time_in_force: str = "GTC",
-        post_only: bool = True,
-    ) -> dict:
+        reduce_only: bool = False,
+    ) -> dict[str, Any]:
+        """Place a LIMIT order on Binance Futures.
+
+        Parameters
+        ----------
+        symbol : str
+            Trading pair (e.g., "BTCUSDT")
+        side : str
+            "BUY" or "SELL"
+        quantity : float
+            Order quantity in base asset
+        price : float
+            Limit price
+        time_in_force : str
+            "GTC" (Good Till Cancel), "IOC" (Immediate Or Cancel), "FOK" (Fill Or Kill)
+        reduce_only : bool
+            If True, order will only reduce position size
+
+        Returns
+        -------
+        dict[str, Any]
+            Order response with orderId, status, etc.
         """
-        Place a LIMIT order. POST /fapi/v1/order.
-        """
-        quantity = round(quantity, 3)
-        if quantity <= 0:
-            raise ValueError(f"Invalid order quantity: {quantity}")
-        if price <= 0:
-            raise ValueError(f"Invalid order price: {price}")
-            
         params = {
             "symbol": symbol,
-            "side": side,
+            "side": side.upper(),
             "type": "LIMIT",
-            "quantity": quantity,
-            "price": price,
-            "timeInForce": "GTX" if post_only else time_in_force,
+            "quantity": self._format_quantity(symbol, quantity),
+            "price": self._format_price(symbol, price),
+            "timeInForce": time_in_force.upper(),
         }
-        
-        logger.info(
-            "Placing %s %s order: %s %.3f at price %s", 
-            "POST_ONLY LIMIT" if post_only else "LIMIT", 
-            side, symbol, quantity, price
-        )
+        if reduce_only:
+            params["reduceOnly"] = "true"
+
+        logger.info("Placing LIMIT %s order: %s %.3f at price %.2f", side, symbol, quantity, price)
         result = self._signed_post("/fapi/v1/order", params)
         logger.info(
             "Order placed: orderId=%s, status=%s, price=%s",
             result.get("orderId"), result.get("status"), result.get("price")
         )
         return result
+
+    def get_best_bid_ask(self, symbol: str) -> tuple[float, float]:
+        """Return (best_bid, best_ask) for a symbol from /fapi/v1/ticker/bookTicker.
+
+        Parameters
+        ----------
+        symbol : str
+            Trading pair (e.g., "BTCUSDT")
+
+        Returns
+        -------
+        tuple[float, float]
+            (best_bid, best_ask) tuple
+        """
+        url = f"{self._cfg.base_url}/fapi/v1/ticker/bookTicker"
+        data = self._get(url, {"symbol": symbol})
+        return float(data["bidPrice"]), float(data["askPrice"])
         
     def cancel_order(self, symbol: str, order_id: str | int) -> dict:
         """Cancel an active order by ID. DELETE /fapi/v1/order."""
@@ -735,8 +783,8 @@ class BinanceClient:
 
         if limit_price is not None:
             logger.info("Closing %s position: LIMIT %s %.3f at %s", symbol, side, qty, limit_price)
-            # Typically when closing, we don't strictly require post-only to guarantee execution
-            return self.place_limit_order(symbol, side, qty, limit_price, "GTC", post_only=False)
+            # Use reduce_only to ensure the order only closes the position
+            return self.place_limit_order(symbol, side, qty, limit_price, "GTC", reduce_only=True)
         else:
             logger.info("Closing %s position: MARKET %s %.3f", symbol, side, qty)
             return self.place_order(symbol, side, qty, "MARKET")
