@@ -23,6 +23,8 @@ from quant.features import (
     funding_rate,
     open_interest,
     liquidation,
+    liquidation_proximity,   # Phase 1 upgrade
+    cross_pair,              # Phase 1 upgrade
     crypto_session,
 )
 
@@ -47,6 +49,8 @@ _CRYPTO_MODULES = [
     funding_rate,
     open_interest,
     liquidation,
+    liquidation_proximity,   # NEW — Phase 1
+    cross_pair,              # NEW — Phase 1 (needs other features, before crypto_session)
     crypto_session,
 ]
 
@@ -133,6 +137,15 @@ _FEATURE_WHITELIST = {
     "us_session",
     "day_of_week_sin",
     "day_of_week_cos",
+    # Phase 1: Cross-pair features
+    "btc_return_4h",
+    "btc_divergence_4h",
+    "btc_correlation_24h",
+    "relative_vol_ratio",
+    # Phase 1: Liquidation proximity features
+    "oi_funding_pressure",
+    "price_position_24h",
+    "liquidation_cascade_4h",
 }
 
 

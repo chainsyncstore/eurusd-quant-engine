@@ -69,8 +69,14 @@ class V2SignalManager:
         )
         self.registry = ModelRegistry(self.registry_root)
         self.active_model: TrainedModel | None = None
-        
-        self.symbols = tuple(symbols or default_universe_symbols())
+        self.horizon_ensemble: "HorizonEnsemble | None" = None  # Phase 1: multi-horizon ensemble
+
+        # Ensure BTCUSDT is processed first (needed for cross-pair features)
+        symbols_list = list(symbols or default_universe_symbols())
+        if "BTCUSDT" in symbols_list:
+            symbols_list.remove("BTCUSDT")
+            symbols_list.insert(0, "BTCUSDT")
+        self.symbols = tuple(symbols_list)
         self.anchor_interval = anchor_interval
         self.horizon_bars = int(horizon_bars)
         self.history_bars = max(int(history_bars), 48)
@@ -425,6 +431,7 @@ class V2SignalManager:
 
         try:
             from quant_v2.models.trainer import load_model
+            from quant_v2.models.ensemble import HorizonEnsemble
             active_pointer = self.registry.get_active_version()
             if active_pointer and (self.active_model is None or getattr(self.active_model, "_version_id", None) != active_pointer.version_id):
                 model_path = self._resolve_active_model_path(Path(active_pointer.artifact_dir))
@@ -432,10 +439,20 @@ class V2SignalManager:
                     self.active_model = load_model(model_path)
                     setattr(self.active_model, "_version_id", active_pointer.version_id)
                     logger.info("Loaded active ML model version %s for horizon %sm", active_pointer.version_id, self.horizon_bars)
+
+                # Attempt to load multi-horizon ensemble from artifact directory
+                artifact_dir = Path(active_pointer.artifact_dir)
+                ensemble = HorizonEnsemble.from_directory(artifact_dir)
+                if ensemble is not None and ensemble.horizon_count > 0:
+                    self.horizon_ensemble = ensemble
+                    logger.info("Loaded %d-horizon ensemble", ensemble.horizon_count)
+                else:
+                    self.horizon_ensemble = None
         except Exception as e:
             logger.warning("Failed to refresh active model from registry: %s", e)
 
         cycle_prices: dict[str, float] = {}
+        btc_returns: pd.Series | None = None
 
         for symbol in self.symbols:
             fetch_call = partial(
@@ -449,6 +466,11 @@ class V2SignalManager:
             bars = await loop.run_in_executor(None, fetch_call)
             if bars is None or bars.empty or "close" not in bars.columns:
                 continue
+
+            # Cache BTC returns for cross-pair feature injection
+            if symbol == "BTCUSDT":
+                btc_close = pd.to_numeric(bars["close"], errors="coerce").dropna()
+                btc_returns = btc_close.pct_change()
 
             latest_ts = pd.Timestamp(bars.index[-1])
             prev_ts = session.last_bar_timestamp.get(symbol)
@@ -483,7 +505,7 @@ class V2SignalManager:
 
             session.last_bar_timestamp[symbol] = latest_ts
             payload = self._build_signal_payload(
-                symbol, bars, data_quality_flag=data_quality_flag,
+                symbol, bars, btc_returns=btc_returns, data_quality_flag=data_quality_flag,
             )
 
             # --- Collect price for scorecard evaluation ---
@@ -524,6 +546,7 @@ class V2SignalManager:
         symbol: str,
         bars: pd.DataFrame,
         *,
+        btc_returns: pd.Series | None = None,
         data_quality_flag: bool = False,
     ) -> dict[str, Any]:
         close_series = pd.to_numeric(bars["close"], errors="coerce").dropna()
@@ -589,7 +612,7 @@ class V2SignalManager:
         featured = None
         if not drift_alert:
             try:
-                featured = self._build_featured_frame(bars)
+                featured = self._build_featured_frame(bars, btc_returns=btc_returns)
                 if featured is not None and not featured.empty:
                     from quant_v2.strategy.regime import classify_latest
 
@@ -677,8 +700,13 @@ class V2SignalManager:
         )
 
     def _predict_with_uncertainty(self, feature_row: pd.DataFrame) -> tuple[float, float]:
-        """Run model inference for either v2 or legacy trained model objects."""
+        """Run model inference — ensemble if available, single model fallback."""
 
+        # Try ensemble first
+        if self.horizon_ensemble is not None:
+            return self.horizon_ensemble.predict(feature_row)
+
+        # Single model fallback (existing code)
         model = self.active_model
         if model is None:
             raise RuntimeError("No active model loaded")
@@ -699,7 +727,11 @@ class V2SignalManager:
 
         raise TypeError(f"Unsupported model type for inference: {type(model)!r}")
 
-    def _build_featured_frame(self, bars: pd.DataFrame) -> pd.DataFrame | None:
+    def _build_featured_frame(
+        self,
+        bars: pd.DataFrame,
+        btc_returns: pd.Series | None = None,
+    ) -> pd.DataFrame | None:
         """Build the full feature DataFrame for regime classification and model inference."""
 
         from quant.features.pipeline import build_features
@@ -714,6 +746,10 @@ class V2SignalManager:
                 frame.index = frame.index.tz_convert("UTC")
         frame = frame[~frame.index.isna()].sort_index()
         frame.index.name = "timestamp"
+
+        # Inject BTC returns for cross-pair features
+        if btc_returns is not None:
+            frame["_btc_returns"] = btc_returns.reindex(frame.index, method="ffill").fillna(0.0)
 
         featured = build_features(frame)
         return featured if not featured.empty else None

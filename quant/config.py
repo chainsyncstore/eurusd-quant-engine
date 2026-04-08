@@ -73,7 +73,7 @@ class ResearchConfig:
     n_regimes: int = 5
 
     # Feature budget
-    max_features: int = 90
+    max_features: int = 97  # was 90, added 7 new features in Phase 1
 
     # Model hyperparameters
     lgbm_n_estimators: int = 500
