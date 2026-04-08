@@ -175,6 +175,95 @@ def test_allocate_signals_no_data_symbol_accuracy_is_neutral() -> None:
     assert btc == pytest.approx(eth)  # both get 1.0× multiplier
 
 
+def test_allocate_signals_event_gate_dampens_heavily() -> None:
+    """event_gate_mult=0.10 should heavily dampen allocation."""
+    normal_signal = StrategySignal(
+        symbol="BTCUSDT", timeframe="1h", horizon_bars=4,
+        signal="BUY", confidence=0.80, uncertainty=0.0,
+        event_gate_mult=None,  # neutral 1.0×
+    )
+    dampened_signal = StrategySignal(
+        symbol="ETHUSDT", timeframe="1h", horizon_bars=4,
+        signal="BUY", confidence=0.80, uncertainty=0.0,
+        event_gate_mult=0.10,  # near-veto
+    )
+
+    decision = allocate_signals(
+        [normal_signal, dampened_signal],
+        total_risk_budget_frac=1.0,
+        max_symbol_exposure_frac=0.15,
+        min_confidence=0.65,
+        enable_session_filter=False,
+        enable_regime_bias=False,
+        enable_symbol_accuracy=False,
+        enable_event_gate=True,
+    )
+
+    btc = abs(decision.target_exposures["BTCUSDT"])
+    eth = abs(decision.target_exposures["ETHUSDT"])
+    assert btc > eth
+    assert eth == pytest.approx(btc * 0.10, rel=0.01)
+
+
+def test_allocate_signals_event_gate_none_is_neutral() -> None:
+    """event_gate_mult=None should not dampen (neutral 1.0×)."""
+    sig_a = StrategySignal(
+        symbol="BTCUSDT", timeframe="1h", horizon_bars=4,
+        signal="BUY", confidence=0.80, uncertainty=0.0,
+        event_gate_mult=None,
+    )
+    sig_b = StrategySignal(
+        symbol="ETHUSDT", timeframe="1h", horizon_bars=4,
+        signal="BUY", confidence=0.80, uncertainty=0.0,
+        event_gate_mult=None,
+    )
+
+    decision = allocate_signals(
+        [sig_a, sig_b],
+        total_risk_budget_frac=1.0,
+        max_symbol_exposure_frac=0.15,
+        min_confidence=0.65,
+        enable_session_filter=False,
+        enable_regime_bias=False,
+        enable_symbol_accuracy=False,
+        enable_event_gate=True,
+    )
+
+    btc = abs(decision.target_exposures["BTCUSDT"])
+    eth = abs(decision.target_exposures["ETHUSDT"])
+    assert btc == pytest.approx(eth)
+
+
+def test_allocate_signals_event_gate_disabled_ignores_field() -> None:
+    """enable_event_gate=False should ignore event_gate_mult entirely."""
+    sig_a = StrategySignal(
+        symbol="BTCUSDT", timeframe="1h", horizon_bars=4,
+        signal="BUY", confidence=0.80, uncertainty=0.0,
+        event_gate_mult=None,
+    )
+    sig_b = StrategySignal(
+        symbol="ETHUSDT", timeframe="1h", horizon_bars=4,
+        signal="BUY", confidence=0.80, uncertainty=0.0,
+        event_gate_mult=0.10,  # would dampen if enabled
+    )
+
+    decision = allocate_signals(
+        [sig_a, sig_b],
+        total_risk_budget_frac=1.0,
+        max_symbol_exposure_frac=0.15,
+        min_confidence=0.65,
+        enable_session_filter=False,
+        enable_regime_bias=False,
+        enable_symbol_accuracy=False,
+        enable_event_gate=False,  # disabled
+    )
+
+    btc = abs(decision.target_exposures["BTCUSDT"])
+    eth = abs(decision.target_exposures["ETHUSDT"])
+    # Both should be equal since event gate is disabled
+    assert btc == pytest.approx(eth)
+
+
 def test_portfolio_risk_policy_validate_args() -> None:
     with pytest.raises(ValueError):
         PortfolioRiskPolicy(max_symbol_exposure_frac=0.0)

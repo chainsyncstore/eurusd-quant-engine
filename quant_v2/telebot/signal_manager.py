@@ -19,6 +19,8 @@ from quant.data.binance_client import BinanceClient
 from quant_v2.config import default_universe_symbols
 from quant_v2.contracts import StrategySignal
 from quant_v2.monitoring.kill_switch import MonitoringSnapshot
+from quant_v2.data.news_client import CryptoPanicClient, symbol_to_base_ticker
+from quant_v2.strategy.event_gate import evaluate_event_gate
 from quant_v2.telebot.symbol_scorecard import SymbolScorecard
 
 logger = logging.getLogger(__name__)
@@ -90,6 +92,14 @@ class V2SignalManager:
         self._oi_cache: dict[str, tuple[datetime, float]] = {}
         # Per-symbol prediction accuracy scorecard (shared across sessions)
         self.scorecard = SymbolScorecard(lookback_hours=72, min_samples=8)
+
+        # --- Event gate: news awareness layer (Phase 2) ---
+        _news_api_key = os.getenv("CRYPTOPANIC_API_KEY", "")
+        self.news_client: CryptoPanicClient | None = (
+            CryptoPanicClient(_news_api_key) if _news_api_key else None
+        )
+        self._cached_events: list = []
+        self._events_fetched_at: datetime | None = None
 
     @staticmethod
     def _resolve_loop_interval(loop_interval_seconds: int | None) -> int:
@@ -450,6 +460,21 @@ class V2SignalManager:
                     self.horizon_ensemble = None
         except Exception as e:
             logger.warning("Failed to refresh active model from registry: %s", e)
+
+        # --- Fetch news events (once per cycle, cached for 15 min) ---
+        now = datetime.now(timezone.utc)
+        if (
+            self.news_client is not None
+            and (
+                self._events_fetched_at is None
+                or (now - self._events_fetched_at).total_seconds() > 900
+            )
+        ):
+            base_tickers = [symbol_to_base_ticker(s) for s in self.symbols]
+            self._cached_events = self.news_client.fetch_recent(symbols=base_tickers)
+            self._events_fetched_at = now
+            if self._cached_events:
+                logger.info("Event gate: fetched %d news events", len(self._cached_events))
 
         cycle_prices: dict[str, float] = {}
         btc_returns: pd.Series | None = None
@@ -864,6 +889,17 @@ class V2SignalManager:
                 accuracy_mult,
             )
 
+        # --- Event gate evaluation (Phase 2) ---
+        event_gate_mult: float | None = None
+        if self._cached_events and signal_type in ("BUY", "SELL"):
+            gate_result = evaluate_event_gate(
+                symbol=symbol,
+                signal_direction=signal_type,
+                events=self._cached_events,
+            )
+            if gate_result.has_event:
+                event_gate_mult = gate_result.multiplier
+
         native_signal = StrategySignal(
             symbol=symbol,
             timeframe=self.anchor_interval,
@@ -876,6 +912,7 @@ class V2SignalManager:
             momentum_bias=momentum_bias,
             atr_pct=atr_pct,
             symbol_hit_rate=symbol_hit_rate,
+            event_gate_mult=event_gate_mult,
         )
 
         monitoring_snapshot = MonitoringSnapshot(

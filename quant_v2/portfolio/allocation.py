@@ -40,6 +40,11 @@ _ACCURACY_STRONG_MULT: float = 1.0
 _ACCURACY_NEUTRAL_MULT: float = 0.60
 _ACCURACY_WEAK_MULT: float = 0.30
 
+# ---------------------------------------------------------------------------
+# Event gate dampening
+# ---------------------------------------------------------------------------
+_EVENT_DEFAULT_MULT: float = 1.0  # no event data → neutral
+
 
 def _session_multiplier(hour_utc: int | None) -> float:
     """Return a soft session-edge multiplier for the given UTC hour."""
@@ -64,6 +69,13 @@ def _symbol_accuracy_multiplier(hit_rate: float | None) -> float:
     if hit_rate >= _ACCURACY_WEAK_THRESHOLD:
         return _ACCURACY_NEUTRAL_MULT
     return _ACCURACY_WEAK_MULT
+
+
+def _event_gate_multiplier(event_gate_mult: float | None) -> float:
+    """Return the event-gate multiplier, or 1.0 if no event data."""
+    if event_gate_mult is None:
+        return _EVENT_DEFAULT_MULT
+    return max(0.0, min(event_gate_mult, 1.0))
 
 
 def _regime_multiplier(signal_direction: str, momentum_bias: float | None) -> float:
@@ -106,6 +118,7 @@ def allocate_signals(
     enable_session_filter: bool = True,
     enable_regime_bias: bool = True,
     enable_symbol_accuracy: bool = True,
+    enable_event_gate: bool = True,
 ) -> AllocationDecision:
     """Allocate portfolio exposures from model signals under confidence-scaled caps.
 
@@ -167,7 +180,12 @@ def allocate_signals(
         if enable_symbol_accuracy:
             accuracy_mult = _symbol_accuracy_multiplier(signal.symbol_hit_rate)
 
-        signed_exposure *= sess_mult * regime_mult * accuracy_mult
+        # --- Event gate ---
+        event_mult = 1.0
+        if enable_event_gate:
+            event_mult = _event_gate_multiplier(signal.event_gate_mult)
+
+        signed_exposure *= sess_mult * regime_mult * accuracy_mult * event_mult
 
         if signal.signal == "SELL":
             signed_exposure *= -1.0
