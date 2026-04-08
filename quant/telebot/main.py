@@ -3191,7 +3191,18 @@ def main():
     application.add_handler(MessageHandler(filters.ALL, debug_log), group=1)
     
     application.add_error_handler(error_handler)
-    
+
+    # --- Background retrain scheduler (daemon thread) ---
+    _retrain_enabled = os.getenv("RETRAIN_ENABLED", "1").strip() not in ("0", "false", "no")
+    if _retrain_enabled:
+        import threading
+        from quant_v2.research.scheduled_retrain import run_scheduler_loop as _retrain_loop
+        _retrain_thread = threading.Thread(target=_retrain_loop, daemon=True, name="retrain-scheduler")
+        _retrain_thread.start()
+        logger.info("Background retrain scheduler started (daemon thread)")
+    else:
+        logger.info("Background retrain scheduler disabled (RETRAIN_ENABLED=0)")
+
     print("Bot is polling...")
     application.run_polling(drop_pending_updates=True)
 

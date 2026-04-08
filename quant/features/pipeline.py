@@ -173,8 +173,13 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     for mod in modules:
         result = mod.compute(result)
 
-    # Drop warmup NaN rows
-    result = result.dropna()
+    # Drop rows only where core OHLCV is missing; fill feature NaN with 0
+    core_cols = ["open", "high", "low", "close", "volume"]
+    core_missing = result[core_cols].isna().any(axis=1)
+    result = result[~core_missing].copy()
+    # Fill any remaining feature NaN (derived features) with 0
+    feature_cols = [c for c in result.columns if c not in core_cols]
+    result[feature_cols] = result[feature_cols].fillna(0.0)
 
     feature_cols = get_feature_columns(result)
     n_features = len(feature_cols)
