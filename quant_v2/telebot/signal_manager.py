@@ -19,7 +19,7 @@ from quant.data.binance_client import BinanceClient
 from quant_v2.config import default_universe_symbols
 from quant_v2.contracts import StrategySignal
 from quant_v2.monitoring.kill_switch import MonitoringSnapshot
-from quant_v2.data.news_client import CryptoPanicClient, symbol_to_base_ticker
+from quant_v2.data.news_client import CryptoCompareNewsClient, FearGreedClient, symbol_to_base_ticker
 from quant_v2.strategy.event_gate import evaluate_event_gate
 from quant_v2.telebot.symbol_scorecard import SymbolScorecard
 
@@ -96,10 +96,11 @@ class V2SignalManager:
         self.scorecard = SymbolScorecard(lookback_hours=72, min_samples=8)
 
         # --- Event gate: news awareness layer (Phase 2) ---
-        _news_api_key = os.getenv("CRYPTOPANIC_API_KEY", "")
-        self.news_client: CryptoPanicClient | None = (
-            CryptoPanicClient(_news_api_key) if _news_api_key else None
+        _news_api_key = os.getenv("CRYPTOCOMPARE_API_KEY", "")
+        self.news_client: CryptoCompareNewsClient | None = (
+            CryptoCompareNewsClient(_news_api_key) if _news_api_key else None
         )
+        self.fear_greed_client = FearGreedClient()
         self._cached_events: list = []
         self._events_fetched_at: datetime | None = None
 
@@ -479,17 +480,25 @@ class V2SignalManager:
         # --- Fetch news events (once per cycle, cached for 15 min) ---
         now = datetime.now(timezone.utc)
         if (
-            self.news_client is not None
-            and (
-                self._events_fetched_at is None
-                or (now - self._events_fetched_at).total_seconds() > 900
-            )
+            self._events_fetched_at is None
+            or (now - self._events_fetched_at).total_seconds() > 900
         ):
-            base_tickers = [symbol_to_base_ticker(s) for s in self.symbols]
-            self._cached_events = self.news_client.fetch_recent(symbols=base_tickers)
+            merged_events: list = []
+            # CryptoCompare per-coin news (requires API key)
+            if self.news_client is not None:
+                base_tickers = [symbol_to_base_ticker(s) for s in self.symbols]
+                merged_events.extend(self.news_client.fetch_recent(symbols=base_tickers))
+            # Alternative.me Fear & Greed (no key needed, global macro)
+            try:
+                fng_event = self.fear_greed_client.fetch_current()
+                if fng_event is not None:
+                    merged_events.append(fng_event)
+            except Exception as fng_err:
+                logger.debug("Fear & Greed fetch skipped: %s", fng_err)
+            self._cached_events = merged_events
             self._events_fetched_at = now
             if self._cached_events:
-                logger.info("Event gate: fetched %d news events", len(self._cached_events))
+                logger.info("Event gate: fetched %d events (news + F&G)", len(self._cached_events))
 
         cycle_prices: dict[str, float] = {}
         btc_returns: pd.Series | None = None

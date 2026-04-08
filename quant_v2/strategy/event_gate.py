@@ -54,10 +54,10 @@ def evaluate_event_gate(
 
     cutoff = now - timedelta(hours=_NEWS_RELEVANCE_WINDOW_HOURS)
 
-    # Filter to this symbol's recent events
+    # Filter to this symbol's recent events (plus MARKET-scoped global events)
     relevant = [
         e for e in events
-        if e.symbol == symbol
+        if (e.symbol == symbol or e.symbol == "MARKET")
         and e.published_at >= cutoff
         and e.sentiment != "neutral"
     ]

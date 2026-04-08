@@ -117,3 +117,25 @@ class TestEvaluateEventGate:
         # High severity should win → 0.10
         assert result.multiplier == pytest.approx(0.10)
         assert result.event_severity == "high"
+
+    def test_market_scoped_event_applies_to_any_symbol(self) -> None:
+        """MARKET-scoped events (e.g. Fear & Greed) should affect all symbols."""
+        now = datetime.now(timezone.utc)
+        events = [_event(symbol="MARKET", sentiment="bearish", severity="high", hours_ago=0.5, now=now)]
+        result = evaluate_event_gate("BTCUSDT", "BUY", events, now=now)
+        assert result.multiplier == pytest.approx(0.10)
+        assert result.has_event is True
+
+    def test_market_scoped_event_applies_to_eth(self) -> None:
+        now = datetime.now(timezone.utc)
+        events = [_event(symbol="MARKET", sentiment="bullish", severity="medium", hours_ago=1.0, now=now)]
+        result = evaluate_event_gate("ETHUSDT", "SELL", events, now=now)
+        assert result.multiplier == pytest.approx(0.50)
+        assert result.has_event is True
+
+    def test_market_scoped_neutral_sentiment_is_ignored(self) -> None:
+        now = datetime.now(timezone.utc)
+        events = [_event(symbol="MARKET", sentiment="neutral", severity="low", hours_ago=0.5, now=now)]
+        result = evaluate_event_gate("BTCUSDT", "BUY", events, now=now)
+        assert result.multiplier == pytest.approx(1.0)
+        assert result.has_event is False
