@@ -21,6 +21,7 @@ from quant_v2.contracts import StrategySignal
 from quant_v2.monitoring.kill_switch import MonitoringSnapshot
 from quant_v2.data.news_client import CryptoCompareNewsClient, FearGreedClient, symbol_to_base_ticker
 from quant_v2.strategy.event_gate import evaluate_event_gate
+from quant_v2.portfolio.cost_model import confidence_to_edge_bps, get_default_cost_model
 from quant_v2.telebot.symbol_scorecard import SymbolScorecard
 
 logger = logging.getLogger(__name__)
@@ -560,9 +561,19 @@ class V2SignalManager:
                     last_valid_oi = float(oi_col.dropna().iloc[-1])
                     self._oi_cache[symbol] = (date_to, last_valid_oi)
 
+            # Fetch L2 order book snapshot for this symbol
+            ob_snapshot: dict | None = None
+            try:
+                ob_snapshot = await loop.run_in_executor(
+                    None, lambda s=symbol: session.client.get_orderbook(s, limit=20)
+                )
+            except Exception as ob_err:
+                logger.debug("Order book fetch failed for %s: %s", symbol, ob_err)
+
             session.last_bar_timestamp[symbol] = latest_ts
             payload = self._build_signal_payload(
                 symbol, bars, btc_returns=btc_returns, data_quality_flag=data_quality_flag,
+                ob_snapshot=ob_snapshot,
             )
 
             # --- Collect price for scorecard evaluation ---
@@ -605,6 +616,7 @@ class V2SignalManager:
         *,
         btc_returns: pd.Series | None = None,
         data_quality_flag: bool = False,
+        ob_snapshot: dict | None = None,
     ) -> dict[str, Any]:
         close_series = pd.to_numeric(bars["close"], errors="coerce").dropna()
         if close_series.empty:
@@ -669,7 +681,7 @@ class V2SignalManager:
         featured = None
         if not drift_alert:
             try:
-                featured = self._build_featured_frame(bars, btc_returns=btc_returns)
+                featured = self._build_featured_frame(bars, btc_returns=btc_returns, ob_snapshot=ob_snapshot)
                 if featured is not None and not featured.empty:
                     from quant_v2.strategy.regime import classify_latest
 
@@ -805,6 +817,7 @@ class V2SignalManager:
         self,
         bars: pd.DataFrame,
         btc_returns: pd.Series | None = None,
+        ob_snapshot: dict | None = None,
     ) -> pd.DataFrame | None:
         """Build the full feature DataFrame for regime classification and model inference."""
 
@@ -824,6 +837,12 @@ class V2SignalManager:
         # Inject BTC returns for cross-pair features
         if btc_returns is not None:
             frame["_btc_returns"] = btc_returns.reindex(frame.index, method="ffill").fillna(0.0)
+
+        # Inject order book snapshot onto the latest bar for order_book.compute()
+        if ob_snapshot is not None:
+            snapshots = [None] * len(frame)
+            snapshots[-1] = ob_snapshot
+            frame["_ob_snapshot"] = snapshots
 
         featured = build_features(frame)
         return featured if not featured.empty else None
@@ -952,6 +971,17 @@ class V2SignalManager:
         # --- Model agreement (Phase 3) ---
         model_agreement: float | None = self._last_model_agreement
 
+        # --- Estimated transaction cost (Phase A) ---
+        estimated_cost_bps: float | None = None
+        if signal_type in ("BUY", "SELL"):
+            try:
+                _cost_model = get_default_cost_model()
+                _edge_bps = confidence_to_edge_bps(confidence, uncertainty)
+                _est = _cost_model.estimate(symbol, notional_usd=0.0)  # zero-notional for bps only
+                estimated_cost_bps = _est.round_trip_cost_bps
+            except Exception:
+                estimated_cost_bps = None
+
         native_signal = StrategySignal(
             symbol=symbol,
             timeframe=self.anchor_interval,
@@ -966,6 +996,7 @@ class V2SignalManager:
             symbol_hit_rate=symbol_hit_rate,
             event_gate_mult=event_gate_mult,
             model_agreement=model_agreement,
+            estimated_cost_bps=estimated_cost_bps,
         )
 
         monitoring_snapshot = MonitoringSnapshot(

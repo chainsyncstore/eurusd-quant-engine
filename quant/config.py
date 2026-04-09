@@ -73,7 +73,7 @@ class ResearchConfig:
     n_regimes: int = 5
 
     # Feature budget
-    max_features: int = 97  # was 90, added 7 new features in Phase 1
+    max_features: int = 103  # was 97, added 6 order book features in Phase B
 
     # Model hyperparameters (Phase 3 tuned: better generalization with larger dataset)
     lgbm_n_estimators: int = 1500          # More trees, early stopping prevents overfit

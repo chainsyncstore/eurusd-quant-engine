@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from typing import Iterable
 
 from quant_v2.contracts import StrategySignal
+from quant_v2.portfolio.cost_model import BinanceCostModel, confidence_to_edge_bps, get_default_cost_model
 
 logger = logging.getLogger(__name__)
 
@@ -145,6 +146,9 @@ def allocate_signals(
     enable_symbol_accuracy: bool = True,
     enable_event_gate: bool = True,
     enable_model_agreement: bool = True,
+    enable_cost_gate: bool = True,
+    equity_usd: float = 300.0,
+    cost_model: BinanceCostModel | None = None,
 ) -> AllocationDecision:
     """Allocate portfolio exposures from model signals under confidence-scaled caps.
 
@@ -156,6 +160,9 @@ def allocate_signals(
 
     When *enable_symbol_accuracy* is True, signals carry a ``symbol_hit_rate``
     field that dampens allocation for symbols with poor rolling prediction accuracy.
+
+    When *enable_cost_gate* is True, signals whose expected edge does not cover
+    1.5× round-trip transaction costs are filtered out.
     """
 
     if not 0.0 <= total_risk_budget_frac <= 1.0:
@@ -188,6 +195,22 @@ def allocate_signals(
         if adjusted_edge <= 0.0:
             skipped[signal.symbol] = "zero_edge"
             continue
+
+        # --- Transaction cost gate ---
+        if enable_cost_gate:
+            _cm = cost_model or get_default_cost_model()
+            edge_bps = confidence_to_edge_bps(signal.confidence, signal.uncertainty)
+            notional_usd = abs(kelly_scale * adjusted_edge) * equity_usd
+            economic, cost_est = _cm.is_economic(signal.symbol, notional_usd, edge_bps)
+            if not economic:
+                skipped[signal.symbol] = (
+                    f"cost_gate({edge_bps:.1f}bps_edge<{cost_est.min_edge_bps:.1f}bps_min)"
+                )
+                logger.debug(
+                    "Cost gate: skipping %s edge=%.1fbps < min=%.1fbps (notional=%.0f)",
+                    signal.symbol, edge_bps, cost_est.min_edge_bps, notional_usd,
+                )
+                continue
 
         signed_exposure = kelly_scale * adjusted_edge
 

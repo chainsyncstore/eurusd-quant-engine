@@ -26,6 +26,7 @@ from quant.features import (
     liquidation_proximity,   # Phase 1 upgrade
     cross_pair,              # Phase 1 upgrade
     crypto_session,
+    order_book,              # Phase B: L2 order book snapshot features
 )
 
 logger = logging.getLogger(__name__)
@@ -52,6 +53,7 @@ _CRYPTO_MODULES = [
     liquidation_proximity,   # NEW — Phase 1
     cross_pair,              # NEW — Phase 1 (needs other features, before crypto_session)
     crypto_session,
+    order_book,              # Phase B: L2 order book snapshot features
 ]
 
 # Explicit whitelist of permitted feature columns 
@@ -146,6 +148,13 @@ _FEATURE_WHITELIST = {
     "oi_funding_pressure",
     "price_position_24h",
     "liquidation_cascade_4h",
+    # Phase B: Order book snapshot features
+    "bid_ask_spread_bps",
+    "book_imbalance_5",
+    "book_imbalance_20",
+    "depth_ratio_5",
+    "volume_at_touch_ratio",
+    "spread_vol_ratio",
 }
 
 
