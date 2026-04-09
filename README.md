@@ -7,15 +7,11 @@ The project still includes research/evaluation tooling, but the active productio
 ## What the system does today
 
 - Supports **paper** and **live** sessions per user.
-- Runs a **portfolio-style v2 executor** (multi-symbol exposure management).
-- Includes **maintenance continuity** (`/prepare_update`, `/continue_demo`, `/continue_live`).
-- Shows **risk budget overshoot** correctly (can exceed 100% when over budget).
-- Uses **mark-to-market paper equity** (not a static fixed baseline).
-- Provides user-facing lifecycle safety controls:
-  - `/set_horizon <hours|off>`
-  - `/set_stoploss <percent|off>`
-  - `/lifecycle`
-- Integrates lifecycle + exposure breaches into kill-switch safety behavior.
+- **Machine Learning Ensemble:** Blends classical structural features (LightGBM) with purely temporal analysis (Amazon Chronos) into a `FullEnsemble` consensus. 
+- **The Event Gate:** Semantic news pipeline (CryptoCompare + Fear/Greed) acts as a dynamic veto against ML predictions during extreme global shocks.
+- **Resilient Redis Architecture:** Uses an asynchronous Zero-Trust message bus (Redis Streams) and a robust Write-Ahead Log (WAL) to survive and seamlessly recover from aggressive EC2 out-of-memory container crashes.
+- **Advanced Execution Logistics:** Includes background ledger reconciliation to catch ghost/phantom positions against the live exchange, alongside a 120s "Tick Starvation" dead-man's switch to flatten positions during market data blackouts.
+- **Dynamic Risk Filters:** Automatic Minimum Notional allocation limits based on real-time equity ratios mapped heavily against inverse-volatility parity weighting.
 
 ## Non-technical lifecycle controls (for end users)
 
