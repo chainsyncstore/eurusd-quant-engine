@@ -7,6 +7,7 @@ from typing import Iterable
 
 from quant_v2.contracts import ExecutionIntent, OrderPlan, StrategySignal
 from quant_v2.portfolio.allocation import AllocationDecision, allocate_signals
+from quant_v2.portfolio.optimizer import RiskParityOptimizer
 from quant_v2.portfolio.risk_policy import PolicyResult, PortfolioRiskPolicy
 
 
@@ -26,6 +27,8 @@ class PlannerConfig:
     total_risk_budget_frac: float = 1.0
     max_symbol_exposure_frac: float = 0.15
     min_confidence: float = 0.65
+    enable_optimizer: bool = True
+    equity_usd: float = 300.0
 
 
 def build_execution_intents(
@@ -35,17 +38,37 @@ def build_execution_intents(
     config: PlannerConfig = PlannerConfig(),
     bucket_map: dict[str, str] | None = None,
     reduce_only: bool = False,
+    optimizer: RiskParityOptimizer | None = None,
+    price_histories: dict[str, "pd.Series"] | None = None,
 ) -> IntentPlan:
-    """Convert strategy signals into policy-compliant execution intents."""
+    """Convert strategy signals into policy-compliant execution intents.
+
+    When *optimizer* is provided (and config.enable_optimizer is True),
+    the allocation exposures are adjusted using risk-parity weights before
+    the risk policy is applied.
+    """
+    import pandas as pd  # local import to avoid circular dependency
 
     allocation = allocate_signals(
         signals,
         total_risk_budget_frac=config.total_risk_budget_frac,
         max_symbol_exposure_frac=config.max_symbol_exposure_frac,
         min_confidence=config.min_confidence,
+        equity_usd=config.equity_usd,
     )
 
-    policy_result = policy.apply(allocation.target_exposures, bucket_map=bucket_map)
+    # --- Risk-parity optimization pass ---
+    optimized_exposures = allocation.target_exposures
+    if config.enable_optimizer and optimizer is not None and allocation.target_exposures:
+        opt_result = optimizer.optimize(
+            target_exposures=allocation.target_exposures,
+            price_histories=price_histories or {},
+            equity_usd=config.equity_usd,
+        )
+        if opt_result.weights:
+            optimized_exposures = opt_result.weights
+
+    policy_result = policy.apply(optimized_exposures, bucket_map=bucket_map)
 
     intents: list[ExecutionIntent] = []
     signal_map = {signal.symbol: signal for signal in signals}
