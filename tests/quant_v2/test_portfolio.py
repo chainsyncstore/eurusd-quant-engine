@@ -72,6 +72,7 @@ def test_allocate_signals_confidence_scales_exposure_before_cap() -> None:
         enable_symbol_accuracy=False,
         enable_event_gate=False,
         enable_model_agreement=False,
+        enable_cost_gate=False,
     )
 
     assert decision.target_exposures["BTCUSDT"] == pytest.approx(0.05)

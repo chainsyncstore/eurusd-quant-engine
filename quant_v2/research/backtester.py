@@ -80,11 +80,29 @@ class BacktestResult:
 
     @property
     def profit_factor(self) -> float:
-        wins = sum(f.price * f.quantity - f.fee_usd - f.slippage_usd
-                   for f in self.fills if f.side == "BUY")
-        losses = sum(f.fee_usd + f.slippage_usd
-                     for f in self.fills if f.side == "SELL")
-        return wins / max(abs(losses), 1e-9)
+        """Ratio of gross winning PnL to |gross losing PnL| from round-trip trades."""
+        gross_wins = 0.0
+        gross_losses = 0.0
+        # Pair fills into round-trips: entry fill followed by exit fill
+        i = 0
+        while i + 1 < len(self.fills):
+            entry = self.fills[i]
+            exit_ = self.fills[i + 1]
+            # Match entry→exit (BUY→SELL or SELL→BUY)
+            if entry.side != exit_.side and entry.symbol == exit_.symbol:
+                if entry.side == "BUY":
+                    rt_pnl = (exit_.price - entry.price) * entry.quantity
+                else:
+                    rt_pnl = (entry.price - exit_.price) * entry.quantity
+                rt_pnl -= (entry.fee_usd + entry.slippage_usd + exit_.fee_usd + exit_.slippage_usd)
+                if rt_pnl > 0:
+                    gross_wins += rt_pnl
+                else:
+                    gross_losses += abs(rt_pnl)
+                i += 2
+            else:
+                i += 1
+        return gross_wins / max(gross_losses, 1e-9)
 
 
 def _load_model(config: BacktestConfig):
@@ -195,6 +213,8 @@ def run_backtest(config: BacktestConfig) -> BacktestResult:
     gross_pnl = 0.0
     total_fees = 0.0
     total_slippage = 0.0
+    win_trades = 0
+    total_round_trips = 0
 
     logger.info("Backtest: running %d bars (warmup=%d)...",
                 len(raw), config.warmup_bars)
@@ -262,6 +282,9 @@ def run_backtest(config: BacktestConfig) -> BacktestResult:
             total_fees += fee
             total_slippage += slip
             equity += pnl
+            total_round_trips += 1
+            if pnl > 0:
+                win_trades += 1
             fills.append(Fill(
                 timestamp=ts, symbol=config.symbol,
                 side="SELL" if position > 0 else "BUY",
@@ -295,15 +318,13 @@ def run_backtest(config: BacktestConfig) -> BacktestResult:
         name="equity_usd",
     )
     daily = equity_series.resample("D").last().ffill().pct_change().dropna()
-    open_fills = [f for f in fills if f.side in ("BUY", "SELL")]
-    win_trades = sum(1 for f in fills if f.side == "SELL" and f.price > entry_price)
 
     return BacktestResult(
         config=config,
         equity_curve=equity_series,
         fills=fills,
         daily_returns=daily,
-        total_trades=len([f for f in fills if f.side in ("BUY", "SELL")]),
+        total_trades=total_round_trips,
         win_trades=win_trades,
         gross_pnl=gross_pnl,
         total_fees=total_fees,

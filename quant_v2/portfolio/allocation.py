@@ -196,7 +196,8 @@ def allocate_signals(
             skipped[signal.symbol] = "zero_edge"
             continue
 
-        # --- Transaction cost gate ---
+        # --- Transaction cost gate + cost-aware Kelly ---
+        cost_drag_frac = 0.0
         if enable_cost_gate:
             _cm = cost_model or get_default_cost_model()
             edge_bps = confidence_to_edge_bps(signal.confidence, signal.uncertainty)
@@ -211,8 +212,12 @@ def allocate_signals(
                     signal.symbol, edge_bps, cost_est.min_edge_bps, notional_usd,
                 )
                 continue
+            # Subtract cost from edge before Kelly sizing (plan item A.3)
+            if edge_bps > 0:
+                cost_drag_frac = min(cost_est.round_trip_cost_bps / edge_bps, 0.95)
 
-        signed_exposure = kelly_scale * adjusted_edge
+        cost_adjusted_edge = adjusted_edge * (1.0 - cost_drag_frac)
+        signed_exposure = kelly_scale * cost_adjusted_edge
 
         # --- Session volatility filter ---
         sess_mult = 1.0

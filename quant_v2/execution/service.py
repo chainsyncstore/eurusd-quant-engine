@@ -26,6 +26,7 @@ from quant_v2.monitoring.kill_switch import (
     MonitoringSnapshot,
     evaluate_kill_switch,
 )
+from quant_v2.portfolio.optimizer import RiskParityOptimizer
 from quant_v2.portfolio.risk_policy import PortfolioRiskPolicy
 
 logger = logging.getLogger(__name__)
@@ -345,6 +346,7 @@ class RoutedExecutionService:
         self._initial_equity_usd = float(initial_equity_usd)
         self._risk_policy = risk_policy or PortfolioRiskPolicy()
         self._planner_config = planner_config or PlannerConfig()
+        self._optimizer = RiskParityOptimizer()
         self._kill_switch_config = kill_switch_config or KillSwitchConfig()
         self._allow_live_execution = bool(allow_live_execution)
         if canary_live_risk_cap_frac is None:
@@ -853,11 +855,18 @@ class RoutedExecutionService:
             prices=planning_prices,
         )
 
+        # Gather recent close prices for optimizer (from current planning prices)
+        price_histories = {}
+        if hasattr(state, 'price_histories'):
+            price_histories = state.price_histories or {}
+
         intent_plan = build_execution_intents(
             planning_signals,
             policy=policy,
             config=cfg,
             bucket_map=bucket_map,
+            optimizer=self._optimizer,
+            price_histories=price_histories,
         )
         order_plans = reconcile_target_exposures(
             intent_plan.policy_result.exposures,

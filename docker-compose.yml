@@ -22,6 +22,7 @@ services:
     image: quant_bot:latest
     container_name: quant_execution
     restart: unless-stopped
+    stop_grace_period: 150s
     command: python -m quant_v2.execution.main
     depends_on:
       - redis

@@ -13,7 +13,7 @@
 
 set -euo pipefail
 
-CONTAINER_NAME="quant_bot"
+CONTAINER_NAME="${QUANT_CONTAINER_NAME:-quant_execution}"
 FLATTEN_TIMEOUT_SECS=120      # max wait for position closure
 POLL_INTERVAL_SECS=5
 LOG_FILE="/var/log/quant_bot_shutdown.log"

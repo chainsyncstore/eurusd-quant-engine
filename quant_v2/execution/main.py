@@ -822,6 +822,25 @@ async def run_server() -> None:
     logger.info("Execution engine running. Press Ctrl+C to stop.")
 
     await stop_event.wait()
+
+    # Attempt to flatten all live positions before shutting down
+    try:
+        live_ids = server._service.get_live_session_ids()
+        if live_ids:
+            logger.info("Shutdown: flattening %d live session(s)...", len(live_ids))
+            for uid in live_ids:
+                try:
+                    result = await server._circuit_breaker_flatten(
+                        uid, reason="graceful_shutdown",
+                    )
+                    logger.info("Shutdown flatten user=%s result=%s", uid, result)
+                except Exception as flatten_exc:
+                    logger.error("Shutdown flatten failed for user=%s: %s", uid, flatten_exc)
+        else:
+            logger.info("Shutdown: no live sessions to flatten")
+    except Exception as exc:
+        logger.error("Shutdown flatten sweep failed: %s", exc)
+
     await server.stop()
     logger.info("positions_flat")  # sentinel for flatten_on_shutdown.sh
 

@@ -89,7 +89,7 @@ NAMESPACE="QuantBot"
 INSTANCE_ID=\$(curl -sf http://169.254.169.254/latest/meta-data/instance-id 2>/dev/null || echo "local")
 
 # Check if quant_bot container is running
-if docker ps --format '{{.Names}}' | grep -q quant_bot; then
+if docker ps --format '{{.Names}}' | grep -q quant_execution; then
     STATUS=1
 else
     STATUS=0
