@@ -74,4 +74,12 @@ def resolve_model_dir(model_root: Path | str, registry_root: Path | str) -> Mode
 def _looks_like_model_artifact(path: Path) -> bool:
     """Minimal artifact validity check for runtime loading."""
 
-    return path.is_dir() and (path / "config.json").exists()
+    if not path.is_dir():
+        return False
+    # v1 legacy format uses config.json + .joblib files
+    if (path / "config.json").exists():
+        return True
+    # v2 multi-horizon format uses model_*m.pkl files
+    if any(path.glob("model_*m.pkl")):
+        return True
+    return False
