@@ -85,6 +85,7 @@ class _FakeBridge:
     mode: str = "paper"
     reset_result: bool = True
     stop_result: bool = True
+    service: object | None = None
     stop_calls: list[int] = field(default_factory=list)
 
     def is_running(self, user_id: int) -> bool:
@@ -174,7 +175,18 @@ def test_stats_v2_degraded_includes_source_diagnostics(monkeypatch) -> None:
             },
         ),
     )
-    bridge = _FakeBridge(running=False, mode="paper")
+    bridge = _FakeBridge(
+        running=False,
+        mode="paper",
+        service=SimpleNamespace(
+            get_portfolio_snapshot=lambda uid: SimpleNamespace(
+                open_positions={"btcusdt": 0.015},
+                symbol_notional_usd={"btcusdt": 945.0},
+                symbol_pnl_usd={"btcusdt": 12.34},
+            ),
+            get_last_prices=lambda uid: {"btcusdt": 63000.0},
+        ),
+    )
 
     monkeypatch.setattr(telebot_main, "EXECUTION_BACKEND", "v2_memory")
     monkeypatch.setattr(telebot_main, "_get_signal_source_manager", lambda *args, **kwargs: source_manager)
@@ -186,6 +198,11 @@ def test_stats_v2_degraded_includes_source_diagnostics(monkeypatch) -> None:
     msg = update.message.replies[-1]
     assert "Session Degraded" in msg
     assert "Model Trade Picks (session):" in msg
+    assert "- Held positions:" in msg
+    assert "BTCUSDT: LONG 0.015000" in msg
+    assert "mark=63000.00" in msg
+    assert "notional=$945.00" in msg
+    assert "pnl=$+12.34" in msg
     assert "BTCUSDT BUY @ 50000.00 (P=0.720, R=3)" in msg
 
 

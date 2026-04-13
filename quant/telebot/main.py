@@ -1332,7 +1332,12 @@ def _build_kill_switch_text(bridge: V2ExecutionBridge, user_id: int) -> str:
     )
 
 
-def _build_source_signal_diagnostics_text(source_manager, user_id: int) -> str:
+def _build_source_signal_diagnostics_text(
+    source_manager,
+    user_id: int,
+    *,
+    bridge: V2ExecutionBridge | None = None,
+) -> str:
     """Format model trade picks diagnostics when available."""
 
     if source_manager is None:
@@ -1357,6 +1362,56 @@ def _build_source_signal_diagnostics_text(source_manager, user_id: int) -> str:
         f"- Trades: {total_trades} (BUY={buys}, SELL={sells})",
         f"- Active symbols: {symbols_active}",
     ]
+
+    service = getattr(bridge, "service", None) if bridge is not None else None
+    snapshot_getter = getattr(service, "get_portfolio_snapshot", None)
+    snapshot = snapshot_getter(user_id) if callable(snapshot_getter) else None
+    if snapshot is not None:
+        open_positions = {
+            str(symbol).strip().upper(): float(qty)
+            for symbol, qty in dict(getattr(snapshot, "open_positions", {}) or {}).items()
+            if str(symbol).strip() and abs(float(qty)) > 1e-12
+        }
+        if open_positions:
+            symbol_notionals = {
+                str(symbol).strip().upper(): float(notional)
+                for symbol, notional in dict(getattr(snapshot, "symbol_notional_usd", {}) or {}).items()
+                if str(symbol).strip()
+            }
+            symbol_pnl = {
+                str(symbol).strip().upper(): float(pnl)
+                for symbol, pnl in dict(getattr(snapshot, "symbol_pnl_usd", {}) or {}).items()
+                if str(symbol).strip()
+            }
+            prices_getter = getattr(service, "get_last_prices", None)
+            last_prices = {}
+            if callable(prices_getter):
+                last_prices = {
+                    str(symbol).strip().upper(): float(price)
+                    for symbol, price in dict(prices_getter(user_id) or {}).items()
+                    if str(symbol).strip()
+                }
+
+            lines.append("- Held positions:")
+            for symbol, qty in sorted(open_positions.items(), key=lambda kv: abs(kv[1]), reverse=True):
+                direction = "LONG" if qty > 0.0 else "SHORT"
+                parts = [f"  {symbol}: {direction} {abs(qty):.6f}"]
+
+                price = float(last_prices.get(symbol, 0.0) or 0.0)
+                if price > 0.0:
+                    parts.append(f"mark={price:.2f}")
+
+                notional = float(symbol_notionals.get(symbol, 0.0) or 0.0)
+                if abs(notional) > 0.0:
+                    parts.append(f"notional={_format_usd(abs(notional))}")
+
+                pnl = float(symbol_pnl.get(symbol, 0.0) or 0.0)
+                if abs(pnl) > 0.0:
+                    parts.append(f"pnl={_format_usd(pnl, signed=True)}")
+
+                lines.append(" | ".join(parts))
+        else:
+            lines.append("- Held positions: none")
 
     # --- Per-symbol scorecard accuracy ---
     scorecard_getter = getattr(source_manager, "get_scorecard_summary", None)
@@ -3002,7 +3057,11 @@ async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if bridge:
         if not bridge.is_running(user_id):
             if _using_v2_primary_backend() and source_manager and source_manager.is_running(user_id):
-                source_diag = _build_source_signal_diagnostics_text(source_manager, user_id)
+                source_diag = _build_source_signal_diagnostics_text(
+                    source_manager,
+                    user_id,
+                    bridge=bridge,
+                )
                 msg = (
                     "⚠️ **Session Degraded**\n\n"
                     "Signal source is running but execution bridge is offline.\n"
@@ -3050,7 +3109,11 @@ async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
             stats_text += "\n\n" + kill_switch_text
 
         if _using_v2_primary_backend():
-            source_diag_text = _build_source_signal_diagnostics_text(source_manager, user_id)
+            source_diag_text = _build_source_signal_diagnostics_text(
+                source_manager,
+                user_id,
+                bridge=bridge,
+            )
             if source_diag_text:
                 stats_text += "\n\n" + source_diag_text
 
