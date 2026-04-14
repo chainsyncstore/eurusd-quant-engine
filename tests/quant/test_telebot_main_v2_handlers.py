@@ -86,6 +86,7 @@ class _FakeBridge:
     reset_result: bool = True
     stop_result: bool = True
     service: object | None = None
+    execution_diagnostics: object | None = None
     stop_calls: list[int] = field(default_factory=list)
 
     def is_running(self, user_id: int) -> bool:
@@ -103,6 +104,10 @@ class _FakeBridge:
     async def stop_session(self, user_id: int) -> bool:
         self.stop_calls.append(user_id)
         return self.stop_result
+
+    def get_execution_diagnostics(self, user_id: int) -> object | None:
+        _ = user_id
+        return self.execution_diagnostics
 
 
 def test_reset_demo_v2_marks_degraded_alert_when_pair_mismatched(monkeypatch) -> None:
@@ -204,6 +209,44 @@ def test_stats_v2_degraded_includes_source_diagnostics(monkeypatch) -> None:
     assert "notional=$945.00" in msg
     assert "pnl=$+12.34" in msg
     assert "BTCUSDT BUY @ 50000.00 (P=0.720, R=3)" in msg
+
+
+def test_model_trade_picks_derives_symbols_from_positions(monkeypatch) -> None:
+    """When signal_log is empty (restart) but bridge has positions, active symbols
+    and trade counts should still reflect reality."""
+
+    source_manager = _FakeSourceManager(
+        running=True,
+        traded_stats={
+            "total_trades": 0, "buys": 0, "sells": 0,
+            "symbols": 0, "per_symbol": {},
+        },
+    )
+    bridge = _FakeBridge(
+        running=False,
+        mode="paper",
+        service=SimpleNamespace(
+            get_portfolio_snapshot=lambda uid: SimpleNamespace(
+                open_positions={"AVAXUSDT": 74.39, "ETHUSDT": 1.5},
+                symbol_notional_usd={"AVAXUSDT": 697.0, "ETHUSDT": 3500.0},
+                symbol_pnl_usd={"AVAXUSDT": -2.0, "ETHUSDT": 15.0},
+            ),
+            get_last_prices=lambda uid: {"AVAXUSDT": 9.38, "ETHUSDT": 2333.0},
+        ),
+        execution_diagnostics=ExecutionDiagnostics(
+            routed_buy_signals=5, routed_sell_signals=2,
+            routed_actionable_signals=7,
+        ),
+    )
+
+    text = telebot_main._build_source_signal_diagnostics_text(
+        source_manager, 999, bridge=bridge,
+    )
+
+    assert "Active symbols: 2" in text
+    assert "Trades: 7 (BUY=5, SELL=2)" in text
+    assert "AVAXUSDT: LONG" in text
+    assert "ETHUSDT: LONG" in text
 
 
 def test_refresh_v2_stats_market_snapshot_ingests_normalized_prices() -> None:

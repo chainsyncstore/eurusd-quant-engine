@@ -1277,8 +1277,6 @@ async def _refresh_v2_stats_market_snapshot(
 
     if bridge is None or source_manager is None:
         return
-    if not bridge.is_running(user_id):
-        return
 
     fetcher = getattr(source_manager, "get_realtime_prices", None)
     if not callable(fetcher):
@@ -1308,6 +1306,10 @@ async def _refresh_v2_stats_market_snapshot(
             normalized_prices[clean_symbol] = clean_price
 
     if not normalized_prices:
+        logger.debug("/stats price refresh returned no valid prices for user %s", user_id)
+        return
+
+    if not bridge.is_running(user_id):
         return
 
     try:
@@ -1357,41 +1359,62 @@ def _build_source_signal_diagnostics_text(
     sells = int(traded.get("sells", 0) or 0)
     symbols_active = int(traded.get("symbols", 0) or 0)
 
-    lines = [
-        "Model Trade Picks (session):",
-        f"- Trades: {total_trades} (BUY={buys}, SELL={sells})",
-        f"- Active symbols: {symbols_active}",
-    ]
-
+    # --- Fetch snapshot and execution diagnostics early ---
     service = getattr(bridge, "service", None) if bridge is not None else None
     snapshot_getter = getattr(service, "get_portfolio_snapshot", None)
     snapshot = snapshot_getter(user_id) if callable(snapshot_getter) else None
+
+    open_positions: dict[str, float] = {}
+    symbol_notionals: dict[str, float] = {}
+    symbol_pnl: dict[str, float] = {}
+    last_prices: dict[str, float] = {}
+
     if snapshot is not None:
         open_positions = {
             str(symbol).strip().upper(): float(qty)
             for symbol, qty in dict(getattr(snapshot, "open_positions", {}) or {}).items()
             if str(symbol).strip() and abs(float(qty)) > 1e-12
         }
-        if open_positions:
-            symbol_notionals = {
-                str(symbol).strip().upper(): float(notional)
-                for symbol, notional in dict(getattr(snapshot, "symbol_notional_usd", {}) or {}).items()
+        symbol_notionals = {
+            str(symbol).strip().upper(): float(notional)
+            for symbol, notional in dict(getattr(snapshot, "symbol_notional_usd", {}) or {}).items()
+            if str(symbol).strip()
+        }
+        symbol_pnl = {
+            str(symbol).strip().upper(): float(pnl)
+            for symbol, pnl in dict(getattr(snapshot, "symbol_pnl_usd", {}) or {}).items()
+            if str(symbol).strip()
+        }
+        prices_getter = getattr(service, "get_last_prices", None)
+        if callable(prices_getter):
+            last_prices = {
+                str(symbol).strip().upper(): float(price)
+                for symbol, price in dict(prices_getter(user_id) or {}).items()
                 if str(symbol).strip()
             }
-            symbol_pnl = {
-                str(symbol).strip().upper(): float(pnl)
-                for symbol, pnl in dict(getattr(snapshot, "symbol_pnl_usd", {}) or {}).items()
-                if str(symbol).strip()
-            }
-            prices_getter = getattr(service, "get_last_prices", None)
-            last_prices = {}
-            if callable(prices_getter):
-                last_prices = {
-                    str(symbol).strip().upper(): float(price)
-                    for symbol, price in dict(prices_getter(user_id) or {}).items()
-                    if str(symbol).strip()
-                }
 
+    # Augment trade counts with execution diagnostics (survives signal_log gaps)
+    diag_getter = getattr(bridge, "get_execution_diagnostics", None) if bridge is not None else None
+    diag = diag_getter(user_id) if callable(diag_getter) else None
+    if diag is not None:
+        routed_buys = int(getattr(diag, "routed_buy_signals", 0) or 0)
+        routed_sells = int(getattr(diag, "routed_sell_signals", 0) or 0)
+        routed_total = routed_buys + routed_sells
+        total_trades = max(total_trades, routed_total)
+        buys = max(buys, routed_buys)
+        sells = max(sells, routed_sells)
+
+    # Active symbols: prefer open positions count when signal_log is stale
+    symbols_active = max(symbols_active, len(open_positions))
+
+    lines = [
+        "Model Trade Picks (session):",
+        f"- Trades: {total_trades} (BUY={buys}, SELL={sells})",
+        f"- Active symbols: {symbols_active}",
+    ]
+
+    if snapshot is not None:
+        if open_positions:
             lines.append("- Held positions:")
             for symbol, qty in sorted(open_positions.items(), key=lambda kv: abs(kv[1]), reverse=True):
                 direction = "LONG" if qty > 0.0 else "SHORT"

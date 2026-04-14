@@ -336,13 +336,34 @@ class V2SignalManager:
         *,
         symbols: tuple[str, ...] | None = None,
     ) -> dict[str, float]:
-        """Fetch latest per-symbol market prices on demand for diagnostics paths."""
+        """Fetch latest per-symbol market prices on demand for diagnostics paths.
 
-        if not self.is_running(user_id):
-            return {}
+        Falls back to any available session client or an ephemeral client so
+        that /stats always returns live prices even when the requesting user's
+        own signal session is not active.
+        """
+
         session = self.sessions.get(user_id)
-        if session is None:
-            return {}
+        client = getattr(session, "client", None) if session is not None else None
+
+        # Fallback: borrow a client from any running session
+        if client is None:
+            for other_session in self.sessions.values():
+                if getattr(other_session, "client", None) is not None:
+                    client = other_session.client
+                    break
+
+        # Fallback: create an ephemeral read-only client for market data
+        if client is None:
+            try:
+                client = self._client_factory(
+                    {}, False,
+                    self.symbols[0] if self.symbols else "BTCUSDT",
+                    self.anchor_interval,
+                )
+            except Exception as exc:
+                logger.warning("Ephemeral client creation failed for price refresh: %s", exc)
+                return {}
 
         target_symbols = tuple(
             dict.fromkeys(
@@ -359,7 +380,7 @@ class V2SignalManager:
         async def _fetch_symbol(symbol: str) -> tuple[str, float]:
             fetch_call = partial(
                 self._fetch_realtime_symbol_price,
-                session.client,
+                client,
                 symbol,
                 self.anchor_interval,
             )
