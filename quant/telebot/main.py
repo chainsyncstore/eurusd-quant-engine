@@ -88,11 +88,11 @@ V2_ALLOW_LIVE_EXECUTION = os.getenv("BOT_V2_ALLOW_LIVE_EXECUTION", "0").strip().
 }
 try:
     V2_SIGNAL_LOOP_SECONDS = max(
-        int((os.getenv("BOT_V2_SIGNAL_LOOP_SECONDS", "3600").strip() or "3600")),
+        int((os.getenv("BOT_V2_SIGNAL_LOOP_SECONDS", "900").strip() or "900")),
         1,
     )
 except ValueError:
-    V2_SIGNAL_LOOP_SECONDS = 3600
+    V2_SIGNAL_LOOP_SECONDS = 900
 DEFAULT_V2_SYMBOL = default_universe_symbols()[0] if default_universe_symbols() else "BTCUSDT"
 
 

@@ -263,3 +263,36 @@ def test_v2_signal_manager_reset_session_state_rejects_live_and_missing(tmp_path
         await manager.stop_session(15)
 
     asyncio.run(scenario())
+
+
+def test_default_loop_interval_is_900(tmp_path: Path, monkeypatch) -> None:
+    """Default loop interval should be 900s (15 min) when env is unset."""
+    monkeypatch.delenv("BOT_V2_SIGNAL_LOOP_SECONDS", raising=False)
+    manager = V2SignalManager(
+        model_dir=tmp_path,
+        symbols=("BTCUSDT",),
+        loop_interval_seconds=None,
+    )
+    assert manager.loop_interval_seconds == 900
+
+
+def test_env_override_still_works(tmp_path: Path, monkeypatch) -> None:
+    """BOT_V2_SIGNAL_LOOP_SECONDS env var should override default."""
+    monkeypatch.setenv("BOT_V2_SIGNAL_LOOP_SECONDS", "60")
+    manager = V2SignalManager(
+        model_dir=tmp_path,
+        symbols=("BTCUSDT",),
+        loop_interval_seconds=None,
+    )
+    assert manager.loop_interval_seconds == 60
+
+
+def test_explicit_kwarg_beats_env(tmp_path: Path, monkeypatch) -> None:
+    """Explicit loop_interval_seconds kwarg should beat env var."""
+    monkeypatch.setenv("BOT_V2_SIGNAL_LOOP_SECONDS", "60")
+    manager = V2SignalManager(
+        model_dir=tmp_path,
+        symbols=("BTCUSDT",),
+        loop_interval_seconds=120,
+    )
+    assert manager.loop_interval_seconds == 120

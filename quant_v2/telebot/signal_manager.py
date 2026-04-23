@@ -115,11 +115,11 @@ class V2SignalManager:
         if loop_interval_seconds is not None:
             return max(int(loop_interval_seconds), 1)
 
-        raw = os.getenv("BOT_V2_SIGNAL_LOOP_SECONDS", "3600").strip() or "3600"
+        raw = os.getenv("BOT_V2_SIGNAL_LOOP_SECONDS", "900").strip() or "900"
         try:
             parsed = int(raw)
         except ValueError:
-            parsed = 3600
+            parsed = 900
         return max(parsed, 1)
 
     async def start_session(
