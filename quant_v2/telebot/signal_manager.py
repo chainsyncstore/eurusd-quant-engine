@@ -124,6 +124,10 @@ class V2SignalManager:
             parsed = 3600
         return max(parsed, 1)
 
+    @staticmethod
+    def _quiet_heartbeat_enabled() -> bool:
+        return os.getenv("BOT_V2_QUIET_HEARTBEAT", "0").strip().lower() in {"1", "true", "yes", "on"}
+
     async def start_session(
         self,
         user_id: int,
@@ -598,6 +602,7 @@ class V2SignalManager:
 
         cycle_prices: dict[str, float] = {}
         btc_returns: pd.Series | None = None
+        cycle_decisions: list[dict[str, Any]] = []
 
         for symbol in self.symbols:
             fetch_call = partial(
@@ -684,6 +689,15 @@ class V2SignalManager:
                     horizon_bars=self.horizon_bars,
                 )
 
+            # --- Collect decision for cycle digest ---
+            cycle_decisions.append({
+                "symbol": symbol,
+                "signal": signal_type,
+                "probability": float(payload.get("probability", 0.5)),
+                "buy_th": float(payload.get("_buy_th", 0.55)),
+                "sell_th": float(payload.get("_sell_th", 0.45)),
+            })
+
             session.signal_log.append(payload)
             if len(session.signal_log) > self.max_signal_log:
                 del session.signal_log[:-self.max_signal_log]
@@ -695,6 +709,16 @@ class V2SignalManager:
             resolved = self.scorecard.evaluate_pending(cycle_prices)
             if resolved > 0:
                 logger.info("Scorecard: resolved %d pending predictions", resolved)
+
+        # --- Emit cycle digest if enabled and no actionable signals ---
+        if self._quiet_heartbeat_enabled() and cycle_decisions:
+            actionable_in_cycle = [d for d in cycle_decisions if d["signal"] in ("BUY", "SELL")]
+            if not actionable_in_cycle:
+                digest_payload = self._build_cycle_digest(cycle_decisions)
+                try:
+                    await self._emit(session, digest_payload)
+                except Exception as exc:
+                    logger.warning("cycle digest emit failed for user %s: %s", session.user_id, exc)
 
     async def _emit(self, session: _SignalSession, payload: dict[str, Any]) -> None:
         callback_result = session.on_signal(payload)
@@ -866,6 +890,8 @@ class V2SignalManager:
             "_close_series": close_series,
             "_high_series": high_series,
             "_low_series": low_series,
+            "_buy_th": buy_threshold,
+            "_sell_th": sell_threshold,
             }
         )
 
@@ -1130,6 +1156,37 @@ class V2SignalManager:
                     logger.info("Configured horizon=%dm not found; falling back to %s", self.horizon_bars, fallback.name)
                     return fallback
         return None
+
+    def _build_cycle_digest(self, decisions: list[dict[str, Any]]) -> dict[str, Any]:
+        """Build a digest payload for cycles with no actionable signals.
+
+        Top-3 closest-to-threshold includes symbol, direction with smallest gap,
+        proba, and delta to the nearest threshold.
+        """
+        top = sorted(
+            decisions,
+            key=lambda d: min(
+                abs(d["probability"] - d["buy_th"]),
+                abs(d["probability"] - d["sell_th"]),
+            ),
+        )[:3]
+        return {
+            "signal": "CYCLE_DIGEST",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "top_by_closest_threshold": [
+                {
+                    "symbol": d["symbol"],
+                    "probability": float(d["probability"]),
+                    "buy_th": float(d["buy_th"]),
+                    "sell_th": float(d["sell_th"]),
+                    "gap_to_buy": float(d["buy_th"] - d["probability"]),
+                    "gap_to_sell": float(d["probability"] - d["sell_th"]),
+                }
+                for d in top
+            ],
+            "total_decisions": len(decisions),
+            "cycle_interval_seconds": self.loop_interval_seconds,
+        }
 
     @staticmethod
     def _bounded_rate(value: object) -> float:
