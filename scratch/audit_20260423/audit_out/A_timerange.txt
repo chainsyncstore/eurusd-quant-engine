@@ -1,0 +1,10 @@
+--- /tmp/audit_logs/quant_telegram.stderr.log ---
+87682 /tmp/audit_logs/quant_telegram.stderr.log
+2026-04-16T10:06:13.764041724Z 2026-04-16 10:06:13,763 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8
+2026-04-23T10:05:59.880889151Z 2026-04-23 10:05:59,880 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8
+--- /tmp/audit_logs/quant_execution.log ---
+0 /tmp/audit_logs/quant_execution.log
+--- /tmp/audit_logs/quant_retrain.stderr.log ---
+129 /tmp/audit_logs/quant_retrain.stderr.log
+2026-04-20T10:00:34.263056411Z 2026-04-20 10:00:34,261 [__main__] INFO: Retrain: fetching 6 months of data for symbols=[
+2026-04-20T10:01:37.509625167Z 2026-04-20 10:01:37,509 [__main__] INFO: Next retrain in 168 hours. Sleeping...

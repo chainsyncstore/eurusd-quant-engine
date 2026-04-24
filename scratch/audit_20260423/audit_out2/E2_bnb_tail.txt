@@ -1,0 +1,40 @@
+2026-04-23T04:00:22.540641766Z 2026-04-23 04:00:22,540 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.4483 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T04:00:22.542380275Z 2026-04-23 04:00:22,542 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.41, mult=0.30
+2026-04-23T04:00:31.826433085Z 2026-04-23 04:00:31,826 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T04:00:34.539303892Z 2026-04-23 04:00:34,539 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T04:00:41.910201737Z 2026-04-23 04:00:41,910 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T05:00:16.794358153Z 2026-04-23 05:00:16,794 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T05:00:22.124394840Z 2026-04-23 05:00:22,124 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5432 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T05:00:22.125899486Z 2026-04-23 05:00:22,125 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.40, mult=0.30
+2026-04-23T05:00:23.509052564Z 2026-04-23 05:00:23,508 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5594 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T05:00:23.510713952Z 2026-04-23 05:00:23,510 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.40, mult=0.30
+2026-04-23T05:00:31.403224680Z 2026-04-23 05:00:31,403 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T06:00:13.991757124Z 2026-04-23 06:00:13,991 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T06:00:20.176613158Z 2026-04-23 06:00:20,176 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5695 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:20.178266720Z 2026-04-23 06:00:20,178 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.40, mult=0.30
+2026-04-23T06:00:21.404034371Z 2026-04-23 06:00:21,403 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5546 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:21.405602004Z 2026-04-23 06:00:21,405 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.40, mult=0.30
+2026-04-23T07:00:19.445286949Z 2026-04-23 07:00:19,445 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT BUY proba=0.5959 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:19.446866129Z 2026-04-23 07:00:19,446 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.41, mult=0.30
+2026-04-23T07:00:20.674708398Z 2026-04-23 07:00:20,674 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5609 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:20.676283409Z 2026-04-23 07:00:20,676 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.41, mult=0.30
+2026-04-23T08:00:15.994775001Z 2026-04-23 08:00:15,994 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T08:00:23.081771846Z 2026-04-23 08:00:23,081 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.4340 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:23.083349788Z 2026-04-23 08:00:23,083 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.42, mult=0.30
+2026-04-23T08:00:24.028098600Z 2026-04-23 08:00:24,027 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.4410 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:24.029900672Z 2026-04-23 08:00:24,029 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.42, mult=0.30
+2026-04-23T08:00:31.399850206Z 2026-04-23 08:00:31,399 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T08:00:34.194186028Z 2026-04-23 08:00:34,193 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T09:00:15.901678487Z 2026-04-23 09:00:15,901 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T09:00:20.376295696Z 2026-04-23 09:00:20,375 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.4573 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T09:00:20.377919347Z 2026-04-23 09:00:20,377 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.44, mult=0.30
+2026-04-23T09:00:21.638505580Z 2026-04-23 09:00:21,638 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5093 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T09:00:21.640160145Z 2026-04-23 09:00:21,640 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.44, mult=0.30
+2026-04-23T10:00:10.689242705Z 2026-04-23 10:00:10,689 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T10:00:17.032392664Z 2026-04-23 10:00:17,032 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5496 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T10:00:17.034089466Z 2026-04-23 10:00:17,033 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.44, mult=0.30
+2026-04-23T10:00:18.213149457Z 2026-04-23 10:00:18,212 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT BUY proba=0.5928 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T10:00:18.214810976Z 2026-04-23 10:00:18,214 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.44, mult=0.30
+2026-04-23T10:00:22.215570669Z 2026-04-23 10:00:22,215 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T10:00:27.617447149Z 2026-04-23 10:00:27,617 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T10:00:30.318851886Z 2026-04-23 10:00:30,318 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0

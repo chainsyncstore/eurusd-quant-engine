@@ -1,0 +1,189 @@
+2026-04-22T18:00:13.508996002Z 2026-04-22 18:00:13,508 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT HOLD proba=0.4653 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T18:00:13.510253902Z 2026-04-22 18:00:13,510 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-22T18:00:14.405805953Z 2026-04-22 18:00:14,405 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT HOLD proba=0.5003 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T18:00:14.407232566Z 2026-04-22 18:00:14,407 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-22T18:00:16.146632720Z 2026-04-22 18:00:16,146 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT HOLD proba=0.5363 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T18:00:16.148243104Z 2026-04-22 18:00:16,148 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.48, mult=0.60
+2026-04-22T18:00:17.329460102Z 2026-04-22 18:00:17,329 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT BUY proba=0.5570 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T18:00:17.330950228Z 2026-04-22 18:00:17,330 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.48, mult=0.60
+2026-04-22T18:00:18.738094471Z 2026-04-22 18:00:18,737 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT BUY proba=0.6203 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:18.739935942Z 2026-04-22 18:00:18,739 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.53, mult=0.60
+2026-04-22T18:00:20.042311113Z 2026-04-22 18:00:20,042 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5873 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:20.043678282Z 2026-04-22 18:00:20,043 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.53, mult=0.60
+2026-04-22T18:00:21.393351499Z 2026-04-22 18:00:21,392 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.4322 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:22.633927109Z 2026-04-22 18:00:22,633 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.4930 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:23.993435598Z 2026-04-22 18:00:23,993 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT BUY proba=0.6106 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:25.303052535Z 2026-04-22 18:00:25,302 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT BUY proba=0.6106 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:26.731642213Z 2026-04-22 18:00:26,731 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.5153 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:28.024063339Z 2026-04-22 18:00:28,023 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.4803 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:29.370838524Z 2026-04-22 18:00:29,370 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.4363 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:30.593322554Z 2026-04-22 18:00:30,592 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.4847 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:32.023249361Z 2026-04-22 18:00:32,023 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT HOLD proba=0.4676 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:33.254034856Z 2026-04-22 18:00:33,253 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT HOLD proba=0.4795 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:34.662889211Z 2026-04-22 18:00:34,662 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT HOLD proba=0.5882 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:35.877725028Z 2026-04-22 18:00:35,877 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT BUY proba=0.6092 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:37.323757803Z 2026-04-22 18:00:37,323 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT HOLD proba=0.4529 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:37.325507912Z 2026-04-22 18:00:37,325 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.40, mult=0.30
+2026-04-22T18:00:38.608529129Z 2026-04-22 18:00:38,608 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT HOLD proba=0.4712 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T18:00:38.610123223Z 2026-04-22 18:00:38,609 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.39, mult=0.30
+2026-04-22T19:00:11.063550604Z 2026-04-22 19:00:11,063 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT SELL proba=0.4410 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T19:00:11.065224013Z 2026-04-22 19:00:11,065 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-22T19:00:11.945253852Z 2026-04-22 19:00:11,945 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT HOLD proba=0.4854 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T19:00:11.946947280Z 2026-04-22 19:00:11,946 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-22T19:00:14.497525464Z 2026-04-22 19:00:14,497 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT HOLD proba=0.4624 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T19:00:14.499255654Z 2026-04-22 19:00:14,498 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.49, mult=0.60
+2026-04-22T19:00:15.368392158Z 2026-04-22 19:00:15,368 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT SELL proba=0.4479 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T19:00:15.369881168Z 2026-04-22 19:00:15,369 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.49, mult=0.60
+2026-04-22T19:00:17.100135949Z 2026-04-22 19:00:17,099 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT BUY proba=0.6083 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:17.101929313Z 2026-04-22 19:00:17,101 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.55, mult=0.60
+2026-04-22T19:00:18.269879429Z 2026-04-22 19:00:18,269 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT BUY proba=0.6170 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:18.271545088Z 2026-04-22 19:00:18,271 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.55, mult=0.60
+2026-04-22T19:00:19.941690521Z 2026-04-22 19:00:19,941 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.5800 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:21.120157769Z 2026-04-22 19:00:21,119 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.5757 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:22.606278207Z 2026-04-22 19:00:22,606 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT HOLD proba=0.4939 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:23.774792638Z 2026-04-22 19:00:23,774 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT HOLD proba=0.4798 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:25.223881403Z 2026-04-22 19:00:25,223 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.4882 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:26.390366555Z 2026-04-22 19:00:26,390 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.4665 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:28.444886103Z 2026-04-22 19:00:28,444 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT BUY proba=0.6201 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:29.629712581Z 2026-04-22 19:00:29,629 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.5596 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:31.541633347Z 2026-04-22 19:00:31,541 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT BUY proba=0.6120 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:32.697790966Z 2026-04-22 19:00:32,697 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT BUY proba=0.6417 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:34.227804525Z 2026-04-22 19:00:34,227 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT BUY proba=0.6097 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:35.848962349Z 2026-04-22 19:00:35,848 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT BUY proba=0.5947 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:37.047371636Z 2026-04-22 19:00:37,047 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT HOLD proba=0.4408 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:37.049117117Z 2026-04-22 19:00:37,048 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.39, mult=0.30
+2026-04-22T19:00:38.472786511Z 2026-04-22 19:00:38,472 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT HOLD proba=0.4493 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T19:00:38.474411301Z 2026-04-22 19:00:38,474 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-22T20:00:14.227811849Z 2026-04-22 20:00:14,227 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT HOLD proba=0.4607 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T20:00:14.229436037Z 2026-04-22 20:00:14,229 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.39, mult=0.30
+2026-04-22T20:00:15.133630473Z 2026-04-22 20:00:15,133 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT HOLD proba=0.4860 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T20:00:15.135239636Z 2026-04-22 20:00:15,135 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.39, mult=0.30
+2026-04-22T20:00:16.876006157Z 2026-04-22 20:00:16,875 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT HOLD proba=0.5487 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T20:00:16.877631637Z 2026-04-22 20:00:16,877 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.48, mult=0.60
+2026-04-22T20:00:18.071920529Z 2026-04-22 20:00:18,071 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT BUY proba=0.5668 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T20:00:18.073905188Z 2026-04-22 20:00:18,073 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.48, mult=0.60
+2026-04-22T20:00:19.504935965Z 2026-04-22 20:00:19,504 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5045 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:19.506592487Z 2026-04-22 20:00:19,506 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.53, mult=0.60
+2026-04-22T20:00:20.760344472Z 2026-04-22 20:00:20,760 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT BUY proba=0.6066 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:20.762092204Z 2026-04-22 20:00:20,761 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.53, mult=0.60
+2026-04-22T20:00:22.770593604Z 2026-04-22 20:00:22,770 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.4875 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:23.982654342Z 2026-04-22 20:00:23,982 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.4595 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:25.404877523Z 2026-04-22 20:00:25,404 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT BUY proba=0.6014 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:26.726050285Z 2026-04-22 20:00:26,725 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT BUY proba=0.6364 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:28.081698606Z 2026-04-22 20:00:28,081 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT BUY proba=0.6043 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:29.525171746Z 2026-04-22 20:00:29,524 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT BUY proba=0.5903 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:30.761957374Z 2026-04-22 20:00:30,761 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.4779 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:32.199221506Z 2026-04-22 20:00:32,199 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.5412 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:33.412040312Z 2026-04-22 20:00:33,411 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT HOLD proba=0.5139 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:34.857211635Z 2026-04-22 20:00:34,856 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT HOLD proba=0.5489 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:36.052407521Z 2026-04-22 20:00:36,052 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT BUY proba=0.6176 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:37.475221308Z 2026-04-22 20:00:37,475 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT BUY proba=0.5906 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:38.847877927Z 2026-04-22 20:00:38,847 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT BUY proba=0.6216 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:38.849515460Z 2026-04-22 20:00:38,849 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-22T20:00:40.177537192Z 2026-04-22 20:00:40,177 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT BUY proba=0.6707 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T20:00:40.179140794Z 2026-04-22 20:00:40,179 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.42, mult=0.30
+2026-04-22T20:00:40.180631195Z 2026-04-22 20:00:40,180 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T21:00:14.760933639Z 2026-04-22 21:00:14,760 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT HOLD proba=0.5313 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T21:00:14.762509030Z 2026-04-22 21:00:14,762 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-22T21:00:15.721022642Z 2026-04-22 21:00:15,720 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT HOLD proba=0.5253 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T21:00:15.722612752Z 2026-04-22 21:00:15,722 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-22T21:00:17.425575609Z 2026-04-22 21:00:17,425 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT SELL proba=0.4372 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T21:00:17.427292566Z 2026-04-22 21:00:17,427 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.50, mult=0.60
+2026-04-22T21:00:17.428968665Z 2026-04-22 21:00:17,428 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T21:00:18.640471131Z 2026-04-22 21:00:18,640 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT SELL proba=0.4372 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T21:00:18.642026452Z 2026-04-22 21:00:18,641 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.50, mult=0.60
+2026-04-22T21:00:20.224153114Z 2026-04-22 21:00:20,223 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT BUY proba=0.6401 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:20.225874926Z 2026-04-22 21:00:20,225 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.51, mult=0.60
+2026-04-22T21:00:20.227348838Z 2026-04-22 21:00:20,227 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T21:00:21.430123275Z 2026-04-22 21:00:21,429 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT BUY proba=0.6191 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:21.431658032Z 2026-04-22 21:00:21,431 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.51, mult=0.60
+2026-04-22T21:00:22.971051254Z 2026-04-22 21:00:22,970 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT BUY proba=0.5992 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:22.974136145Z 2026-04-22 21:00:22,973 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T21:00:24.245929780Z 2026-04-22 21:00:24,245 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT BUY proba=0.6062 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:25.744695325Z 2026-04-22 21:00:25,744 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT HOLD proba=0.5368 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:26.984932836Z 2026-04-22 21:00:26,984 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT HOLD proba=0.5254 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:28.417603486Z 2026-04-22 21:00:28,417 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.5797 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:29.653375254Z 2026-04-22 21:00:29,653 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.5586 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:31.099747224Z 2026-04-22 21:00:31,099 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT BUY proba=0.5901 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:31.102938758Z 2026-04-22 21:00:31,102 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T21:00:32.335949349Z 2026-04-22 21:00:32,335 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT BUY proba=0.5997 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:33.874598704Z 2026-04-22 21:00:33,874 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT BUY proba=0.6477 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:33.877714196Z 2026-04-22 21:00:33,877 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T21:00:35.085729781Z 2026-04-22 21:00:35,085 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT BUY proba=0.6549 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:35.088764217Z 2026-04-22 21:00:35,088 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T21:00:36.573563513Z 2026-04-22 21:00:36,573 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT HOLD proba=0.5871 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:37.816454791Z 2026-04-22 21:00:37,816 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT BUY proba=0.6151 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:37.819536802Z 2026-04-22 21:00:37,819 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T21:00:39.300103074Z 2026-04-22 21:00:39,299 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT HOLD proba=0.4563 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:39.301590944Z 2026-04-22 21:00:39,301 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.42, mult=0.30
+2026-04-22T21:00:40.496184546Z 2026-04-22 21:00:40,495 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT HOLD proba=0.4602 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T21:00:40.497767958Z 2026-04-22 21:00:40,497 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.42, mult=0.30
+2026-04-22T22:00:09.986335672Z 2026-04-22 22:00:09,986 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT BUY proba=0.5805 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T22:00:09.988190832Z 2026-04-22 22:00:09,987 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.42, mult=0.30
+2026-04-22T22:00:09.989810491Z 2026-04-22 22:00:09,989 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T22:00:10.908834340Z 2026-04-22 22:00:10,908 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT BUY proba=0.5945 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T22:00:10.910618629Z 2026-04-22 22:00:10,910 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.42, mult=0.30
+2026-04-22T22:00:10.912045002Z 2026-04-22 22:00:10,911 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T22:00:13.653756579Z 2026-04-22 22:00:13,653 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT BUY proba=0.5504 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T22:00:13.655346785Z 2026-04-22 22:00:13,655 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.51, mult=0.60
+2026-04-22T22:00:13.656849705Z 2026-04-22 22:00:13,656 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T22:00:14.560260741Z 2026-04-22 22:00:14,560 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT BUY proba=0.5674 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T22:00:14.562088386Z 2026-04-22 22:00:14,561 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.51, mult=0.60
+2026-04-22T22:00:14.563331150Z 2026-04-22 22:00:14,563 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T22:00:17.165232720Z 2026-04-22 22:00:17,165 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT BUY proba=0.6106 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:17.166904305Z 2026-04-22 22:00:17,166 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.51, mult=0.60
+2026-04-22T22:00:17.168585041Z 2026-04-22 22:00:17,168 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T22:00:18.065050730Z 2026-04-22 22:00:18,064 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5546 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:18.066705132Z 2026-04-22 22:00:18,066 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.51, mult=0.60
+2026-04-22T22:00:20.670111213Z 2026-04-22 22:00:20,669 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.5869 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:21.576935638Z 2026-04-22 22:00:21,576 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.5519 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:23.269360418Z 2026-04-22 22:00:23,269 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT BUY proba=0.6437 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:23.272575769Z 2026-04-22 22:00:23,272 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T22:00:24.493269958Z 2026-04-22 22:00:24,493 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT BUY proba=0.5987 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:24.496495254Z 2026-04-22 22:00:24,496 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T22:00:25.967308576Z 2026-04-22 22:00:25,967 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.4865 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:27.195980622Z 2026-04-22 22:00:27,195 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.4510 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:28.602437353Z 2026-04-22 22:00:28,602 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.4709 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:29.817310394Z 2026-04-22 22:00:29,816 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT BUY proba=0.5954 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:29.820359384Z 2026-04-22 22:00:29,820 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T22:00:31.245417500Z 2026-04-22 22:00:31,245 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT HOLD proba=0.4742 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:32.560947785Z 2026-04-22 22:00:32,560 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT HOLD proba=0.4813 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:33.881099829Z 2026-04-22 22:00:33,880 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT HOLD proba=0.5118 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:35.190636707Z 2026-04-22 22:00:35,190 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT HOLD proba=0.5041 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:36.486594918Z 2026-04-22 22:00:36,486 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT BUY proba=0.6199 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:36.488260563Z 2026-04-22 22:00:36,487 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.42, mult=0.30
+2026-04-22T22:00:36.489558780Z 2026-04-22 22:00:36,489 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T22:00:37.797355829Z 2026-04-22 22:00:37,797 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT BUY proba=0.6055 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T22:00:37.798819314Z 2026-04-22 22:00:37,798 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.42, mult=0.30
+2026-04-22T23:00:15.941128144Z 2026-04-22 23:00:15,940 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT SELL proba=0.4271 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T23:00:15.942675163Z 2026-04-22 23:00:15,942 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-22T23:00:15.944190262Z 2026-04-22 23:00:15,944 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T23:00:16.822275966Z 2026-04-22 23:00:16,822 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT SELL proba=0.4341 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T23:00:16.823819996Z 2026-04-22 23:00:16,823 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-22T23:00:19.492096712Z 2026-04-22 23:00:19,491 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT HOLD proba=0.5158 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T23:00:19.493727073Z 2026-04-22 23:00:19,493 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.50, mult=0.60
+2026-04-22T23:00:20.366093103Z 2026-04-22 23:00:20,365 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT BUY proba=0.5718 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-22T23:00:20.367875201Z 2026-04-22 23:00:20,367 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.50, mult=0.60
+2026-04-22T23:00:22.078939242Z 2026-04-22 23:00:22,078 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT BUY proba=0.6920 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:22.080490982Z 2026-04-22 23:00:22,080 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.49, mult=0.60
+2026-04-22T23:00:22.082937938Z 2026-04-22 23:00:22,082 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 1 after filter | vols={'BNBUSDT': '0.0052', 'LINKUSDT': '0.0080'} | corr_pairs=1
+2026-04-22T23:00:23.221706588Z 2026-04-22 23:00:23,221 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT BUY proba=0.6080 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:23.223309678Z 2026-04-22 23:00:23,222 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.49, mult=0.60
+2026-04-22T23:00:24.687442871Z 2026-04-22 23:00:24,687 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.4642 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:25.880199143Z 2026-04-22 23:00:25,879 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.4363 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:27.249144457Z 2026-04-22 23:00:27,248 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT HOLD proba=0.5355 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:28.442127201Z 2026-04-22 23:00:28,441 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT HOLD proba=0.4865 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:29.813964635Z 2026-04-22 23:00:29,813 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.5267 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:31.048605339Z 2026-04-22 23:00:31,048 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.5267 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:32.408894321Z 2026-04-22 23:00:32,408 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.5289 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:33.642903643Z 2026-04-22 23:00:33,642 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.4799 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:35.016216513Z 2026-04-22 23:00:35,016 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT BUY proba=0.6181 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:35.019296612Z 2026-04-22 23:00:35,019 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-22T23:00:36.229451460Z 2026-04-22 23:00:36,229 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT BUY proba=0.6251 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:37.736135599Z 2026-04-22 23:00:37,735 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT HOLD proba=0.5238 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:38.942409846Z 2026-04-22 23:00:38,942 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT HOLD proba=0.5662 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:40.372671590Z 2026-04-22 23:00:40,372 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT SELL proba=0.4024 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:40.374155519Z 2026-04-22 23:00:40,373 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.42, mult=0.30
+2026-04-22T23:00:40.375631194Z 2026-04-22 23:00:40,375 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-22T23:00:41.561228757Z 2026-04-22 23:00:41,561 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT HOLD proba=0.4794 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-22T23:00:41.562655339Z 2026-04-22 23:00:41,562 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.42, mult=0.30

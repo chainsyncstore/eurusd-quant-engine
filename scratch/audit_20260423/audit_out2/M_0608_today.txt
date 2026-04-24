@@ -1,0 +1,400 @@
+2026-04-23T06:00:11.404938665Z 2026-04-23 06:00:11,404 - quant_v2.telebot.signal_manager - INFO - Event gate: fetched 24 events (news + F&G)
+2026-04-23T06:00:11.686160114Z 2026-04-23 06:00:11,685 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:11.696980353Z 2026-04-23 06:00:11,696 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:11.961357550Z 2026-04-23 06:00:11,961 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:11.980721879Z 2026-04-23 06:00:11,980 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:12.525078840Z 2026-04-23 06:00:12,524 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:12.529118465Z 2026-04-23 06:00:12,528 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:12.806648745Z 2026-04-23 06:00:12,806 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:12.812934296Z 2026-04-23 06:00:12,812 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:13.126924913Z 2026-04-23 06:00:13,126 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:13.988651977Z 2026-04-23 06:00:13,988 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT SELL proba=0.4055 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-23T06:00:13.990486765Z 2026-04-23 06:00:13,990 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-23T06:00:13.991757124Z 2026-04-23 06:00:13,991 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T06:00:13.991989997Z 2026-04-23 06:00:13,991 - __main__ - INFO - Shadow v2 routed 1 order(s) for user 6268794073 from SELL signal
+2026-04-23T06:00:14.038318508Z 2026-04-23 06:00:14,038 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:14.891787498Z 2026-04-23 06:00:14,891 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT SELL proba=0.4405 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-23T06:00:14.893390503Z 2026-04-23 06:00:14,893 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-23T06:00:15.007162679Z 2026-04-23 06:00:15,006 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/sendMessage "HTTP/1.1 200 OK"
+2026-04-23T06:00:15.009629633Z 2026-04-23 06:00:15,009 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/sendMessage "HTTP/1.1 200 OK"
+2026-04-23T06:00:15.280519414Z 2026-04-23 06:00:15,280 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:15.285371863Z 2026-04-23 06:00:15,285 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:15.553928183Z 2026-04-23 06:00:15,553 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:15.556035505Z 2026-04-23 06:00:15,555 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:16.099483781Z 2026-04-23 06:00:16,099 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:16.124206489Z 2026-04-23 06:00:16,124 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:16.392713053Z 2026-04-23 06:00:16,392 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:16.397013745Z 2026-04-23 06:00:16,396 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:16.726919378Z 2026-04-23 06:00:16,726 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:17.587662449Z 2026-04-23 06:00:17,587 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT HOLD proba=0.5704 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:17.589223840Z 2026-04-23 06:00:17,589 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.49, mult=0.60
+2026-04-23T06:00:17.639420658Z 2026-04-23 06:00:17,639 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:17.893784265Z 2026-04-23 06:00:17,893 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:18.163791272Z 2026-04-23 06:00:18,162 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:18.503456728Z 2026-04-23 06:00:18,503 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT HOLD proba=0.5424 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:18.505237278Z 2026-04-23 06:00:18,504 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.49, mult=0.60
+2026-04-23T06:00:18.711106179Z 2026-04-23 06:00:18,710 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:18.788081457Z 2026-04-23 06:00:18,787 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:18.979922068Z 2026-04-23 06:00:18,979 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:19.055621815Z 2026-04-23 06:00:19,055 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:19.300147965Z 2026-04-23 06:00:19,299 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:19.611015848Z 2026-04-23 06:00:19,609 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:19.889548143Z 2026-04-23 06:00:19,889 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:20.176613158Z 2026-04-23 06:00:20,176 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5695 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:20.178266720Z 2026-04-23 06:00:20,178 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.40, mult=0.30
+2026-04-23T06:00:20.479321890Z 2026-04-23 06:00:20,479 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:20.511673087Z 2026-04-23 06:00:20,511 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:20.781884983Z 2026-04-23 06:00:20,781 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:21.375528956Z 2026-04-23 06:00:21,375 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:21.404034371Z 2026-04-23 06:00:21,403 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5546 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:21.405602004Z 2026-04-23 06:00:21,405 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.40, mult=0.30
+2026-04-23T06:00:21.646314005Z 2026-04-23 06:00:21,645 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:21.680863894Z 2026-04-23 06:00:21,680 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:21.963888643Z 2026-04-23 06:00:21,963 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:21.972702153Z 2026-04-23 06:00:21,972 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:22.522962725Z 2026-04-23 06:00:22,521 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:22.802582709Z 2026-04-23 06:00:22,802 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:22.831413280Z 2026-04-23 06:00:22,831 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.5738 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:23.148028129Z 2026-04-23 06:00:23,147 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:23.179899457Z 2026-04-23 06:00:23,179 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:23.429717112Z 2026-04-23 06:00:23,429 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:23.972937801Z 2026-04-23 06:00:23,971 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:24.049663299Z 2026-04-23 06:00:24,049 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.5796 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:24.243466664Z 2026-04-23 06:00:24,243 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:24.319434625Z 2026-04-23 06:00:24,319 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:24.567138069Z 2026-04-23 06:00:24,566 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:24.590369625Z 2026-04-23 06:00:24,589 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:25.146619145Z 2026-04-23 06:00:25,145 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:25.416981563Z 2026-04-23 06:00:25,415 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:25.448000504Z 2026-04-23 06:00:25,447 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT HOLD proba=0.4823 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:25.754711212Z 2026-04-23 06:00:25,754 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:25.785994350Z 2026-04-23 06:00:25,785 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:26.042858311Z 2026-04-23 06:00:26,042 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:26.588215230Z 2026-04-23 06:00:26,588 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:26.654582167Z 2026-04-23 06:00:26,654 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT HOLD proba=0.4553 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:26.869216185Z 2026-04-23 06:00:26,868 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:26.937204725Z 2026-04-23 06:00:26,937 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:27.190510324Z 2026-04-23 06:00:27,190 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:27.207117115Z 2026-04-23 06:00:27,206 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:27.750677663Z 2026-04-23 06:00:27,749 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:28.020954553Z 2026-04-23 06:00:28,020 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:28.052540283Z 2026-04-23 06:00:28,052 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.5718 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:28.333928340Z 2026-04-23 06:00:28,333 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:28.375076878Z 2026-04-23 06:00:28,374 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:28.625945345Z 2026-04-23 06:00:28,624 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:29.186665688Z 2026-04-23 06:00:29,185 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:29.246498038Z 2026-04-23 06:00:29,246 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.5718 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:29.467021176Z 2026-04-23 06:00:29,466 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:29.525339821Z 2026-04-23 06:00:29,525 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:29.784509933Z 2026-04-23 06:00:29,784 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:29.808057241Z 2026-04-23 06:00:29,807 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:30.390982027Z 2026-04-23 06:00:30,389 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:30.651611143Z 2026-04-23 06:00:30,651 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.5036 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:30.653433590Z 2026-04-23 06:00:30,653 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening DOGEUSDT: hit_rate=0.53, mult=0.60
+2026-04-23T06:00:30.660867326Z 2026-04-23 06:00:30,658 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:30.927111252Z 2026-04-23 06:00:30,926 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:30.986191314Z 2026-04-23 06:00:30,985 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:31.194185846Z 2026-04-23 06:00:31,192 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:31.737230137Z 2026-04-23 06:00:31,736 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:31.859509058Z 2026-04-23 06:00:31,859 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.5106 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:31.861104989Z 2026-04-23 06:00:31,861 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening DOGEUSDT: hit_rate=0.53, mult=0.60
+2026-04-23T06:00:32.030175466Z 2026-04-23 06:00:32,029 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:32.137436856Z 2026-04-23 06:00:32,137 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:32.366994677Z 2026-04-23 06:00:32,366 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:32.417297373Z 2026-04-23 06:00:32,415 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:32.986024162Z 2026-04-23 06:00:32,985 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:33.236895293Z 2026-04-23 06:00:33,236 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT HOLD proba=0.4183 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:33.238183262Z 2026-04-23 06:00:33,238 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LINKUSDT: hit_rate=0.44, mult=0.30
+2026-04-23T06:00:33.258970321Z 2026-04-23 06:00:33,258 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:33.516019451Z 2026-04-23 06:00:33,515 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:33.587845913Z 2026-04-23 06:00:33,587 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:33.784442445Z 2026-04-23 06:00:33,783 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:34.347748385Z 2026-04-23 06:00:34,347 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:34.469093190Z 2026-04-23 06:00:34,468 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT HOLD proba=0.5406 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:34.470689204Z 2026-04-23 06:00:34,470 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LINKUSDT: hit_rate=0.44, mult=0.30
+2026-04-23T06:00:34.634067850Z 2026-04-23 06:00:34,633 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:34.763417629Z 2026-04-23 06:00:34,763 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:34.947747641Z 2026-04-23 06:00:34,947 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:35.031332050Z 2026-04-23 06:00:35,030 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:35.605222983Z 2026-04-23 06:00:35,603 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:35.820630525Z 2026-04-23 06:00:35,820 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT HOLD proba=0.4509 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:35.822480930Z 2026-04-23 06:00:35,822 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening AVAXUSDT: hit_rate=0.54, mult=0.60
+2026-04-23T06:00:35.884035671Z 2026-04-23 06:00:35,883 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:36.100214361Z 2026-04-23 06:00:36,100 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:36.198436367Z 2026-04-23 06:00:36,198 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:36.383980418Z 2026-04-23 06:00:36,383 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:36.946778400Z 2026-04-23 06:00:36,946 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:37.064571684Z 2026-04-23 06:00:37,064 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT HOLD proba=0.4229 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:37.066253965Z 2026-04-23 06:00:37,066 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening AVAXUSDT: hit_rate=0.54, mult=0.60
+2026-04-23T06:00:37.221347760Z 2026-04-23 06:00:37,220 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:37.334298347Z 2026-04-23 06:00:37,334 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 06:00:00+00:00 (192 total)
+2026-04-23T06:00:37.544186519Z 2026-04-23 06:00:37,543 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:37.611690899Z 2026-04-23 06:00:37,610 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T06:00:38.169263935Z 2026-04-23 06:00:38,168 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T06:00:38.411911550Z 2026-04-23 06:00:38,411 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT HOLD proba=0.5753 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:38.413754761Z 2026-04-23 06:00:38,413 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.38, mult=0.30
+2026-04-23T06:00:38.414334081Z 2026-04-23 06:00:38,414 - quant_v2.telebot.signal_manager - INFO - Scorecard: resolved 8 pending predictions
+2026-04-23T06:00:38.445409939Z 2026-04-23 06:00:38,445 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T06:00:38.761845143Z 2026-04-23 06:00:38,761 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T06:00:39.620616705Z 2026-04-23 06:00:39,620 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT HOLD proba=0.5543 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T06:00:39.622122680Z 2026-04-23 06:00:39,621 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.37, mult=0.30
+2026-04-23T07:00:11.635845426Z 2026-04-23 07:00:11,635 - quant_v2.telebot.signal_manager - INFO - Event gate: fetched 24 events (news + F&G)
+2026-04-23T07:00:11.918640096Z 2026-04-23 07:00:11,918 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:11.923290582Z 2026-04-23 07:00:11,923 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:12.200237244Z 2026-04-23 07:00:12,199 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:12.201926532Z 2026-04-23 07:00:12,201 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:12.760750520Z 2026-04-23 07:00:12,760 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:12.782915216Z 2026-04-23 07:00:12,782 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:13.047251617Z 2026-04-23 07:00:13,046 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:13.053665422Z 2026-04-23 07:00:13,053 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:13.376870278Z 2026-04-23 07:00:13,376 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:14.266548158Z 2026-04-23 07:00:14,266 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT HOLD proba=0.5490 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-23T07:00:14.268275021Z 2026-04-23 07:00:14,268 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-23T07:00:14.323262788Z 2026-04-23 07:00:14,323 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:14.565442527Z 2026-04-23 07:00:14,565 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:14.847555483Z 2026-04-23 07:00:14,846 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:15.200628789Z 2026-04-23 07:00:15,200 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT HOLD proba=0.5140 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-23T07:00:15.202347331Z 2026-04-23 07:00:15,202 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-23T07:00:15.413814212Z 2026-04-23 07:00:15,413 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:15.487366744Z 2026-04-23 07:00:15,487 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:15.687509881Z 2026-04-23 07:00:15,687 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:15.757640406Z 2026-04-23 07:00:15,757 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:16.011319750Z 2026-04-23 07:00:16,011 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:16.310942477Z 2026-04-23 07:00:16,310 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:16.580160493Z 2026-04-23 07:00:16,579 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:16.874145757Z 2026-04-23 07:00:16,873 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT HOLD proba=0.5418 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:16.876074148Z 2026-04-23 07:00:16,875 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.47, mult=0.60
+2026-04-23T07:00:17.169520881Z 2026-04-23 07:00:17,169 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:17.222026262Z 2026-04-23 07:00:17,221 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:17.470574624Z 2026-04-23 07:00:17,468 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:18.020454284Z 2026-04-23 07:00:18,020 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:18.097574766Z 2026-04-23 07:00:18,097 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT HOLD proba=0.5628 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:18.099244850Z 2026-04-23 07:00:18,099 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.47, mult=0.60
+2026-04-23T07:00:18.291389702Z 2026-04-23 07:00:18,290 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:18.383683972Z 2026-04-23 07:00:18,383 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:18.601961713Z 2026-04-23 07:00:18,601 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:18.651358424Z 2026-04-23 07:00:18,651 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:19.222655392Z 2026-04-23 07:00:19,222 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:19.445286949Z 2026-04-23 07:00:19,445 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT BUY proba=0.5959 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:19.446866129Z 2026-04-23 07:00:19,446 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.41, mult=0.30
+2026-04-23T07:00:19.501534157Z 2026-04-23 07:00:19,501 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:19.574016691Z 2026-04-23 07:00:19,573 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/sendMessage "HTTP/1.1 200 OK"
+2026-04-23T07:00:19.814095820Z 2026-04-23 07:00:19,813 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:19.842412070Z 2026-04-23 07:00:19,842 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:20.111739650Z 2026-04-23 07:00:20,111 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:20.656567091Z 2026-04-23 07:00:20,655 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:20.674708398Z 2026-04-23 07:00:20,674 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.5609 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:20.676283409Z 2026-04-23 07:00:20,676 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.41, mult=0.30
+2026-04-23T07:00:20.924559201Z 2026-04-23 07:00:20,924 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:20.965541787Z 2026-04-23 07:00:20,965 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:21.236592021Z 2026-04-23 07:00:21,236 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:21.243841510Z 2026-04-23 07:00:21,243 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:21.811059737Z 2026-04-23 07:00:21,810 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:22.088505713Z 2026-04-23 07:00:22,088 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.4109 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:22.095811419Z 2026-04-23 07:00:22,094 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:22.363011999Z 2026-04-23 07:00:22,362 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:22.421408807Z 2026-04-23 07:00:22,421 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:22.644890013Z 2026-04-23 07:00:22,644 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:23.199629506Z 2026-04-23 07:00:23,199 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:23.251832752Z 2026-04-23 07:00:23,251 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.4459 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:23.490807901Z 2026-04-23 07:00:23,490 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:23.531731965Z 2026-04-23 07:00:23,531 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:23.813164481Z 2026-04-23 07:00:23,812 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:23.834093491Z 2026-04-23 07:00:23,832 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:24.385919840Z 2026-04-23 07:00:24,385 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:24.659893949Z 2026-04-23 07:00:24,659 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT HOLD proba=0.5419 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:24.664591950Z 2026-04-23 07:00:24,664 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:24.940366686Z 2026-04-23 07:00:24,940 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:24.997599256Z 2026-04-23 07:00:24,997 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:25.228651669Z 2026-04-23 07:00:25,228 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:25.803280852Z 2026-04-23 07:00:25,803 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:25.832650272Z 2026-04-23 07:00:25,832 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT HOLD proba=0.5489 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:26.075213027Z 2026-04-23 07:00:26,074 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:26.104667651Z 2026-04-23 07:00:26,104 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:26.393889403Z 2026-04-23 07:00:26,392 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:26.397902442Z 2026-04-23 07:00:26,397 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:26.962746926Z 2026-04-23 07:00:26,961 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:27.227584902Z 2026-04-23 07:00:27,227 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.5455 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:27.252667499Z 2026-04-23 07:00:27,252 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:27.498418471Z 2026-04-23 07:00:27,498 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:27.571688277Z 2026-04-23 07:00:27,571 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:27.769311121Z 2026-04-23 07:00:27,768 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:28.316021038Z 2026-04-23 07:00:28,315 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:28.405446877Z 2026-04-23 07:00:28,405 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT HOLD proba=0.5105 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:28.577919843Z 2026-04-23 07:00:28,577 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:28.686793481Z 2026-04-23 07:00:28,686 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:28.889097351Z 2026-04-23 07:00:28,888 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:28.970631240Z 2026-04-23 07:00:28,969 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:29.544029152Z 2026-04-23 07:00:29,543 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:29.747782094Z 2026-04-23 07:00:29,747 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.4763 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:29.749503715Z 2026-04-23 07:00:29,749 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening DOGEUSDT: hit_rate=0.51, mult=0.60
+2026-04-23T07:00:29.833559564Z 2026-04-23 07:00:29,833 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:30.025770512Z 2026-04-23 07:00:30,025 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:30.166885503Z 2026-04-23 07:00:30,166 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:30.297584585Z 2026-04-23 07:00:30,296 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:30.884426184Z 2026-04-23 07:00:30,884 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:31.004866799Z 2026-04-23 07:00:31,004 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.5162 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:31.006586166Z 2026-04-23 07:00:31,006 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening DOGEUSDT: hit_rate=0.51, mult=0.60
+2026-04-23T07:00:31.157651516Z 2026-04-23 07:00:31,157 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:31.300625253Z 2026-04-23 07:00:31,300 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:31.478529863Z 2026-04-23 07:00:31,478 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:31.578349056Z 2026-04-23 07:00:31,576 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:32.153729067Z 2026-04-23 07:00:32,153 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:32.321974443Z 2026-04-23 07:00:32,321 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT HOLD proba=0.5315 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:32.323670869Z 2026-04-23 07:00:32,323 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LINKUSDT: hit_rate=0.42, mult=0.30
+2026-04-23T07:00:32.432806157Z 2026-04-23 07:00:32,432 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:32.617563069Z 2026-04-23 07:00:32,617 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:32.742875735Z 2026-04-23 07:00:32,742 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:32.907549162Z 2026-04-23 07:00:32,907 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:33.458915096Z 2026-04-23 07:00:33,457 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:33.596901417Z 2026-04-23 07:00:33,596 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT HOLD proba=0.5177 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:33.598566067Z 2026-04-23 07:00:33,598 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LINKUSDT: hit_rate=0.42, mult=0.30
+2026-04-23T07:00:33.744884126Z 2026-04-23 07:00:33,744 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:33.884713212Z 2026-04-23 07:00:33,884 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:34.057433249Z 2026-04-23 07:00:34,057 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:34.154093095Z 2026-04-23 07:00:34,153 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:34.717678778Z 2026-04-23 07:00:34,717 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:34.886024365Z 2026-04-23 07:00:34,885 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT HOLD proba=0.5736 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:34.887534700Z 2026-04-23 07:00:34,887 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening AVAXUSDT: hit_rate=0.51, mult=0.60
+2026-04-23T07:00:34.994436393Z 2026-04-23 07:00:34,994 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:35.169323296Z 2026-04-23 07:00:35,169 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:35.305278931Z 2026-04-23 07:00:35,305 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:35.440449821Z 2026-04-23 07:00:35,438 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:36.005151798Z 2026-04-23 07:00:36,004 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:36.137422386Z 2026-04-23 07:00:36,137 - quant_v2.telebot.signal_manager - INFO - Signal decision: AVAXUSDT HOLD proba=0.5828 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:36.139121268Z 2026-04-23 07:00:36,138 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening AVAXUSDT: hit_rate=0.51, mult=0.60
+2026-04-23T07:00:36.284709196Z 2026-04-23 07:00:36,284 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:36.427496800Z 2026-04-23 07:00:36,427 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 07:00:00+00:00 (192 total)
+2026-04-23T07:00:36.602947949Z 2026-04-23 07:00:36,602 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:36.700001830Z 2026-04-23 07:00:36,698 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T07:00:37.276671536Z 2026-04-23 07:00:37,276 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T07:00:37.444747692Z 2026-04-23 07:00:37,444 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT HOLD proba=0.5689 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:37.446490474Z 2026-04-23 07:00:37,446 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.37, mult=0.30
+2026-04-23T07:00:37.447032122Z 2026-04-23 07:00:37,446 - quant_v2.telebot.signal_manager - INFO - Scorecard: resolved 6 pending predictions
+2026-04-23T07:00:37.552591613Z 2026-04-23 07:00:37,552 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T07:00:37.874901870Z 2026-04-23 07:00:37,874 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T07:00:38.707417043Z 2026-04-23 07:00:38,707 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT HOLD proba=0.5766 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T07:00:38.709188770Z 2026-04-23 07:00:38,708 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LTCUSDT: hit_rate=0.37, mult=0.30
+2026-04-23T07:11:13.139471914Z 2026-04-23 07:11:13,139 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/sendMessage "HTTP/1.1 200 OK"
+2026-04-23T07:11:13.140400670Z 2026-04-23 07:11:13,140 - __main__ - INFO - DEBUG: Received update: Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Yyy', id=6268794073, last_name='Yyy', type=<ChatType.PRIVATE>), date=datetime.datetime(2026, 4, 23, 7, 11, 12, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Yyy', id=6268794073, is_bot=False, language_code='en', last_name='Yyy'), group_chat_created=False, message_id=13617, supergroup_chat_created=False, text='/stats'), update_id=22713876)
+2026-04-23T07:49:54.291112204Z 2026-04-23 07:49:54,290 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/sendMessage "HTTP/1.1 200 OK"
+2026-04-23T07:49:54.291972577Z 2026-04-23 07:49:54,291 - __main__ - INFO - DEBUG: Received update: Update(message=Message(channel_chat_created=False, chat=Chat(first_name='Yyy', id=6268794073, last_name='Yyy', type=<ChatType.PRIVATE>), date=datetime.datetime(2026, 4, 23, 7, 49, 53, tzinfo=datetime.timezone.utc), delete_chat_photo=False, entities=(MessageEntity(length=6, offset=0, type=<MessageEntityType.BOT_COMMAND>),), from_user=User(first_name='Yyy', id=6268794073, is_bot=False, language_code='en', last_name='Yyy'), group_chat_created=False, message_id=13619, supergroup_chat_created=False, text='/stats'), update_id=22713877)
+2026-04-23T08:00:13.033895186Z 2026-04-23 08:00:13,033 - quant_v2.data.news_client - WARNING - CryptoCompare news fetch failed: HTTPSConnectionPool(host='min-api.cryptocompare.com', port=443): Read timed out. (read timeout=10)
+2026-04-23T08:00:13.382188261Z 2026-04-23 08:00:13,381 - quant_v2.telebot.signal_manager - INFO - Event gate: fetched 1 events (news + F&G)
+2026-04-23T08:00:13.670052718Z 2026-04-23 08:00:13,669 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:13.674498161Z 2026-04-23 08:00:13,674 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:13.944439817Z 2026-04-23 08:00:13,944 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:13.951457678Z 2026-04-23 08:00:13,951 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:14.513478824Z 2026-04-23 08:00:14,513 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:14.535525164Z 2026-04-23 08:00:14,535 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:14.803499911Z 2026-04-23 08:00:14,803 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:14.816895072Z 2026-04-23 08:00:14,815 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:15.121772911Z 2026-04-23 08:00:15,121 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:15.991543326Z 2026-04-23 08:00:15,991 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT SELL proba=0.4464 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-23T08:00:15.993242605Z 2026-04-23 08:00:15,993 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-23T08:00:15.994775001Z 2026-04-23 08:00:15,994 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T08:00:15.995047195Z 2026-04-23 08:00:15,994 - __main__ - INFO - Shadow v2 routed 1 order(s) for user 6268794073 from SELL signal
+2026-04-23T08:00:16.041233872Z 2026-04-23 08:00:16,041 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:16.909701124Z 2026-04-23 08:00:16,909 - quant_v2.telebot.signal_manager - INFO - Signal decision: BTCUSDT SELL proba=0.4394 buy_th=0.55 sell_th=0.45 regime=1 risk=0.0
+2026-04-23T08:00:16.911405521Z 2026-04-23 08:00:16,911 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BTCUSDT: hit_rate=0.41, mult=0.30
+2026-04-23T08:00:17.026498655Z 2026-04-23 08:00:17,026 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/sendMessage "HTTP/1.1 200 OK"
+2026-04-23T08:00:17.032378071Z 2026-04-23 08:00:17,032 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/sendMessage "HTTP/1.1 200 OK"
+2026-04-23T08:00:17.300872099Z 2026-04-23 08:00:17,300 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:17.323485086Z 2026-04-23 08:00:17,323 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:17.571924169Z 2026-04-23 08:00:17,571 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:17.623080461Z 2026-04-23 08:00:17,622 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:18.136125931Z 2026-04-23 08:00:18,135 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:18.173933860Z 2026-04-23 08:00:18,173 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:18.406415810Z 2026-04-23 08:00:18,405 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:18.466229671Z 2026-04-23 08:00:18,465 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:18.718567436Z 2026-04-23 08:00:18,718 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:19.589389019Z 2026-04-23 08:00:19,589 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT SELL proba=0.4016 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:19.590963671Z 2026-04-23 08:00:19,590 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.51, mult=0.60
+2026-04-23T08:00:19.636941944Z 2026-04-23 08:00:19,636 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:20.497156023Z 2026-04-23 08:00:20,496 - quant_v2.telebot.signal_manager - INFO - Signal decision: ETHUSDT HOLD proba=0.4438 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:20.498806492Z 2026-04-23 08:00:20,498 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening ETHUSDT: hit_rate=0.51, mult=0.60
+2026-04-23T08:00:20.580401219Z 2026-04-23 08:00:20,580 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/sendMessage "HTTP/1.1 200 OK"
+2026-04-23T08:00:20.779643584Z 2026-04-23 08:00:20,779 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:20.861077403Z 2026-04-23 08:00:20,860 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:21.070519165Z 2026-04-23 08:00:21,070 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:21.141766774Z 2026-04-23 08:00:21,141 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:21.615370151Z 2026-04-23 08:00:21,615 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:21.705022502Z 2026-04-23 08:00:21,704 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:21.894318406Z 2026-04-23 08:00:21,893 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:21.977854665Z 2026-04-23 08:00:21,977 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:22.210642036Z 2026-04-23 08:00:22,210 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:23.081771846Z 2026-04-23 08:00:23,081 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.4340 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:23.083349788Z 2026-04-23 08:00:23,083 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.42, mult=0.30
+2026-04-23T08:00:23.137067139Z 2026-04-23 08:00:23,136 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:23.393556158Z 2026-04-23 08:00:23,393 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:23.687991219Z 2026-04-23 08:00:23,687 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:24.028098600Z 2026-04-23 08:00:24,027 - quant_v2.telebot.signal_manager - INFO - Signal decision: BNBUSDT HOLD proba=0.4410 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:24.029900672Z 2026-04-23 08:00:24,029 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening BNBUSDT: hit_rate=0.42, mult=0.30
+2026-04-23T08:00:24.291454706Z 2026-04-23 08:00:24,291 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:24.302148584Z 2026-04-23 08:00:24,302 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:24.573601347Z 2026-04-23 08:00:24,573 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:24.589619281Z 2026-04-23 08:00:24,589 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:24.914707404Z 2026-04-23 08:00:24,914 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:25.150044884Z 2026-04-23 08:00:25,148 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:25.440065249Z 2026-04-23 08:00:25,439 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:25.800178301Z 2026-04-23 08:00:25,799 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.5803 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:26.073296600Z 2026-04-23 08:00:26,073 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:26.123654678Z 2026-04-23 08:00:26,123 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:26.357728089Z 2026-04-23 08:00:26,357 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:26.927203887Z 2026-04-23 08:00:26,927 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:27.006168390Z 2026-04-23 08:00:27,005 - quant_v2.telebot.signal_manager - INFO - Signal decision: SOLUSDT HOLD proba=0.5593 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:27.223676007Z 2026-04-23 08:00:27,223 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:27.547525296Z 2026-04-23 08:00:27,547 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:27.815353655Z 2026-04-23 08:00:27,815 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:28.112055586Z 2026-04-23 08:00:28,110 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:28.436936031Z 2026-04-23 08:00:28,436 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT HOLD proba=0.5572 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:28.687635042Z 2026-04-23 08:00:28,687 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:28.707582849Z 2026-04-23 08:00:28,707 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:28.957648787Z 2026-04-23 08:00:28,957 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:28.992265524Z 2026-04-23 08:00:28,991 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:29.269184805Z 2026-04-23 08:00:29,268 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:29.580924029Z 2026-04-23 08:00:29,579 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:29.874682260Z 2026-04-23 08:00:29,874 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:30.150162710Z 2026-04-23 08:00:30,149 - quant_v2.telebot.signal_manager - INFO - Signal decision: XRPUSDT HOLD proba=0.5292 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:30.441774438Z 2026-04-23 08:00:30,440 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:30.501184307Z 2026-04-23 08:00:30,500 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:30.739664919Z 2026-04-23 08:00:30,736 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:31.317797710Z 2026-04-23 08:00:31,317 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:31.396762187Z 2026-04-23 08:00:31,396 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT SELL proba=0.3894 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:31.399850206Z 2026-04-23 08:00:31,399 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T08:00:31.399862523Z 2026-04-23 08:00:31,399 - __main__ - INFO - Shadow v2 routed 1 order(s) for user 6268794073 from SELL signal
+2026-04-23T08:00:31.524528382Z 2026-04-23 08:00:31,524 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/sendMessage "HTTP/1.1 200 OK"
+2026-04-23T08:00:31.602533457Z 2026-04-23 08:00:31,602 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:31.814844878Z 2026-04-23 08:00:31,814 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:31.928023581Z 2026-04-23 08:00:31,927 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:32.094887355Z 2026-04-23 08:00:32,094 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:32.670176361Z 2026-04-23 08:00:32,669 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:32.772680265Z 2026-04-23 08:00:32,772 - quant_v2.telebot.signal_manager - INFO - Signal decision: ADAUSDT SELL proba=0.3824 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:32.823370458Z 2026-04-23 08:00:32,823 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/sendMessage "HTTP/1.1 200 OK"
+2026-04-23T08:00:32.959211846Z 2026-04-23 08:00:32,958 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:33.107860966Z 2026-04-23 08:00:33,107 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:33.298810479Z 2026-04-23 08:00:33,298 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:33.379092949Z 2026-04-23 08:00:33,378 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:33.947957543Z 2026-04-23 08:00:33,947 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:34.190860926Z 2026-04-23 08:00:34,190 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT SELL proba=0.3992 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:34.192536353Z 2026-04-23 08:00:34,192 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening DOGEUSDT: hit_rate=0.51, mult=0.60
+2026-04-23T08:00:34.194186028Z 2026-04-23 08:00:34,193 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T08:00:34.194295975Z 2026-04-23 08:00:34,194 - __main__ - INFO - Shadow v2 routed 1 order(s) for user 6268794073 from SELL signal
+2026-04-23T08:00:34.238580456Z 2026-04-23 08:00:34,238 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:34.557628276Z 2026-04-23 08:00:34,557 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:35.447893787Z 2026-04-23 08:00:35,447 - quant_v2.telebot.signal_manager - INFO - Signal decision: DOGEUSDT HOLD proba=0.4464 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:35.449608097Z 2026-04-23 08:00:35,449 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening DOGEUSDT: hit_rate=0.51, mult=0.60
+2026-04-23T08:00:35.452523280Z 2026-04-23 08:00:35,452 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/sendMessage "HTTP/1.1 200 OK"
+2026-04-23T08:00:35.741464319Z 2026-04-23 08:00:35,741 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:35.745393943Z 2026-04-23 08:00:35,745 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)
+2026-04-23T08:00:36.023960314Z 2026-04-23 08:00:36,023 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:36.026989862Z 2026-04-23 08:00:36,026 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+2026-04-23T08:00:36.585115122Z 2026-04-23 08:00:36,584 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:36.596095336Z 2026-04-23 08:00:36,594 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+2026-04-23T08:00:36.885756183Z 2026-04-23 08:00:36,885 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:36.890513445Z 2026-04-23 08:00:36,890 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+2026-04-23T08:00:37.207039048Z 2026-04-23 08:00:37,206 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:38.088930486Z 2026-04-23 08:00:38,088 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT HOLD proba=0.5619 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+2026-04-23T08:00:38.090646790Z 2026-04-23 08:00:38,090 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening LINKUSDT: hit_rate=0.42, mult=0.30
+2026-04-23T08:00:38.145896556Z 2026-04-23 08:00:38,145 - quant.features.pipeline - INFO - Feature pipeline: 91 features, 192 rows (dropped 0 warmup rows)
+2026-04-23T08:00:38.401862284Z 2026-04-23 08:00:38,399 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 08:00:00+00:00 (192 total)

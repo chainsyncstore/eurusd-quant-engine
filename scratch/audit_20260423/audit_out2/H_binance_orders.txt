@@ -1,0 +1,1 @@
+2026-04-16T19:00:24.997659146Z 2026-04-16 19:00:24,997 - quant_v2.strategy.event_gate - INFO - Event gate: SELL XRPUSDT contradicted by low news 'XRP Blasts Past $1.81B in Spot and Futures Volume in a Singl' → mult=1.00

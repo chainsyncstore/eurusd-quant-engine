@@ -1,0 +1,38 @@
+fix(optimizer): synthesise flatten target for held positions without signal
+
+Why: the 7-day audit found that in ~84% of cycles the optimizer returned
+zero weights because allocate_signals produced no target_exposures entry
+for symbols the user already held (HOLD → symbol absent). That gave the
+optimizer no opportunity to flatten stale positions, compounding the
+HOLD-trap failure mode addressed at the session layer by P0-2. P0-3 fixes
+this at the portfolio layer: every held symbol now gets an explicit
+portfolio decision each cycle.
+
+What changed:
+- RiskParityOptimizer.optimize() gains a keyword-only current_positions
+  kwarg (default None, backwards compatible).
+- Held symbols with no incoming target get a synthetic zero-weight entry
+  before the main algorithm runs. The empty-targets early-return now runs
+  after augmentation, so a HOLD-only cycle with open positions still
+  produces flatten intents.
+- Synthesised flattens preserve weight 0.0 through the directional scale
+  step and bypass the min-notional floor (closing is always allowed).
+- OptimizerResult.constraints_applied is tagged with
+  "flatten_held_no_signal" when at least one flatten was synthesised.
+- Explicit BUY/SELL targets always win over synthesis.
+
+Tests added in tests/quant_v2/portfolio/test_optimizer.py:
+- test_held_symbol_with_no_signal_is_flattened
+- test_held_symbol_with_existing_signal_is_untouched
+- test_flatten_bypasses_min_notional_filter
+- test_current_positions_none_is_backwards_compatible
+
+Not plumbed: the only call-site (quant_v2/execution/planner.py
+build_execution_intents) does not have current_positions in scope; it
+lives one frame up in RoutedExecutionService.route_signals. Per task
+spec's escalation rule, the caller-side plumbing is left for a
+follow-up; this PR is defensively correct because current_positions
+defaults to None and the optimizer behaves identically to pre-patch
+when absent.
+
+Refs: audit_20260423 task P0-3

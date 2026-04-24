@@ -1,0 +1,9 @@
+---tables---
+user_context  users       
+---user_context---
+6268794073|info.chisomarinze@gmail.com|gAAAAABpl3yAZl-23JuPoA52_4ibCCdVkBW1tIaiZbiPkbSCHIU18Ly78Ph5lTFpq0ngUCbX40aoYvH41jXgiablzXfQDlFgFTerFMyzBkpAX-cxm0r2VXI=|gAAAAABpl3yAKisaajaAhIcoXkL7-Qb8QojVVSbkjkexgpdP6IvgHEK5rDjs6oP_i44Q61YRACOOhtk2uz6FV5uLPeYXjD90pg==|0|1|core_v2|model_20260413_192904|registry_active||0|0|0|0.0|-251.530685345022|0.0|9969.86781513928|0.0|334.948855086274|0.0|1|0|9969.86781513928||2026-04-23 09:23:20.213778|||{"equity_baseline_usd": 9972.270997811558, "open_positions": {"BNBUSDT": 0.5270137439207536}, "paper_entry_prices": {"BNBUSDT": 640.12}}
+8392916807||||0|1|core_v2|model_20260413_192904|registry_active||0|0|0|0.0|36.4564412159561|0.0|10036.456441216|0.0|1116.87054206225|0.0|3|0|10036.456441216||2026-04-21 20:00:53.464543|||{"equity_baseline_usd": 10049.936791825548, "open_positions": {}, "paper_entry_prices": {}}
+---open_positions---
+---snapshots/signals tables---
+users
+user_context

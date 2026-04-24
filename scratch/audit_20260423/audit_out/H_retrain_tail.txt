@@ -1,0 +1,129 @@
+2026-04-20T10:00:34.263056411Z 2026-04-20 10:00:34,261 [__main__] INFO: Retrain: fetching 6 months of data for symbols=['BTCUSDT', 'ETHUSDT', 'BNBUSDT']...
+2026-04-20T10:00:34.608431332Z 2026-04-20 10:00:34,608 [quant.data.binance_client] INFO: Fetched 1500 bars up to 2025-12-23 22:00:00+00:00 (1500 total)
+2026-04-20T10:00:34.928694243Z 2026-04-20 10:00:34,926 [quant.data.binance_client] INFO: Fetched 1500 bars up to 2026-02-24 10:00:00+00:00 (3000 total)
+2026-04-20T10:00:35.229165268Z 2026-04-20 10:00:35,228 [quant.data.binance_client] INFO: Fetched 1320 bars up to 2026-04-20 10:00:00+00:00 (4320 total)
+2026-04-20T10:00:35.510461291Z 2026-04-20 10:00:35,510 [quant.data.binance_client] INFO: Fetched 540 funding rate entries
+2026-04-20T10:00:36.067926778Z 2026-04-20 10:00:36,066 [quant.data.binance_client] INFO: Fetched 500 open interest entries so far
+2026-04-20T10:00:36.352168618Z 2026-04-20 10:00:36,351 [quant.data.binance_client] INFO: Fetched 501 open interest entries so far
+2026-04-20T10:00:36.517854604Z 2026-04-20 10:00:36,517 [quant.features.pipeline] INFO: Feature pipeline: 91 features, 4320 rows (dropped 0 warmup rows)
+2026-04-20T10:00:36.517877399Z 2026-04-20 10:00:36,517 [__main__] INFO: Retrain: BTCUSDT -> 4320 feature rows
+2026-04-20T10:00:36.823841072Z 2026-04-20 10:00:36,823 [quant.data.binance_client] INFO: Fetched 1500 bars up to 2025-12-23 22:00:00+00:00 (1500 total)
+2026-04-20T10:00:37.136510503Z 2026-04-20 10:00:37,136 [quant.data.binance_client] INFO: Fetched 1500 bars up to 2026-02-24 10:00:00+00:00 (3000 total)
+2026-04-20T10:00:37.450969731Z 2026-04-20 10:00:37,449 [quant.data.binance_client] INFO: Fetched 1320 bars up to 2026-04-20 10:00:00+00:00 (4320 total)
+2026-04-20T10:00:37.738897050Z 2026-04-20 10:00:37,738 [quant.data.binance_client] INFO: Fetched 540 funding rate entries
+2026-04-20T10:00:38.320866357Z 2026-04-20 10:00:38,320 [quant.data.binance_client] INFO: Fetched 500 open interest entries so far
+2026-04-20T10:00:38.616966103Z 2026-04-20 10:00:38,616 [quant.data.binance_client] INFO: Fetched 501 open interest entries so far
+2026-04-20T10:00:38.774290830Z 2026-04-20 10:00:38,774 [quant.features.pipeline] INFO: Feature pipeline: 91 features, 4320 rows (dropped 0 warmup rows)
+2026-04-20T10:00:38.774335446Z 2026-04-20 10:00:38,774 [__main__] INFO: Retrain: ETHUSDT -> 4320 feature rows
+2026-04-20T10:00:39.092147952Z 2026-04-20 10:00:39,091 [quant.data.binance_client] INFO: Fetched 1500 bars up to 2025-12-23 22:00:00+00:00 (1500 total)
+2026-04-20T10:00:39.414498975Z 2026-04-20 10:00:39,414 [quant.data.binance_client] INFO: Fetched 1500 bars up to 2026-02-24 10:00:00+00:00 (3000 total)
+2026-04-20T10:00:39.712886007Z 2026-04-20 10:00:39,711 [quant.data.binance_client] INFO: Fetched 1320 bars up to 2026-04-20 10:00:00+00:00 (4320 total)
+2026-04-20T10:00:39.999302666Z 2026-04-20 10:00:39,997 [quant.data.binance_client] INFO: Fetched 540 funding rate entries
+2026-04-20T10:00:40.576707516Z 2026-04-20 10:00:40,576 [quant.data.binance_client] INFO: Fetched 500 open interest entries so far
+2026-04-20T10:00:40.875121948Z 2026-04-20 10:00:40,874 [quant.data.binance_client] INFO: Fetched 501 open interest entries so far
+2026-04-20T10:00:41.029573795Z 2026-04-20 10:00:41,029 [quant.features.pipeline] INFO: Feature pipeline: 91 features, 4320 rows (dropped 0 warmup rows)
+2026-04-20T10:00:41.029603631Z 2026-04-20 10:00:41,029 [__main__] INFO: Retrain: BNBUSDT -> 4320 feature rows
+2026-04-20T10:00:41.032664926Z 2026-04-20 10:00:41,032 [__main__] INFO: Retrain: combined dataset = 12960 rows across 3 symbols
+2026-04-20T10:00:41.032684400Z 2026-04-20 10:00:41,032 [__main__] INFO: Retrain: featured dataset = 12960 rows, 91 features
+2026-04-20T10:00:41.041412594Z 2026-04-20 10:00:41,041 [__main__] INFO: Retrain horizon=2h: train=7110 test=1778
+2026-04-20T10:00:44.765252313Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:00:44.765298428Z   warnings.warn(
+2026-04-20T10:00:44.879914609Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:00:44.879972385Z   warnings.warn(
+2026-04-20T10:00:44.907931118Z 2026-04-20 10:00:44,906 [quant_v2.models.trainer] INFO: Trained v2 model_2m: fit=5688 cal=1422 features=91 calibrated=True meta=True
+2026-04-20T10:00:46.089469322Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:00:46.089555294Z   warnings.warn(
+2026-04-20T10:00:46.110883137Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:00:46.110910552Z   warnings.warn(
+2026-04-20T10:00:46.112267346Z 2026-04-20 10:00:46,112 [quant_v2.models.trainer] INFO: Trained v2 model_2m: fit=1106 cal=277 features=91 calibrated=True meta=True
+2026-04-20T10:00:48.080734771Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:00:48.080797345Z   warnings.warn(
+2026-04-20T10:00:48.125901914Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:00:48.125935238Z   warnings.warn(
+2026-04-20T10:00:48.128326476Z 2026-04-20 10:00:48,128 [quant_v2.models.trainer] INFO: Trained v2 model_2m: fit=2291 cal=573 features=91 calibrated=True meta=True
+2026-04-20T10:00:50.846070754Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:00:50.846142157Z   warnings.warn(
+2026-04-20T10:00:50.913899527Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:00:50.913935741Z   warnings.warn(
+2026-04-20T10:00:50.921878265Z 2026-04-20 10:00:50,921 [quant_v2.models.trainer] INFO: Trained v2 model_2m: fit=3476 cal=869 features=91 calibrated=True meta=True
+2026-04-20T10:00:54.438468111Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:00:54.438507954Z   warnings.warn(
+2026-04-20T10:00:54.534919730Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:00:54.534955120Z   warnings.warn(
+2026-04-20T10:00:54.552425515Z 2026-04-20 10:00:54,552 [quant_v2.models.trainer] INFO: Trained v2 model_2m: fit=4661 cal=1165 features=91 calibrated=True meta=True
+2026-04-20T10:00:59.248958815Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:00:59.249003540Z   warnings.warn(
+2026-04-20T10:00:59.371919862Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:00:59.371974705Z   warnings.warn(
+2026-04-20T10:00:59.416883107Z 2026-04-20 10:00:59,416 [quant_v2.models.trainer] INFO: Trained v2 model_2m: fit=5846 cal=1461 features=91 calibrated=True meta=True
+2026-04-20T10:00:59.768370325Z 2026-04-20 10:00:59,768 [__main__] INFO: Retrain horizon=2h: CV accuracy=0.5780, single-split=0.6175 (threshold=0.5000)
+2026-04-20T10:00:59.833315492Z 2026-04-20 10:00:59,833 [__main__] INFO: Retrain horizon=2h: saved to /app/models/production/model_20260420_100034/model_2m.pkl
+2026-04-20T10:00:59.839479207Z 2026-04-20 10:00:59,839 [__main__] INFO: Retrain horizon=4h: train=7962 test=1991
+2026-04-20T10:01:03.846507768Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:03.846566131Z   warnings.warn(
+2026-04-20T10:01:03.974297052Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:03.974363436Z   warnings.warn(
+2026-04-20T10:01:03.998105418Z 2026-04-20 10:01:03,997 [quant_v2.models.trainer] INFO: Trained v2 model_4m: fit=6370 cal=1592 features=91 calibrated=True meta=True
+2026-04-20T10:01:05.302373574Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:05.302416429Z   warnings.warn(
+2026-04-20T10:01:05.329999553Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:05.330034176Z   warnings.warn(
+2026-04-20T10:01:05.331967451Z 2026-04-20 10:01:05,331 [quant_v2.models.trainer] INFO: Trained v2 model_4m: fit=1250 cal=313 features=91 calibrated=True meta=True
+2026-04-20T10:01:07.433078111Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:07.433142185Z   warnings.warn(
+2026-04-20T10:01:07.486900261Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:07.486936618Z   warnings.warn(
+2026-04-20T10:01:07.488913789Z 2026-04-20 10:01:07,487 [quant_v2.models.trainer] INFO: Trained v2 model_4m: fit=2577 cal=644 features=91 calibrated=True meta=True
+2026-04-20T10:01:10.128262078Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:10.128300990Z   warnings.warn(
+2026-04-20T10:01:10.208959182Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:10.208993895Z   warnings.warn(
+2026-04-20T10:01:10.211631215Z 2026-04-20 10:01:10,211 [quant_v2.models.trainer] INFO: Trained v2 model_4m: fit=3903 cal=976 features=91 calibrated=True meta=True
+2026-04-20T10:01:13.507859871Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:13.507901913Z   warnings.warn(
+2026-04-20T10:01:13.614963308Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:13.615034504Z   warnings.warn(
+2026-04-20T10:01:13.622836148Z 2026-04-20 10:01:13,622 [quant_v2.models.trainer] INFO: Trained v2 model_4m: fit=5230 cal=1307 features=91 calibrated=True meta=True
+2026-04-20T10:01:18.069732312Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:18.069774623Z   warnings.warn(
+2026-04-20T10:01:18.199936177Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:18.199972397Z   warnings.warn(
+2026-04-20T10:01:18.235809849Z 2026-04-20 10:01:18,233 [quant_v2.models.trainer] INFO: Trained v2 model_4m: fit=6556 cal=1639 features=91 calibrated=True meta=True
+2026-04-20T10:01:18.586702263Z 2026-04-20 10:01:18,586 [__main__] INFO: Retrain horizon=4h: CV accuracy=0.5616, single-split=0.6173 (threshold=0.5000)
+2026-04-20T10:01:18.649666136Z 2026-04-20 10:01:18,649 [__main__] INFO: Retrain horizon=4h: saved to /app/models/production/model_20260420_100034/model_4m.pkl
+2026-04-20T10:01:18.655846679Z 2026-04-20 10:01:18,655 [__main__] INFO: Retrain horizon=8h: train=8721 test=2181
+2026-04-20T10:01:22.467804667Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:22.467852847Z   warnings.warn(
+2026-04-20T10:01:22.607898958Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:22.607935829Z   warnings.warn(
+2026-04-20T10:01:22.621265168Z 2026-04-20 10:01:22,621 [quant_v2.models.trainer] INFO: Trained v2 model_8m: fit=6977 cal=1744 features=91 calibrated=True meta=True
+2026-04-20T10:01:23.978861833Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:23.978905203Z   warnings.warn(
+2026-04-20T10:01:24.005722152Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:24.005775215Z   warnings.warn(
+2026-04-20T10:01:24.007891670Z 2026-04-20 10:01:24,007 [quant_v2.models.trainer] INFO: Trained v2 model_8m: fit=1374 cal=343 features=91 calibrated=True meta=True
+2026-04-20T10:01:26.161388904Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:26.161456410Z   warnings.warn(
+2026-04-20T10:01:26.215880216Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:26.215908401Z   warnings.warn(
+2026-04-20T10:01:26.216855220Z 2026-04-20 10:01:26,216 [quant_v2.models.trainer] INFO: Trained v2 model_8m: fit=2827 cal=707 features=91 calibrated=True meta=True
+2026-04-20T10:01:28.961779574Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:28.961808156Z   warnings.warn(
+2026-04-20T10:01:29.046904612Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:29.046943701Z   warnings.warn(
+2026-04-20T10:01:29.049455231Z 2026-04-20 10:01:29,049 [quant_v2.models.trainer] INFO: Trained v2 model_8m: fit=4281 cal=1070 features=91 calibrated=True meta=True
+2026-04-20T10:01:32.456985169Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:32.457028940Z   warnings.warn(
+2026-04-20T10:01:32.574896777Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:32.574931618Z   warnings.warn(
+2026-04-20T10:01:32.582923342Z 2026-04-20 10:01:32,581 [quant_v2.models.trainer] INFO: Trained v2 model_8m: fit=5734 cal=1434 features=91 calibrated=True meta=True
+2026-04-20T10:01:36.892114204Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:36.892154795Z   warnings.warn(
+2026-04-20T10:01:37.038911818Z /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+2026-04-20T10:01:37.038954758Z   warnings.warn(
+2026-04-20T10:01:37.065416834Z 2026-04-20 10:01:37,065 [quant_v2.models.trainer] INFO: Trained v2 model_8m: fit=7188 cal=1797 features=91 calibrated=True meta=True
+2026-04-20T10:01:37.442765000Z 2026-04-20 10:01:37,442 [__main__] INFO: Retrain horizon=8h: CV accuracy=0.5499, single-split=0.6295 (threshold=0.5000)
+2026-04-20T10:01:37.504544432Z 2026-04-20 10:01:37,504 [__main__] INFO: Retrain horizon=8h: saved to /app/models/production/model_20260420_100034/model_8m.pkl
+2026-04-20T10:01:37.507070695Z 2026-04-20 10:01:37,506 [__main__] INFO: Retrain: promoted model_20260420_100034 as active model (3 horizons)
+2026-04-20T10:01:37.509026660Z 2026-04-20 10:01:37,508 [__main__] INFO: Retrain cycle complete: promoted model_20260420_100034
+2026-04-20T10:01:37.509625167Z 2026-04-20 10:01:37,509 [__main__] INFO: Next retrain in 168 hours. Sleeping...

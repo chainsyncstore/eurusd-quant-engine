@@ -1,0 +1,7 @@
+14
+--- distinct error classes (telegram) ---
+      6 Traceback
+      4 httpx.ReadError
+      4 NetworkError
+      2 Exception
+      2 ERROR

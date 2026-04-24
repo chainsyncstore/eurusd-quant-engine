@@ -1,0 +1,3 @@
+   1090 regime=3
+     90 regime=1
+      3 threshold=0.5250

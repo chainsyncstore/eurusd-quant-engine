@@ -1,0 +1,29 @@
+--- [Traceback] ---
+14017:2026-04-17T13:45:38.250420081Z Traceback (most recent call last):
+14052:2026-04-17T13:45:38.250489180Z Traceback (most recent call last):
+14081:2026-04-17T13:45:38.250528240Z Traceback (most recent call last):
+79740:2026-04-22T18:45:42.721529563Z Traceback (most recent call last):
+79775:2026-04-22T18:45:42.721599639Z Traceback (most recent call last):
+--- [ERROR] ---
+14016:2026-04-17T13:45:38.250392736Z 2026-04-17 13:45:38,228 - __main__ - ERROR - Exception while handling an update:
+79739:2026-04-22T18:45:42.721502726Z 2026-04-22 18:45:42,719 - __main__ - ERROR - Exception while handling an update:
+--- [CRITICAL] ---
+--- [Exception] ---
+14016:2026-04-17T13:45:38.250392736Z 2026-04-17 13:45:38,228 - __main__ - ERROR - Exception while handling an update:
+79739:2026-04-22T18:45:42.721502726Z 2026-04-22 18:45:42,719 - __main__ - ERROR - Exception while handling an update:
+--- [NetworkError] ---
+14110:2026-04-17T13:45:38.250570047Z     raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+14111:2026-04-17T13:45:38.250571450Z telegram.error.NetworkError: httpx.ReadError: 
+79833:2026-04-22T18:45:42.721675091Z     raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+79834:2026-04-22T18:45:42.721676436Z telegram.error.NetworkError: httpx.ReadError: 
+--- [httpx.ReadError] ---
+14077:2026-04-17T13:45:38.250523188Z httpx.ReadError
+14111:2026-04-17T13:45:38.250571450Z telegram.error.NetworkError: httpx.ReadError: 
+79800:2026-04-22T18:45:42.721632868Z httpx.ReadError
+79834:2026-04-22T18:45:42.721676436Z telegram.error.NetworkError: httpx.ReadError: 
+--- [Conflict] ---
+--- [kill_switch] ---
+--- [watchdog_flatten] ---
+--- [stale_feed] ---
+--- [DRIFT_ALERT] ---
+--- [maintenance_resume] ---

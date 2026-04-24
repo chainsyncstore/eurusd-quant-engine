@@ -1,0 +1,18 @@
+1:2026-04-20T10:00:34.263056411Z 2026-04-20 10:00:34,261 [__main__] INFO: Retrain: fetching 6 months of data for symbols=['BTCUSDT', 'ETHUSDT', 'BNBUSDT']...
+9:2026-04-20T10:00:36.517877399Z 2026-04-20 10:00:36,517 [__main__] INFO: Retrain: BTCUSDT -> 4320 feature rows
+17:2026-04-20T10:00:38.774335446Z 2026-04-20 10:00:38,774 [__main__] INFO: Retrain: ETHUSDT -> 4320 feature rows
+25:2026-04-20T10:00:41.029603631Z 2026-04-20 10:00:41,029 [__main__] INFO: Retrain: BNBUSDT -> 4320 feature rows
+26:2026-04-20T10:00:41.032664926Z 2026-04-20 10:00:41,032 [__main__] INFO: Retrain: combined dataset = 12960 rows across 3 symbols
+27:2026-04-20T10:00:41.032684400Z 2026-04-20 10:00:41,032 [__main__] INFO: Retrain: featured dataset = 12960 rows, 91 features
+28:2026-04-20T10:00:41.041412594Z 2026-04-20 10:00:41,041 [__main__] INFO: Retrain horizon=2h: train=7110 test=1778
+59:2026-04-20T10:00:59.768370325Z 2026-04-20 10:00:59,768 [__main__] INFO: Retrain horizon=2h: CV accuracy=0.5780, single-split=0.6175 (threshold=0.5000)
+60:2026-04-20T10:00:59.833315492Z 2026-04-20 10:00:59,833 [__main__] INFO: Retrain horizon=2h: saved to /app/models/production/model_20260420_100034/model_2m.pkl
+61:2026-04-20T10:00:59.839479207Z 2026-04-20 10:00:59,839 [__main__] INFO: Retrain horizon=4h: train=7962 test=1991
+92:2026-04-20T10:01:18.586702263Z 2026-04-20 10:01:18,586 [__main__] INFO: Retrain horizon=4h: CV accuracy=0.5616, single-split=0.6173 (threshold=0.5000)
+93:2026-04-20T10:01:18.649666136Z 2026-04-20 10:01:18,649 [__main__] INFO: Retrain horizon=4h: saved to /app/models/production/model_20260420_100034/model_4m.pkl
+94:2026-04-20T10:01:18.655846679Z 2026-04-20 10:01:18,655 [__main__] INFO: Retrain horizon=8h: train=8721 test=2181
+125:2026-04-20T10:01:37.442765000Z 2026-04-20 10:01:37,442 [__main__] INFO: Retrain horizon=8h: CV accuracy=0.5499, single-split=0.6295 (threshold=0.5000)
+126:2026-04-20T10:01:37.504544432Z 2026-04-20 10:01:37,504 [__main__] INFO: Retrain horizon=8h: saved to /app/models/production/model_20260420_100034/model_8m.pkl
+127:2026-04-20T10:01:37.507070695Z 2026-04-20 10:01:37,506 [__main__] INFO: Retrain: promoted model_20260420_100034 as active model (3 horizons)
+128:2026-04-20T10:01:37.509026660Z 2026-04-20 10:01:37,508 [__main__] INFO: Retrain cycle complete: promoted model_20260420_100034
+129:2026-04-20T10:01:37.509625167Z 2026-04-20 10:01:37,509 [__main__] INFO: Next retrain in 168 hours. Sleeping...

@@ -1,0 +1,120 @@
+87069:2026-04-23T09:00:28.089711295Z 2026-04-23 09:00:28,089 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87071:2026-04-23T09:00:28.377325982Z 2026-04-23 09:00:28,376 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87074:2026-04-23T09:00:28.808407632Z 2026-04-23 09:00:28,808 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 09:00:00+00:00 (192 total)
+87075:2026-04-23T09:00:29.078942435Z 2026-04-23 09:00:29,077 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87077:2026-04-23T09:00:29.641144651Z 2026-04-23 09:00:29,640 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87078:2026-04-23T09:00:29.892804937Z 2026-04-23 09:00:29,892 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 09:00:00+00:00 (192 total)
+87079:2026-04-23T09:00:29.922060415Z 2026-04-23 09:00:29,921 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87080:2026-04-23T09:00:30.187400288Z 2026-04-23 09:00:30,187 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87082:2026-04-23T09:00:30.775369222Z 2026-04-23 09:00:30,775 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87083:2026-04-23T09:00:31.062894626Z 2026-04-23 09:00:31,061 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87086:2026-04-23T09:00:31.427181887Z 2026-04-23 09:00:31,426 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 09:00:00+00:00 (192 total)
+87088:2026-04-23T09:00:31.741813436Z 2026-04-23 09:00:31,741 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87089:2026-04-23T09:00:32.328071577Z 2026-04-23 09:00:32,327 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87091:2026-04-23T09:00:32.380516429Z 2026-04-23 09:00:32,380 - quant_v2.telebot.signal_manager - INFO - Scorecard dampening DOGEUSDT: hit_rate=0.55, mult=0.60
+87092:2026-04-23T09:00:32.617352737Z 2026-04-23 09:00:32,616 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87093:2026-04-23T09:00:32.659907330Z 2026-04-23 09:00:32,659 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 09:00:00+00:00 (192 total)
+87094:2026-04-23T09:00:32.933563594Z 2026-04-23 09:00:32,933 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87096:2026-04-23T09:00:33.524057584Z 2026-04-23 09:00:33,522 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87097:2026-04-23T09:00:33.802413566Z 2026-04-23 09:00:33,801 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87098:2026-04-23T09:00:33.845544290Z 2026-04-23 09:00:33,845 - quant_v2.telebot.signal_manager - INFO - Signal decision: LINKUSDT HOLD proba=0.5418 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+87101:2026-04-23T09:00:34.123323857Z 2026-04-23 09:00:34,123 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 09:00:00+00:00 (192 total)
+87103:2026-04-23T09:00:34.417103796Z 2026-04-23 09:00:34,415 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87104:2026-04-23T09:00:34.977043873Z 2026-04-23 09:00:34,976 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87107:2026-04-23T09:00:35.260451834Z 2026-04-23 09:00:35,259 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87108:2026-04-23T09:00:35.360766322Z 2026-04-23 09:00:35,360 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 09:00:00+00:00 (192 total)
+87110:2026-04-23T09:00:35.653477809Z 2026-04-23 09:00:35,653 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87111:2026-04-23T09:00:36.214525670Z 2026-04-23 09:00:36,213 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87112:2026-04-23T09:00:36.483028355Z 2026-04-23 09:00:36,482 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87115:2026-04-23T09:00:36.784406847Z 2026-04-23 09:00:36,784 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 09:00:00+00:00 (192 total)
+87117:2026-04-23T09:00:37.100662020Z 2026-04-23 09:00:37,099 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87118:2026-04-23T09:00:37.696884003Z 2026-04-23 09:00:37,696 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87121:2026-04-23T09:00:37.981683087Z 2026-04-23 09:00:37,981 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87122:2026-04-23T09:00:38.025060070Z 2026-04-23 09:00:38,024 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 09:00:00+00:00 (192 total)
+87123:2026-04-23T09:00:38.305787700Z 2026-04-23 09:00:38,305 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87125:2026-04-23T09:00:38.887869386Z 2026-04-23 09:00:38,887 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87126:2026-04-23T09:00:39.178422455Z 2026-04-23 09:00:39,177 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87132:2026-04-23T09:00:40.429023834Z 2026-04-23 09:00:40,428 - quant_v2.telebot.signal_manager - INFO - Signal decision: LTCUSDT HOLD proba=0.5817 buy_th=0.59 sell_th=0.41 regime=3 risk=0.5
+87167:2026-04-23T09:06:14.731896429Z 2026-04-23 09:06:14,731 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/getUpdates "HTTP/1.1 200 OK"
+87317:2026-04-23T09:30:51.430111718Z 2026-04-23 09:30:51,429 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8080243639:AAEFWbCso4MKlqBPkZgyuDUDucWrHsDuMX0/getUpdates "HTTP/1.1 200 OK"
+87492:2026-04-23T10:00:08.089550925Z 2026-04-23 10:00:08,088 - quant_v2.telebot.signal_manager - INFO - Event gate: fetched 26 events (news + F&G)
+87494:2026-04-23T10:00:08.365364783Z 2026-04-23 10:00:08,365 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87495:2026-04-23T10:00:08.383439126Z 2026-04-23 10:00:08,383 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87496:2026-04-23T10:00:08.635369718Z 2026-04-23 10:00:08,634 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87497:2026-04-23T10:00:08.675488306Z 2026-04-23 10:00:08,675 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87498:2026-04-23T10:00:09.217524751Z 2026-04-23 10:00:09,217 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87499:2026-04-23T10:00:09.224611965Z 2026-04-23 10:00:09,223 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87500:2026-04-23T10:00:09.497471602Z 2026-04-23 10:00:09,497 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87501:2026-04-23T10:00:09.518397198Z 2026-04-23 10:00:09,517 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87514:2026-04-23T10:00:12.018695931Z 2026-04-23 10:00:12,018 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87515:2026-04-23T10:00:12.036903783Z 2026-04-23 10:00:12,036 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87516:2026-04-23T10:00:12.300004529Z 2026-04-23 10:00:12,299 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87517:2026-04-23T10:00:12.313943548Z 2026-04-23 10:00:12,313 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87518:2026-04-23T10:00:12.861586218Z 2026-04-23 10:00:12,861 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87519:2026-04-23T10:00:12.877902595Z 2026-04-23 10:00:12,877 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87520:2026-04-23T10:00:13.147869866Z 2026-04-23 10:00:13,147 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87521:2026-04-23T10:00:13.167174190Z 2026-04-23 10:00:13,166 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87526:2026-04-23T10:00:14.653988169Z 2026-04-23 10:00:14,653 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87527:2026-04-23T10:00:14.949017530Z 2026-04-23 10:00:14,947 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87530:2026-04-23T10:00:15.539370695Z 2026-04-23 10:00:15,539 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87531:2026-04-23T10:00:15.569078840Z 2026-04-23 10:00:15,568 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87532:2026-04-23T10:00:15.809570892Z 2026-04-23 10:00:15,808 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87533:2026-04-23T10:00:15.837900270Z 2026-04-23 10:00:15,837 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87535:2026-04-23T10:00:16.426864388Z 2026-04-23 10:00:16,426 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87536:2026-04-23T10:00:16.725442972Z 2026-04-23 10:00:16,724 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87539:2026-04-23T10:00:17.307879001Z 2026-04-23 10:00:17,307 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87541:2026-04-23T10:00:17.622369205Z 2026-04-23 10:00:17,621 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87542:2026-04-23T10:00:18.165642554Z 2026-04-23 10:00:18,165 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87547:2026-04-23T10:00:18.451972279Z 2026-04-23 10:00:18,451 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87548:2026-04-23T10:00:18.662343909Z 2026-04-23 10:00:18,661 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87550:2026-04-23T10:00:18.932404233Z 2026-04-23 10:00:18,931 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87551:2026-04-23T10:00:19.508576405Z 2026-04-23 10:00:19,508 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87553:2026-04-23T10:00:19.805657540Z 2026-04-23 10:00:19,805 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87554:2026-04-23T10:00:19.919839988Z 2026-04-23 10:00:19,919 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87556:2026-04-23T10:00:20.198408584Z 2026-04-23 10:00:20,198 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87557:2026-04-23T10:00:20.748979385Z 2026-04-23 10:00:20,747 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87559:2026-04-23T10:00:21.022031594Z 2026-04-23 10:00:21,021 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87562:2026-04-23T10:00:21.370816030Z 2026-04-23 10:00:21,370 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87563:2026-04-23T10:00:21.650525627Z 2026-04-23 10:00:21,649 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87567:2026-04-23T10:00:22.221185316Z 2026-04-23 10:00:22,221 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87569:2026-04-23T10:00:22.513649440Z 2026-04-23 10:00:22,513 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87570:2026-04-23T10:00:22.537266043Z 2026-04-23 10:00:22,537 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87571:2026-04-23T10:00:22.813987154Z 2026-04-23 10:00:22,813 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87573:2026-04-23T10:00:23.389416808Z 2026-04-23 10:00:23,389 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87574:2026-04-23T10:00:23.681887164Z 2026-04-23 10:00:23,679 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87578:2026-04-23T10:00:24.071173914Z 2026-04-23 10:00:24,070 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87579:2026-04-23T10:00:24.357788291Z 2026-04-23 10:00:24,357 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87581:2026-04-23T10:00:24.929908449Z 2026-04-23 10:00:24,929 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87582:2026-04-23T10:00:25.192707009Z 2026-04-23 10:00:25,192 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87583:2026-04-23T10:00:25.221936481Z 2026-04-23 10:00:25,221 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87584:2026-04-23T10:00:25.481691120Z 2026-04-23 10:00:25,481 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87586:2026-04-23T10:00:26.037249198Z 2026-04-23 10:00:26,037 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87587:2026-04-23T10:00:26.309174188Z 2026-04-23 10:00:26,308 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87589:2026-04-23T10:00:26.711647927Z 2026-04-23 10:00:26,711 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87591:2026-04-23T10:00:27.021807188Z 2026-04-23 10:00:27,020 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87592:2026-04-23T10:00:27.583632900Z 2026-04-23 10:00:27,582 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87598:2026-04-23T10:00:27.879680256Z 2026-04-23 10:00:27,879 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87599:2026-04-23T10:00:27.979399341Z 2026-04-23 10:00:27,979 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87601:2026-04-23T10:00:28.261533210Z 2026-04-23 10:00:28,260 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87602:2026-04-23T10:00:28.827274409Z 2026-04-23 10:00:28,827 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87606:2026-04-23T10:00:29.120781595Z 2026-04-23 10:00:29,120 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87607:2026-04-23T10:00:29.336177580Z 2026-04-23 10:00:29,335 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87609:2026-04-23T10:00:29.612656345Z 2026-04-23 10:00:29,611 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87610:2026-04-23T10:00:30.184716295Z 2026-04-23 10:00:30,184 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87616:2026-04-23T10:00:30.469500399Z 2026-04-23 10:00:30,469 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87617:2026-04-23T10:00:30.663898885Z 2026-04-23 10:00:30,663 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87619:2026-04-23T10:00:30.942728024Z 2026-04-23 10:00:30,941 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87623:2026-04-23T10:00:31.991015646Z 2026-04-23 10:00:31,990 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87624:2026-04-23T10:00:31.995331734Z 2026-04-23 10:00:31,995 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87625:2026-04-23T10:00:32.271341866Z 2026-04-23 10:00:32,270 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87627:2026-04-23T10:00:32.768262065Z 2026-04-23 10:00:32,767 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87628:2026-04-23T10:00:33.348194222Z 2026-04-23 10:00:33,347 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87631:2026-04-23T10:00:33.632115052Z 2026-04-23 10:00:33,631 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87632:2026-04-23T10:00:33.740423530Z 2026-04-23 10:00:33,740 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87634:2026-04-23T10:00:34.015285043Z 2026-04-23 10:00:34,014 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87635:2026-04-23T10:00:34.598023983Z 2026-04-23 10:00:34,596 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87638:2026-04-23T10:00:34.882680710Z 2026-04-23 10:00:34,882 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far
+87639:2026-04-23T10:00:35.153042825Z 2026-04-23 10:00:35,152 - quant.data.binance_client - INFO - Fetched 192 bars up to 2026-04-23 10:00:00+00:00 (192 total)
+87641:2026-04-23T10:00:35.461801246Z 2026-04-23 10:00:35,461 - quant.data.binance_client - INFO - Fetched 24 funding rate entries
+87642:2026-04-23T10:00:36.039280367Z 2026-04-23 10:00:36,038 - quant.data.binance_client - INFO - Fetched 191 open interest entries so far
+87646:2026-04-23T10:00:36.320178000Z 2026-04-23 10:00:36,319 - quant.data.binance_client - INFO - Fetched 192 open interest entries so far

@@ -1,0 +1,4 @@
+3396:2026-04-16T17:00:16.447000051Z 2026-04-16 17:00:16,446 - quant_v2.strategy.event_gate - INFO - Event gate: BUY ETHUSDT contradicted by high news 'Hyperbridge hack losses soar to $2.5 million after update' → mult=0.10
+3400:2026-04-16T17:00:17.414621050Z 2026-04-16 17:00:17,414 - quant_v2.strategy.event_gate - INFO - Event gate: BUY ETHUSDT contradicted by high news 'Hyperbridge hack losses soar to $2.5 million after update' → mult=0.10
+51563:2026-04-20T12:20:39.743420399Z 2026-04-20 12:20:39,743 - __main__ - INFO - Initialized V2SignalManager with model: /app/models/production/model_20260420_100034 (source=registry_active:model_20260420_100034, loop=3600s)
+67975:2026-04-21T19:37:27.916033461Z 2026-04-21 19:37:27,915 - __main__ - INFO - Initialized V2SignalManager with model: /app/models/production/model_20260421_192947 (source=registry_active:model_20260421_192947, loop=3600s)

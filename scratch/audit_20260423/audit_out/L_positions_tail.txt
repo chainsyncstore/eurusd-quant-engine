@@ -1,0 +1,120 @@
+2026-04-21T22:00:16.719727929Z 2026-04-21 22:00:16,719 - quant_v2.portfolio.optimizer - INFO - Optimizer: 3 symbols → 0 after filter | vols={'ETHUSDT': '0.0068', 'XRPUSDT': '0.0079', 'LINKUSDT': '0.0074'} | corr_pairs=3
+2026-04-21T22:00:17.967869870Z 2026-04-21 22:00:17,967 - quant_v2.portfolio.optimizer - INFO - Optimizer: 4 symbols → 0 after filter | vols={'ADAUSDT': '0.0096', 'DOGEUSDT': '0.0075', 'SOLUSDT': '0.0079', 'XRPUSDT': '0.0074'} | corr_pairs=6
+2026-04-21T22:00:22.144925694Z 2026-04-21 22:00:22,144 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'ETHUSDT': '0.0068', 'LINKUSDT': '0.0074'} | corr_pairs=1
+2026-04-21T22:00:23.384627687Z 2026-04-21 22:00:23,384 - quant_v2.portfolio.optimizer - INFO - Optimizer: 4 symbols → 0 after filter | vols={'ADAUSDT': '0.0096', 'DOGEUSDT': '0.0075', 'SOLUSDT': '0.0079', 'XRPUSDT': '0.0073'} | corr_pairs=6
+2026-04-21T22:00:24.857356733Z 2026-04-21 22:00:24,857 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'ETHUSDT': '0.0068', 'LINKUSDT': '0.0074'} | corr_pairs=1
+2026-04-21T22:00:26.120490016Z 2026-04-21 22:00:26,120 - quant_v2.portfolio.optimizer - INFO - Optimizer: 3 symbols → 0 after filter | vols={'DOGEUSDT': '0.0075', 'SOLUSDT': '0.0079', 'XRPUSDT': '0.0073'} | corr_pairs=3
+2026-04-21T22:00:27.575626613Z 2026-04-21 22:00:27,575 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'ETHUSDT': '0.0068', 'LINKUSDT': '0.0074'} | corr_pairs=1
+2026-04-21T22:00:28.828695759Z 2026-04-21 22:00:28,828 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'SOLUSDT': '0.0079', 'XRPUSDT': '0.0073'} | corr_pairs=1
+2026-04-21T22:00:30.444865262Z 2026-04-21 22:00:30,444 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'ETHUSDT': '0.0068'} | corr_pairs=0
+2026-04-21T22:00:31.677290837Z 2026-04-21 22:00:31,677 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'SOLUSDT': '0.0079', 'XRPUSDT': '0.0073'} | corr_pairs=1
+2026-04-21T22:00:33.147772132Z 2026-04-21 22:00:33,147 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'ETHUSDT': '0.0068'} | corr_pairs=0
+2026-04-21T22:00:34.384088848Z 2026-04-21 22:00:34,383 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'SOLUSDT': '0.0079', 'XRPUSDT': '0.0073'} | corr_pairs=1
+2026-04-21T22:00:37.133675452Z 2026-04-21 22:00:37,133 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'SOLUSDT': '0.0079', 'XRPUSDT': '0.0073'} | corr_pairs=1
+2026-04-21T23:00:16.000560512Z 2026-04-21 23:00:16,000 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'SOLUSDT': '0.0079', 'XRPUSDT': '0.0073'} | corr_pairs=1
+2026-04-21T23:00:22.160482902Z 2026-04-21 23:00:22,160 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'ETHUSDT': '0.0068'} | corr_pairs=0
+2026-04-21T23:00:23.365139701Z 2026-04-21 23:00:23,364 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'SOLUSDT': '0.0079', 'XRPUSDT': '0.0073'} | corr_pairs=1
+2026-04-21T23:00:27.582594766Z 2026-04-21 23:00:27,582 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'ETHUSDT': '0.0068', 'XRPUSDT': '0.0078'} | corr_pairs=1
+2026-04-21T23:00:28.827045721Z 2026-04-21 23:00:28,826 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'SOLUSDT': '0.0079'} | corr_pairs=0
+2026-04-21T23:00:32.883770627Z 2026-04-21 23:00:32,883 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'ETHUSDT': '0.0068', 'XRPUSDT': '0.0078'} | corr_pairs=1
+2026-04-21T23:00:34.142814873Z 2026-04-21 23:00:34,142 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0076', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-21T23:00:39.451712592Z 2026-04-21 23:00:39,451 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0076', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T00:00:15.627732849Z 2026-04-22 00:00:15,627 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0076', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T00:00:19.882605189Z 2026-04-22 00:00:19,882 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'ETHUSDT': '0.0068', 'XRPUSDT': '0.0078'} | corr_pairs=1
+2026-04-22T00:00:21.123015540Z 2026-04-22 00:00:21,122 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0076', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T00:00:25.176909581Z 2026-04-22 00:00:25,176 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'ETHUSDT': '0.0068'} | corr_pairs=0
+2026-04-22T00:00:26.593637528Z 2026-04-22 00:00:26,593 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0076', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T00:00:30.523000964Z 2026-04-22 00:00:30,522 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'ETHUSDT': '0.0068'} | corr_pairs=0
+2026-04-22T00:00:31.909596510Z 2026-04-22 00:00:31,909 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T00:00:33.219469559Z 2026-04-22 00:00:33,219 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'ETHUSDT': '0.0068'} | corr_pairs=0
+2026-04-22T00:00:40.053401219Z 2026-04-22 00:00:40,053 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T01:00:11.556221453Z 2026-04-22 01:00:11,556 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'ETHUSDT': '0.0068'} | corr_pairs=0
+2026-04-22T01:00:12.516285069Z 2026-04-22 01:00:12,516 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T01:00:15.219443728Z 2026-04-22 01:00:15,219 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T01:00:19.749382224Z 2026-04-22 01:00:19,749 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T01:00:24.020149765Z 2026-04-22 01:00:24,019 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'ETHUSDT': '0.0068', 'XRPUSDT': '0.0078'} | corr_pairs=1
+2026-04-22T01:00:25.239384416Z 2026-04-22 01:00:25,239 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T01:00:29.294174031Z 2026-04-22 01:00:29,294 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'ETHUSDT': '0.0068', 'XRPUSDT': '0.0078'} | corr_pairs=1
+2026-04-22T01:00:30.563631298Z 2026-04-22 01:00:30,563 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T01:00:32.003093921Z 2026-04-22 01:00:32,002 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'ETHUSDT': '0.0068', 'XRPUSDT': '0.0078'} | corr_pairs=1
+2026-04-22T01:00:38.525055916Z 2026-04-22 01:00:38,524 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T02:00:12.416189555Z 2026-04-22 02:00:12,415 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T02:00:14.056899233Z 2026-04-22 02:00:14,056 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'XRPUSDT': '0.0078'} | corr_pairs=0
+2026-04-22T02:00:15.314078284Z 2026-04-22 02:00:15,313 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'SOLUSDT': '0.0079'} | corr_pairs=1
+2026-04-22T02:00:35.140066213Z 2026-04-22 02:00:35,139 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'XRPUSDT': '0.0078'} | corr_pairs=0
+2026-04-22T02:00:36.351812316Z 2026-04-22 02:00:36,351 - quant_v2.portfolio.optimizer - INFO - Optimizer: 3 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057', 'SOLUSDT': '0.0079'} | corr_pairs=3
+2026-04-22T03:00:18.361610457Z 2026-04-22 03:00:18,361 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T04:00:16.901545037Z 2026-04-22 04:00:16,901 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T04:00:25.043047718Z 2026-04-22 04:00:25,042 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T04:00:27.764058818Z 2026-04-22 04:00:27,763 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T05:00:16.943716877Z 2026-04-22 05:00:16,943 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T05:00:22.520615515Z 2026-04-22 05:00:22,520 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T05:00:27.801356263Z 2026-04-22 05:00:27,801 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T06:00:16.507686887Z 2026-04-22 06:00:16,507 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T06:00:25.817763643Z 2026-04-22 06:00:25,817 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T06:00:28.566731075Z 2026-04-22 06:00:28,566 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T06:00:31.249269951Z 2026-04-22 06:00:31,249 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T07:00:13.760366270Z 2026-04-22 07:00:13,760 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T07:00:20.245430013Z 2026-04-22 07:00:20,245 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T07:00:25.777247254Z 2026-04-22 07:00:25,777 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T07:00:28.569888092Z 2026-04-22 07:00:28,569 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T08:00:16.035121198Z 2026-04-22 08:00:16,034 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 0 after filter | vols={'DOGEUSDT': '0.0073', 'LTCUSDT': '0.0057'} | corr_pairs=1
+2026-04-22T08:00:34.650367848Z 2026-04-22 08:00:34,649 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0057'} | corr_pairs=0
+2026-04-22T10:00:18.328127401Z 2026-04-22 10:00:18,327 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'ETHUSDT': '0.0077'} | corr_pairs=0
+2026-04-22T10:00:39.830900443Z 2026-04-22 10:00:39,830 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'ETHUSDT': '0.0077'} | corr_pairs=0
+2026-04-22T11:00:15.695417295Z 2026-04-22 11:00:15,695 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'ETHUSDT': '0.0077'} | corr_pairs=0
+2026-04-22T11:00:16.646343851Z 2026-04-22 11:00:16,646 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'BTCUSDT': '0.0069'} | corr_pairs=0
+2026-04-22T11:00:19.424760310Z 2026-04-22 11:00:19,424 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'BTCUSDT': '0.0069'} | corr_pairs=0
+2026-04-22T11:00:42.878507696Z 2026-04-22 11:00:42,878 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'BTCUSDT': '0.0069'} | corr_pairs=0
+2026-04-22T20:00:40.180631195Z 2026-04-22 20:00:40,180 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T21:00:17.428968665Z 2026-04-22 21:00:17,428 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T21:00:20.227348838Z 2026-04-22 21:00:20,227 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T21:00:22.974136145Z 2026-04-22 21:00:22,973 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T21:00:31.102938758Z 2026-04-22 21:00:31,102 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T21:00:33.877714196Z 2026-04-22 21:00:33,877 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T21:00:35.088764217Z 2026-04-22 21:00:35,088 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T21:00:37.819536802Z 2026-04-22 21:00:37,819 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T22:00:09.989810491Z 2026-04-22 22:00:09,989 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T22:00:10.912045002Z 2026-04-22 22:00:10,911 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T22:00:13.656849705Z 2026-04-22 22:00:13,656 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T22:00:14.563331150Z 2026-04-22 22:00:14,563 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T22:00:17.168585041Z 2026-04-22 22:00:17,168 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T22:00:23.272575769Z 2026-04-22 22:00:23,272 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T22:00:24.496495254Z 2026-04-22 22:00:24,496 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T22:00:29.820359384Z 2026-04-22 22:00:29,820 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 0 after filter | vols={'LTCUSDT': '0.0056'} | corr_pairs=0
+2026-04-22T22:00:36.489558780Z 2026-04-22 22:00:36,489 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T23:00:15.944190262Z 2026-04-22 23:00:15,944 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'LINKUSDT': '0.0080'} | corr_pairs=0
+2026-04-22T23:00:22.082937938Z 2026-04-22 23:00:22,082 - quant_v2.portfolio.optimizer - INFO - Optimizer: 2 symbols → 1 after filter | vols={'BNBUSDT': '0.0052', 'LINKUSDT': '0.0080'} | corr_pairs=1
+2026-04-22T23:00:35.019296612Z 2026-04-22 23:00:35,019 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-22T23:00:40.375631194Z 2026-04-22 23:00:40,375 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T00:00:15.748092542Z 2026-04-23 00:00:15,748 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T00:00:28.279906715Z 2026-04-23 00:00:28,279 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T00:00:33.571403541Z 2026-04-23 00:00:33,571 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T00:00:36.185144529Z 2026-04-23 00:00:36,185 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T00:00:41.419109512Z 2026-04-23 00:00:41,419 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T01:00:15.960987475Z 2026-04-23 01:00:15,960 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T01:00:20.392517208Z 2026-04-23 01:00:20,392 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T01:00:33.702302264Z 2026-04-23 01:00:33,702 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T02:00:16.090884157Z 2026-04-23 02:00:16,090 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T02:00:29.402873714Z 2026-04-23 02:00:29,402 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T02:00:32.103273900Z 2026-04-23 02:00:32,103 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T02:00:34.767907344Z 2026-04-23 02:00:34,767 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T02:00:37.420674473Z 2026-04-23 02:00:37,420 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T03:00:16.640989492Z 2026-04-23 03:00:16,640 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T03:00:20.292285930Z 2026-04-23 03:00:20,292 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T03:00:25.603757254Z 2026-04-23 03:00:25,603 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T04:00:18.594346413Z 2026-04-23 04:00:18,594 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T04:00:31.826433085Z 2026-04-23 04:00:31,826 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T04:00:34.539303892Z 2026-04-23 04:00:34,539 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T04:00:41.910201737Z 2026-04-23 04:00:41,910 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T05:00:16.794358153Z 2026-04-23 05:00:16,794 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T05:00:31.403224680Z 2026-04-23 05:00:31,403 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T06:00:13.991757124Z 2026-04-23 06:00:13,991 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T08:00:15.994775001Z 2026-04-23 08:00:15,994 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T08:00:31.399850206Z 2026-04-23 08:00:31,399 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T08:00:34.194186028Z 2026-04-23 08:00:34,193 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T09:00:15.901678487Z 2026-04-23 09:00:15,901 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T10:00:10.689242705Z 2026-04-23 10:00:10,689 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T10:00:22.215570669Z 2026-04-23 10:00:22,215 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T10:00:27.617447149Z 2026-04-23 10:00:27,617 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
+2026-04-23T10:00:30.318851886Z 2026-04-23 10:00:30,318 - quant_v2.portfolio.optimizer - INFO - Optimizer: 1 symbols → 1 after filter | vols={'BNBUSDT': '0.0052'} | corr_pairs=0
