@@ -100,6 +100,30 @@ try:
     )
 except ValueError:
     V2_MAX_HOLD_HOURS = 12
+# audit_20260423 P0-4: stranded-position flatten configuration.  Defaults
+# mirror RiskParityOptimizer's min-notional filter so the safety net uses the
+# same threshold the optimizer applies when filtering new orders.
+try:
+    V2_MIN_NOTIONAL_USD = max(
+        float((os.getenv("BOT_V2_MIN_NOTIONAL_USD", "10").strip() or "10")),
+        0.0,
+    )
+except ValueError:
+    V2_MIN_NOTIONAL_USD = 10.0
+try:
+    V2_MIN_NOTIONAL_EQUITY_PCT = max(
+        float((os.getenv("BOT_V2_MIN_NOTIONAL_EQUITY_PCT", "0.005").strip() or "0.005")),
+        0.0,
+    )
+except ValueError:
+    V2_MIN_NOTIONAL_EQUITY_PCT = 0.005
+try:
+    V2_STRANDED_FLATTEN_CYCLES = max(
+        int((os.getenv("BOT_V2_STRANDED_FLATTEN_CYCLES", "4").strip() or "4")),
+        0,
+    )
+except ValueError:
+    V2_STRANDED_FLATTEN_CYCLES = 4
 DEFAULT_V2_SYMBOL = default_universe_symbols()[0] if default_universe_symbols() else "BTCUSDT"
 
 
@@ -411,6 +435,9 @@ def _get_v2_signal_manager(*, allow_reload_with_active_sessions: bool = False) -
         symbols=default_universe_symbols(),
         loop_interval_seconds=V2_SIGNAL_LOOP_SECONDS,
         max_hold_hours=V2_MAX_HOLD_HOURS,
+        min_notional_usd=V2_MIN_NOTIONAL_USD,
+        min_notional_equity_pct=V2_MIN_NOTIONAL_EQUITY_PCT,
+        stranded_flatten_cycles=V2_STRANDED_FLATTEN_CYCLES,
         on_model_rotated=_on_v2_model_rotated,
     )
     source_label = MODEL_RESOLUTION.source
@@ -673,6 +700,38 @@ def _persist_paper_state(user_id: int, *, bridge: V2ExecutionBridge | None) -> N
         logger.debug("Failed persisting paper state for user %s: %s", user_id, exc)
     finally:
         session.close()
+
+
+def _sync_signal_manager_paper_state(user_id: int, *, bridge: V2ExecutionBridge | None) -> None:
+    """Push current paper-state from the execution service into the signal
+    manager session so the time-stop and stranded-flatten safety nets see it.
+
+    Without this hop ``_SignalSession.paper_entry_timestamps``,
+    ``last_known_positions`` and ``last_known_equity_usd`` would always remain
+    empty in production, making both safety nets dead code.  Refs:
+    audit_20260423 P0-2 (writer-side gap) + P0-4 (stranded-flatten).
+    """
+    if bridge is None or not bridge.is_running(user_id):
+        return
+    source_manager = _get_signal_source_manager()
+    if source_manager is None:
+        return
+    sync_fn = getattr(source_manager, "sync_paper_position_state", None)
+    if not callable(sync_fn):
+        return
+    service = getattr(bridge, "service", None)
+    paper_getter = getattr(service, "get_paper_state", None)
+    if not callable(paper_getter):
+        return
+    try:
+        paper_state = paper_getter(user_id)
+    except Exception as exc:
+        logger.debug("Paper state fetch failed during signal-manager sync for user %s: %s", user_id, exc)
+        return
+    try:
+        sync_fn(user_id, paper_state)
+    except Exception as exc:
+        logger.debug("Signal-manager paper-state sync failed for user %s: %s", user_id, exc)
 
 
 def _load_paper_state(user_id: int) -> dict | None:
@@ -1250,6 +1309,14 @@ def _build_signal_notifier(bot, user_id: int):
                     _persist_paper_state(user_id, bridge=bridge)
                 except Exception as persist_err:
                     logger.debug("Paper state persist failed for user %s: %s", user_id, persist_err)
+
+                # Sync paper state into the signal-manager session so the
+                # time-stop and stranded-flatten safety nets see current
+                # positions and equity (audit_20260423 P0-2 + P0-4).
+                try:
+                    _sync_signal_manager_paper_state(user_id, bridge=bridge)
+                except Exception as sync_err:
+                    logger.debug("Signal-manager paper-state sync failed for user %s: %s", user_id, sync_err)
 
             if signal_type == "DRIFT_ALERT":
                 msg = (

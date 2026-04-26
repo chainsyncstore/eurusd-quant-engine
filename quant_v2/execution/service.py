@@ -486,8 +486,14 @@ class RoutedExecutionService:
     def get_paper_state(self, user_id: int) -> dict | None:
         """Return paper session state for WAL persistence.
 
-        Returns dict with equity_baseline_usd, open_positions,
-        paper_entry_prices, and paper_entry_timestamps — or None if session doesn't exist.
+        Returns dict with equity_baseline_usd, equity_usd (mark-to-market),
+        open_positions, paper_entry_prices, and paper_entry_timestamps — or
+        None if session doesn't exist.
+
+        ``equity_usd`` is required by the signal-manager stranded-position
+        flatten helper (audit_20260423 P0-4) to compute the optimizer's
+        effective minimum-notional floor against current equity, not the
+        baseline.
         """
         state = self._sessions.get(user_id)
         if state is None:
@@ -495,6 +501,7 @@ class RoutedExecutionService:
         positions = self._safe_get_positions(state.adapter)
         return {
             "equity_baseline_usd": float(state.equity_baseline_usd),
+            "equity_usd": float(state.snapshot.equity_usd),
             "open_positions": {k: float(v) for k, v in positions.items() if abs(float(v)) > 1e-12},
             "paper_entry_prices": dict(state.paper_entry_price),
             "paper_entry_timestamps": {sym: ts.isoformat() for sym, ts in state.position_opened_at.items()},
