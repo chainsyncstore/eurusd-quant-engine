@@ -47,7 +47,17 @@ class _SignalSession:
     task: asyncio.Task | None = None
     last_bar_timestamp: dict[str, pd.Timestamp] = field(default_factory=dict)
     signal_log: list[dict[str, Any]] = field(default_factory=list)
+    # P0-2 time-stop tracking — populated via sync_paper_position_state from the
+    # execution service after each routing cycle and on session restore.
     paper_entry_timestamps: dict[str, datetime] = field(default_factory=dict)
+    # P0-4 stranded-position flatten tracking — last known paper position
+    # quantities and equity, refreshed alongside paper_entry_timestamps.
+    last_known_positions: dict[str, float] = field(default_factory=dict)
+    last_known_equity_usd: float = 0.0
+    # Per-symbol counter of consecutive cycles where the held position notional
+    # has been below the optimizer's effective_min_notional.  Reset whenever the
+    # position recovers, is closed, or the signal already says SELL.
+    stranded_cycle_counter: dict[str, int] = field(default_factory=dict)
 
 
 class V2SignalManager:
@@ -64,6 +74,9 @@ class V2SignalManager:
         history_bars: int = 192,
         loop_interval_seconds: int | None = None,
         max_hold_hours: int | None = None,
+        min_notional_usd: float | None = None,
+        min_notional_equity_pct: float | None = None,
+        stranded_flatten_cycles: int | None = None,
         max_consecutive_errors: int = 20,
         max_signal_log: int = 300,
         client_factory: ClientFactory | None = None,
@@ -94,6 +107,13 @@ class V2SignalManager:
         self.history_bars = max(int(history_bars), 48)
         self.loop_interval_seconds = self._resolve_loop_interval(loop_interval_seconds)
         self.max_hold_hours = self._resolve_max_hold_hours(max_hold_hours)
+        self.min_notional_usd = self._resolve_min_notional_usd(min_notional_usd)
+        self.min_notional_equity_pct = self._resolve_min_notional_equity_pct(
+            min_notional_equity_pct
+        )
+        self.stranded_flatten_cycles = self._resolve_stranded_flatten_cycles(
+            stranded_flatten_cycles
+        )
         self.max_consecutive_errors = max(int(max_consecutive_errors), 1)
         self.max_signal_log = max(int(max_signal_log), 20)
         self._client_factory = client_factory or self._default_client_factory
@@ -170,6 +190,58 @@ class V2SignalManager:
         except ValueError:
             parsed = 12
         return max(parsed, 1)
+
+    @staticmethod
+    def _resolve_min_notional_usd(min_notional_usd: float | None) -> float:
+        """Base USD floor for the optimizer's min-notional filter.
+
+        Mirrors ``RiskParityOptimizer.min_notional_usd`` so the signal-manager's
+        stranded-flatten check uses the same threshold the optimizer applies
+        when filtering new orders (audit_20260423 P0-1, P0-4).
+        """
+        if min_notional_usd is not None:
+            return max(float(min_notional_usd), 0.0)
+        raw = os.getenv("BOT_V2_MIN_NOTIONAL_USD", "10").strip() or "10"
+        try:
+            parsed = float(raw)
+        except ValueError:
+            parsed = 10.0
+        return max(parsed, 0.0)
+
+    @staticmethod
+    def _resolve_min_notional_equity_pct(min_notional_equity_pct: float | None) -> float:
+        """Equity-fraction floor for the optimizer's min-notional filter.
+
+        Default 0.005 (0.5%) matches the constant in
+        ``RiskParityOptimizer.optimize`` (audit_20260423 P0-1).  Override via
+        ``BOT_V2_MIN_NOTIONAL_EQUITY_PCT``.
+        """
+        if min_notional_equity_pct is not None:
+            return max(float(min_notional_equity_pct), 0.0)
+        raw = os.getenv("BOT_V2_MIN_NOTIONAL_EQUITY_PCT", "0.005").strip() or "0.005"
+        try:
+            parsed = float(raw)
+        except ValueError:
+            parsed = 0.005
+        return max(parsed, 0.0)
+
+    @staticmethod
+    def _resolve_stranded_flatten_cycles(stranded_flatten_cycles: int | None) -> int:
+        """Number of consecutive sub-floor cycles before flattening (P0-4).
+
+        Default 4 cycles — at the default 900s loop cadence that's ~1 hour of
+        confirmed sub-floor exposure before the bot upgrades the signal to
+        SELL.  Override via ``BOT_V2_STRANDED_FLATTEN_CYCLES``.  Set to 0 to
+        disable the stranded-flatten safety net entirely.
+        """
+        if stranded_flatten_cycles is not None:
+            return max(int(stranded_flatten_cycles), 0)
+        raw = os.getenv("BOT_V2_STRANDED_FLATTEN_CYCLES", "4").strip() or "4"
+        try:
+            parsed = int(raw)
+        except ValueError:
+            parsed = 4
+        return max(parsed, 0)
 
     @staticmethod
     def _quiet_heartbeat_enabled() -> bool:
@@ -793,10 +865,88 @@ class V2SignalManager:
                     logger.warning("cycle digest emit failed for user %s: %s", session.user_id, exc)
 
     async def _emit(self, session: _SignalSession, payload: dict[str, Any]) -> None:
+        # Order matters: time-stop runs first because it may upgrade HOLD→SELL,
+        # which makes the stranded-flatten check a no-op for that symbol on
+        # this cycle (already SELL).  Stranded-flatten then handles the
+        # remaining BUY/HOLD cases where the position notional is below the
+        # optimizer's effective_min_notional floor.
         self._apply_time_stop(session, payload)
+        self._apply_stranded_position_flatten(session, payload)
         callback_result = session.on_signal(payload)
         if inspect.isawaitable(callback_result):
             await callback_result
+
+    def sync_paper_position_state(
+        self, user_id: int, paper_state: dict[str, Any] | None
+    ) -> None:
+        """Refresh per-session paper position tracking from the execution side.
+
+        Called by the Telegram bot's signal-notifier callback after every
+        successful routing cycle (and on session restore at startup) to keep
+        the signal-manager session aware of:
+
+        - which symbols are currently held (drives ``_apply_time_stop`` and
+          ``_apply_stranded_position_flatten``);
+        - when each held position was opened (entry timestamps for time-stop);
+        - the current paper equity (``equity_usd``) and per-symbol quantities,
+          used by ``_apply_stranded_position_flatten`` to compute notionals
+          against the optimizer's ``effective_min_notional`` floor.
+
+        Without this sync the signal manager would never observe paper
+        positions at all (the field declarations on ``_SignalSession`` would
+        always remain empty), making both safety nets dead code.  Refs:
+        audit_20260423 P0-2 (writer-side gap) + P0-4 (stranded-flatten).
+        """
+        session = self.sessions.get(user_id)
+        if session is None or paper_state is None:
+            return
+
+        open_positions_raw = paper_state.get("open_positions") or {}
+        entry_ts_raw = paper_state.get("paper_entry_timestamps") or {}
+
+        held: dict[str, float] = {}
+        for sym, qty in open_positions_raw.items():
+            try:
+                qty_f = float(qty)
+            except (TypeError, ValueError):
+                continue
+            if abs(qty_f) <= 1e-12:
+                continue
+            held[str(sym).upper()] = qty_f
+
+        # Drop tracking for symbols no longer held.
+        for sym in list(session.paper_entry_timestamps.keys()):
+            if sym not in held:
+                session.paper_entry_timestamps.pop(sym, None)
+        for sym in list(session.stranded_cycle_counter.keys()):
+            if sym not in held:
+                session.stranded_cycle_counter.pop(sym, None)
+
+        # Add or preserve timestamps for currently held symbols.
+        now_utc = datetime.now(timezone.utc)
+        for sym in held:
+            if sym in session.paper_entry_timestamps:
+                continue
+            ts_value = entry_ts_raw.get(sym)
+            parsed: datetime | None = None
+            if isinstance(ts_value, datetime):
+                parsed = ts_value
+            elif isinstance(ts_value, str):
+                try:
+                    parsed = datetime.fromisoformat(ts_value)
+                except ValueError:
+                    parsed = None
+            session.paper_entry_timestamps[sym] = parsed or now_utc
+
+        session.last_known_positions = held
+
+        equity_value = paper_state.get("equity_usd")
+        if equity_value is None:
+            equity_value = paper_state.get("equity_baseline_usd")
+        try:
+            session.last_known_equity_usd = float(equity_value or 0.0)
+        except (TypeError, ValueError):
+            session.last_known_equity_usd = 0.0
 
     def _apply_time_stop(self, session: _SignalSession, payload: dict[str, Any]) -> None:
         """Upgrade HOLD to SELL when an open paper position exceeds max_hold_hours.
@@ -828,6 +978,92 @@ class V2SignalManager:
             (payload.get("reason") or "") + f" [time_stop={age_hours:.1f}h]"
         ).strip()
         payload["time_stop"] = True
+
+    def _apply_stranded_position_flatten(
+        self, session: _SignalSession, payload: dict[str, Any]
+    ) -> None:
+        """Upgrade non-SELL signal to SELL when a held position has stayed
+        below the optimizer's ``effective_min_notional`` for N consecutive
+        cycles.
+
+        Complements ``_apply_time_stop``.  Time-stop only fires when the
+        signal is already ``HOLD``; this helper covers the "stranded BUY"
+        case where the model still emits a directional signal but the event
+        gate / dampener stack cuts the post-filter weight below the floor,
+        leaving an existing position unable to grow and unable to close
+        through normal model output.
+
+        Configuration (audit_20260423 P0-4):
+
+        - ``min_notional_usd`` and ``min_notional_equity_pct`` mirror the
+          optimizer's filter so this check uses the same threshold orders are
+          rejected against.
+        - ``stranded_flatten_cycles`` controls how many consecutive sub-floor
+          cycles must elapse before the upgrade fires (default 4 ≈ 1 h at the
+          default 900 s cadence).  Set to 0 to disable.
+        """
+        if self.stranded_flatten_cycles <= 0:
+            return
+        if session.live:
+            return
+        symbol = str(payload.get("symbol", "")).upper()
+        if not symbol:
+            return
+
+        qty = session.last_known_positions.get(symbol, 0.0)
+        if abs(qty) < 1e-12:
+            session.stranded_cycle_counter.pop(symbol, None)
+            return
+
+        signal_type = str(payload.get("signal", "")).upper()
+        if signal_type == "SELL":
+            # Already closing; nothing for the safety net to do.
+            session.stranded_cycle_counter.pop(symbol, None)
+            return
+
+        try:
+            close_price = float(payload.get("close_price", 0.0) or 0.0)
+        except (TypeError, ValueError):
+            close_price = 0.0
+        if close_price <= 0.0:
+            # No price available this cycle; skip without resetting the
+            # counter so a transient missing price doesn't reset progress.
+            return
+
+        notional = abs(qty) * close_price
+        equity = max(float(session.last_known_equity_usd), 1.0)
+        floor = max(
+            float(self.min_notional_usd),
+            equity * float(self.min_notional_equity_pct),
+        )
+
+        if notional >= floor:
+            # Position is healthy; reset progress.
+            session.stranded_cycle_counter.pop(symbol, None)
+            return
+
+        counter = session.stranded_cycle_counter.get(symbol, 0) + 1
+        session.stranded_cycle_counter[symbol] = counter
+        if counter < self.stranded_flatten_cycles:
+            return
+
+        logger.warning(
+            "Stranded-position flatten triggered for user %s %s: "
+            "notional=$%.2f < floor=$%.2f for %d cycles. Upgrading %s → SELL.",
+            session.user_id,
+            symbol,
+            notional,
+            floor,
+            counter,
+            signal_type or "HOLD",
+        )
+        payload["signal"] = "SELL"
+        payload["reason"] = (
+            (payload.get("reason") or "")
+            + f" [stranded_flatten=${notional:.2f}<${floor:.2f}_for_{counter}c]"
+        ).strip()
+        payload["stranded_flatten"] = True
+        session.stranded_cycle_counter.pop(symbol, None)
 
     def _build_signal_payload(
         self,
