@@ -1021,6 +1021,53 @@ def _build_monitoring_snapshot(result: dict) -> MonitoringSnapshot:
     )
 
 
+def _format_cycle_digest(payload: dict) -> str:
+    """Format a concise cycle digest message for quiet-hour heartbeat."""
+    top_list = payload.get("top_by_closest_threshold", [])
+    interval_seconds = int(payload.get("cycle_interval_seconds", 3600))
+    interval_minutes = max(1, interval_seconds // 60)
+
+    # Parse timestamp for human-readable time
+    ts_str = payload.get("timestamp", "")
+    time_display = "current cycle"
+    try:
+        from datetime import datetime
+        ts = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
+        time_display = ts.strftime("%H:%M UTC")
+    except Exception:
+        pass
+
+    lines = [
+        f"🔵 Cycle digest — {time_display}",
+        "  No actionable signals this cycle.",
+    ]
+
+    if top_list:
+        lines.append("  Closest to threshold:")
+        for item in top_list:
+            symbol = item.get("symbol", "?")
+            proba = float(item.get("probability", 0.5))
+            buy_th = float(item.get("buy_th", 0.59))
+            sell_th = float(item.get("sell_th", 0.41))
+            gap_to_buy = float(item.get("gap_to_buy", 0.0))
+            gap_to_sell = float(item.get("gap_to_sell", 0.0))
+
+            # Determine closest direction
+            if gap_to_buy <= gap_to_sell:
+                direction = "BUY"
+                delta = gap_to_buy
+            else:
+                direction = "SELL"
+                delta = gap_to_sell
+
+            lines.append(
+                f"    • {symbol}  HOLD  proba={proba:.3f}  (Δ={delta:.3f} to {direction})"
+            )
+
+    lines.append(f"  Next cycle in {interval_minutes}m.")
+    return "\n".join(lines)
+
+
 def _build_signal_notifier(bot, user_id: int):
     """Create the async callback used by the engine to notify signals."""
 
@@ -1064,6 +1111,12 @@ def _build_signal_notifier(bot, user_id: int):
                             bridge_stop_err,
                         )
                 V2_DEGRADED_ALERTED_USERS.discard(user_id)
+                return
+
+            # Handle cycle digest (quiet-hour heartbeat)
+            if signal_type == "CYCLE_DIGEST":
+                text = _format_cycle_digest(result)
+                await bot.send_message(chat_id=user_id, text=text, parse_mode=None)
                 return
 
             if _using_v2_primary_backend():
