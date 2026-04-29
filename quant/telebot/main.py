@@ -800,6 +800,8 @@ def _persist_lifetime_snapshot_metrics(
             lifetime_pnl = _safe_float(getattr(ctx, "lifetime_demo_pnl_usd", 0.0), 0.0)
             if previous_equity > 0.0:
                 lifetime_pnl += equity_usd - previous_equity
+            else:
+                lifetime_pnl += equity_usd - 10_000.0
             ctx.lifetime_demo_pnl_usd = lifetime_pnl
             ctx.last_demo_equity_usd = equity_usd
             ctx.current_demo_equity_usd = equity_usd
